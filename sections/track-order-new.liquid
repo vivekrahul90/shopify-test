@@ -63,7 +63,7 @@ document.getElementById('track-order-btn').addEventListener('click', async () =>
 
     try {
         // Shopify API Credentials
-        const shopifyAccessToken = "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"; // Replace with your access token
+        const shopifyAccessToken = accesstoken; // Replace with your access token
         const shopifyApiUrl = "{{ section.settings.shopify_api_url }}" + orderId + ".json";
 
         // Fetch order details from Shopify Admin API
