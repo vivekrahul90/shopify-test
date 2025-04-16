@@ -1,1 +1,125 @@
-{"sections":{"main":{"type":"main-404","settings":{"heading":"🔮 Your cosmic path has led you astray...","heading_size":160,"text":"<p>This page must be in retrograde! But don’t worry, your future is bright.”<\/p>"}},"custom_liquid_kbLkkV":{"type":"custom-liquid","disabled":true,"settings":{"custom_liquid":"","full_width":false,"show_section_divider":false,"padding_top":28,"padding_bottom":28,"full_width_mobile":false,"show_section_divider_mobile":false,"padding_top_mobile":28,"padding_bottom_mobile":28}},"featured_collection_gyUaFJ":{"type":"featured-collection","blocks":{"collection_p9KtVD":{"type":"collection","settings":{"collection":"best-sellers","show_description":true,"description":"","number_of_lines_shown":"none","read_more_label":"Read more","show_vendor":false,"show_rating":false,"show_quickview":true,"show_promotion":false,"promotion_position":"left","card_link":"","open_new_window":false,"enable_text_overlay":false,"overlay_opacity":0,"image_ratio":"100","show_sound_control":false,"video_url":"","enable_video_autoplay":false,"video_alt_text":"","product_card":"","heading":"Featured collection","heading_size":70,"content":"<p>10% OFF<\/p>","text_size":100,"content_alignment":"center","content_position":"bottom","button_label":"See more","button_link":"","open_new_window_button":false,"show_button_style":"primary","background_color":"rgba(0,0,0,0)","color_text":"rgba(0,0,0,0)","color_button":"rgba(0,0,0,0)","color_text_button":"rgba(0,0,0,0)","color_button_hover":"rgba(0,0,0,0)","color_text_button_hover":"rgba(0,0,0,0)","color_button_secondary":"rgba(0,0,0,0)","secondary_button_text":"rgba(0,0,0,0)","colors_text_link":"rgba(0,0,0,0)"}}},"block_order":["collection_p9KtVD"],"disabled":true,"settings":{"title":"Featured collections","heading_size":100,"heading_tag":"h2","heading_alignment":"center","subheading":"","text":"","show_view_all":false,"view_all_position":"top","title_size":120,"title_style":"none","enable_desktop_slider":false,"slider_style":"horizontal","swiper_on_mobile":false,"auto_play":false,"change_slides_speed":5,"columns_desktop":4,"rows_desktop":1,"spacing":28,"full_width":false,"show_section_divider":false,"padding_top":28,"padding_bottom":28,"eventname":"","columns_mobile":"1","spacing_mobile":16,"full_width_mobile":false,"show_section_divider_mobile":false,"padding_top_mobile":28,"padding_bottom_mobile":28}}},"order":["main","custom_liquid_kbLkkV","featured_collection_gyUaFJ"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "heading": "🔮 Your cosmic path has led you astray...",
+        "heading_size": 160,
+        "text": "<p>This page must be in retrograde! But don’t worry, your future is bright.”</p>"
+      }
+    },
+    "custom_liquid_kbLkkV": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "settings": {
+        "custom_liquid": "",
+        "full_width": false,
+        "show_section_divider": false,
+        "padding_top": 28,
+        "padding_bottom": 28,
+        "full_width_mobile": false,
+        "show_section_divider_mobile": false,
+        "padding_top_mobile": 28,
+        "padding_bottom_mobile": 28
+      }
+    },
+    "featured_collection_gyUaFJ": {
+      "type": "featured-collection",
+      "blocks": {
+        "collection_p9KtVD": {
+          "type": "collection",
+          "settings": {
+            "collection": "all",
+            "show_description": true,
+            "description": "",
+            "number_of_lines_shown": "none",
+            "read_more_label": "Read more",
+            "show_vendor": false,
+            "show_rating": false,
+            "show_quickview": true,
+            "show_promotion": false,
+            "promotion_position": "left",
+            "card_link": "",
+            "open_new_window": false,
+            "enable_text_overlay": false,
+            "overlay_opacity": 0,
+            "image_ratio": "100",
+            "show_sound_control": false,
+            "video_url": "",
+            "enable_video_autoplay": false,
+            "video_alt_text": "",
+            "product_card": "",
+            "heading": "Featured collection",
+            "heading_size": 70,
+            "content": "<p>10% OFF</p>",
+            "text_size": 100,
+            "content_alignment": "center",
+            "content_position": "bottom",
+            "button_label": "See more",
+            "button_link": "",
+            "open_new_window_button": false,
+            "show_button_style": "primary",
+            "background_color": "rgba(0,0,0,0)",
+            "color_text": "rgba(0,0,0,0)",
+            "color_button": "rgba(0,0,0,0)",
+            "color_text_button": "rgba(0,0,0,0)",
+            "color_button_hover": "rgba(0,0,0,0)",
+            "color_text_button_hover": "rgba(0,0,0,0)",
+            "color_button_secondary": "rgba(0,0,0,0)",
+            "secondary_button_text": "rgba(0,0,0,0)",
+            "colors_text_link": "rgba(0,0,0,0)"
+          }
+        }
+      },
+      "block_order": [
+        "collection_p9KtVD"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": "Featured collections",
+        "heading_size": 100,
+        "heading_tag": "h2",
+        "heading_alignment": "center",
+        "subheading": "",
+        "text": "",
+        "show_view_all": false,
+        "view_all_position": "top",
+        "title_size": 120,
+        "title_style": "none",
+        "enable_desktop_slider": false,
+        "slider_style": "horizontal",
+        "swiper_on_mobile": false,
+        "auto_play": false,
+        "change_slides_speed": 5,
+        "columns_desktop": 4,
+        "rows_desktop": 1,
+        "spacing": 28,
+        "full_width": false,
+        "show_section_divider": false,
+        "padding_top": 28,
+        "padding_bottom": 28,
+        "eventname": "",
+        "columns_mobile": "1",
+        "spacing_mobile": 16,
+        "full_width_mobile": false,
+        "show_section_divider_mobile": false,
+        "padding_top_mobile": 28,
+        "padding_bottom_mobile": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "custom_liquid_kbLkkV",
+    "featured_collection_gyUaFJ"
+  ]
+}
