@@ -1,0 +1,464 @@
+{% comment %}
+  Minimal Testimonial Slider (Inline SVG Arrows + Star Icons)
+  ----------------------------------------------------------
+  - Displays one testimonial at a time with left/right arrows and dot pagination
+  - Uses a circle-with-arrow SVG for arrows
+  - Uses an inline "filled star" SVG for rating
+  - Dots update automatically when blocks are added/removed
+  - Now includes the new inline SVG icon for Verified Buyer
+{% endcomment %}
+
+<section id="section-{{ section.id }}" class="testimonial-slider-section">
+  <div class="testimonial-slider-header">
+    {% if section.settings.section_title != blank %}
+      <h2 class="testimonial-slider-title">{{ section.settings.section_title }}</h2>
+    {% endif %}
+    {% if section.settings.section_subtitle != blank %}
+      <p class="testimonial-slider-subtitle">{{ section.settings.section_subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Slider container -->
+  <div class="testimonial-slider-wrapper">
+    <!-- Slider track that holds all slides -->
+    <div 
+      class="testimonial-slider-track" 
+      id="slider-track-{{ section.id }}" 
+      data-section-id="{{ section.id }}"
+    >
+      {% for block in section.blocks %}
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            
+            {% if block.settings.show_quotes_icon %}
+              <!-- Optional text-based quotes icon -->
+              <span class="testimonial-quote-icon">“</span>
+            {% endif %}
+
+            <div class="testimonial-text">
+              {{ block.settings.testimonial_text }}
+            </div>
+
+            <div class="testimonial-author-info">
+              <div class="testimonial-author-name">{{ block.settings.testimonial_name }}</div>
+              {% if block.settings.secondary_label != blank %}
+                <div class="testimonial-author-role">{{ block.settings.secondary_label }}</div>
+              {% endif %}
+            </div>
+
+            <div class="testimonial-footer">
+              {% if block.settings.show_verified_buyer %}
+                <div class="testimonial-verified-buyer">
+                  <!-- Inline SVG icon for Verified Buyer -->
+                  <svg 
+                    class="verified-check-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path 
+                      fill-rule="evenodd" 
+                      clip-rule="evenodd"
+                      d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 
+                         17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 
+                         6.47715 22 12ZM16.0303 8.96967C16.3232 9.26256 
+                         16.3232 9.73744 16.0303 10.0303L11.0303 15.0303C10.7374 
+                         15.3232 10.2626 15.3232 9.96967 15.0303L7.96967 
+                         13.0303C7.67678 12.7374 7.67678 12.2626 7.96967 
+                         11.9697C8.26256 11.6768 8.73744 11.6768 9.03033 
+                         11.9697L10.5 13.4393L12.7348 11.2045L14.9697 
+                         8.96967C15.2626 8.67678 15.7374 8.67678 
+                         16.0303 8.96967Z"
+                      fill="#57b74e"
+                    />
+                  </svg>
+                  Verified Buyer
+                </div>
+              {% endif %}
+
+              {% if block.settings.show_star_rating %}
+                <div class="testimonial-stars">
+                  {% for i in (1..5) %}
+                    <!-- Inline SVG star -->
+                    <svg 
+                      class="star-icon" 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 576 512"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M381.2 150.3L524.9 171c26.2 3.8 36.7 36.1 
+                               17.7 54.6l-113.9 111 26.9 156.9c4.5 26.2-23.2 
+                               46-46.4 33.7L288 439.6l-140.2 73.6c-23.2 12.3-50.9
+                               -7.5-46.4-33.7l26.9-156.9L14.4 225.6c-19-18.5 
+                               -8.5-50.8 17.7-54.6l143.7-20.7 64.3-130.3c11.7
+                               -23.6 45.6-23.9 57.4 0l64.3 130.3z"></path>
+                    </svg>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Slider controls: arrow buttons + dynamic dots -->
+    <div class="testimonial-slider-controls">
+      <!-- Left Arrow -->
+      <button
+        type="button"
+        class="slider-arrow arrow-left"
+        id="arrow-left-{{ section.id }}"
+        aria-label="Previous slide"
+      >
+        <svg 
+          class="arrow-icon"
+          width="40" 
+          height="40"
+          viewBox="0 0 512 512" 
+          fill="none" 
+          stroke="currentColor"
+          stroke-width="20"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <!-- Circle + arrow pointing left (by rotating or flipping polyline as needed) -->
+          <circle cx="256" cy="256" r="246" />
+          <line x1="352.26" x2="170.43" y1="256" y2="256" />
+          <polyline points="223.91 202.52 170.44 256 223.91 309.48" />
+        </svg>
+      </button>
+
+      <div class="slider-dots" id="slider-dots-{{ section.id }}">
+        <!-- Dots will be generated by JS based on the # of slides -->
+      </div>
+
+      <!-- Right Arrow -->
+      <!-- Right Arrow -->
+<button
+  type="button"
+  class="slider-arrow arrow-right"
+  id="arrow-right-{{ section.id }}"
+  aria-label="Next slide"
+>
+  <svg 
+    class="arrow-icon"
+    width="40" 
+    height="40"
+    viewBox="0 0 512 512" 
+    fill="none" 
+    stroke="currentColor"
+    stroke-width="20"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="256" cy="256" r="246" />
+    <line x1="159.74" x2="341.57" y1="256" y2="256" />
+    <polyline points="288.09 202.52 341.56 256 288.09 309.48" />
+  </svg>
+</button>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonial Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "What Our Customers Say"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "You'll want to stock up to experience the best of your life, night after night..."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial_block",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quotes_icon",
+          "label": "Show quotes icon? (text-based)",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "id": "testimonial_text",
+          "label": "Testimonial Text",
+          "default": "Slumberly supplements have been a game-changer. After trying the first bottle, I switched to the subscription because I never want to go back to restless nights!"
+        },
+        {
+          "type": "text",
+          "id": "testimonial_name",
+          "label": "Author Name",
+          "default": "Laura P."
+        },
+        {
+          "type": "text",
+          "id": "secondary_label",
+          "label": "Secondary Label (e.g., 'Slumberly Member')",
+          "default": "Slumberly Member"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_verified_buyer",
+          "label": "Show 'Verified Buyer' (with text checkmark)",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_star_rating",
+          "label": "Show Star Rating",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial Slider",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.testimonial-slider-section {
+  padding: 40px 0;
+  background-color: #fafafa; /* optional */
+  text-align: center;
+}
+
+.testimonial-slider-header {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+}
+
+.testimonial-slider-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.testimonial-slider-subtitle {
+  font-size: 16px;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.testimonial-slider-wrapper {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Slider track + slides */
+.testimonial-slider-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+.testimonial-slide {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+}
+
+.testimonial-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin: 0 16px;
+  text-align: left;
+  position: relative;
+  min-height: 280px;
+}
+
+.testimonial-quote-icon {
+  font-size: 32px;
+  color: #ced4da;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.testimonial-text {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.4;
+  margin-bottom: 24px;
+  margin-top: 8px;
+}
+
+.testimonial-author-info {
+  margin-bottom: 12px;
+}
+
+.testimonial-author-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.testimonial-author-role {
+  font-size: 14px;
+  color: #777;
+}
+
+.testimonial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.testimonial-verified-buyer {
+  color: #57b74e; /* Or any color you like */
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verified-check-icon {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+/* Star icons */
+.testimonial-stars {
+  display: flex;
+  gap: 2px;
+}
+.star-icon {
+  width: 18px;
+  height: 18px;
+  color: #f0df21; /* star color */
+}
+
+/* Arrows + Dots */
+.testimonial-slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.slider-arrow {
+  background-color: transparent; 
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.arrow-icon {
+  stroke: #333;  /* arrow outline color */
+  fill: none;    /* circle fill is none */
+  transition: stroke 0.3s;
+}
+.slider-arrow:hover .arrow-icon {
+  stroke: #000;  /* darker on hover */
+}
+
+.slider-dots {
+  display: flex;
+  gap: 8px;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+.dot.active {
+  background-color: #0d1f44;
+}
+{% endstylesheet %}
+
+<script>
+function initMinimalTestimonialSlider(sectionId) {
+  const track = document.getElementById(`slider-track-${sectionId}`);
+  if (!track) return; // Safety check
+
+  const slides = track.querySelectorAll('.testimonial-slide');
+  const prevBtn = document.getElementById(`arrow-left-${sectionId}`);
+  const nextBtn = document.getElementById(`arrow-right-${sectionId}`);
+  const dotsContainer = document.getElementById(`slider-dots-${sectionId}`);
+
+  // Clear existing dots (if any), then rebuild
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => {
+      goToSlide(i);
+    });
+    dotsContainer.appendChild(dot);
+  }
+  const dots = dotsContainer.querySelectorAll('.dot');
+
+  let currentSlide = 0;
+
+  function goToSlide(index) {
+    currentSlide = index;
+    track.style.transform = `translateX(-${100 * currentSlide}%)`;
+    updateDots();
+  }
+
+  function updateDots() {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    goToSlide(currentSlide);
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    goToSlide(currentSlide);
+  }
+
+  // Arrow button clicks
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+  // Initialize
+  goToSlide(0);
+}
+
+// On DOM load, init once
+document.addEventListener('DOMContentLoaded', function() {
+  initMinimalTestimonialSlider("{{ section.id }}");
+});
+
+// If in Theme Editor, re-init on section load (so dots update when blocks are changed)
+document.addEventListener('shopify:section:load', function(event) {
+  const section = event.target.querySelector('.testimonial-slider-track');
+  if (section && section.dataset.sectionId === '{{ section.id }}') {
+    initMinimalTestimonialSlider('{{ section.id }}');
+  }
+});
+</script>

@@ -1,0 +1,93 @@
+{% assign hasgo = true %}
+{% if section.settings.disable_at_all %}
+  {% assign hasgo = false %}
+{% endif %}
+{% if section.settings.disable_on_product and template contains 'product' %}
+  {% assign hasgo = false %}
+{% endif %}
+{% if section.blocks.size > 0 and hasgo %}
+<div class="fixed_nav fixed_nav_mobile hidden-tablet-and-up">
+  <div class="row-nav">    
+    {% for block in section.blocks %}
+    {% if block.settings.icon_svg != blank %}
+    <div class="fixed-nav-item">
+      <div class="item--box boat_icon_footer">
+        <a class="fixed_nav--link {% if request.path == block.settings.icon_link %}active_url{% endif %}" href="{{ block.settings.icon_link }}">   
+          {% if block.settings.icon_image != blank %}
+          <img src="{{ block.settings.icon_image | image_url }}" width="100" height="100" loading="lazy" class="icon_image">
+          {% else %}
+          {{ block.settings.icon_svg }}
+          {% endif %}
+          {% if block.settings.icon_title != blank %}
+          <span class="icon_name">
+            {{ block.settings.icon_title }}
+          </span>
+          {% endif %}
+        </a>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% unless section.settings.disable_on_product %}
+  {% if template contains 'product' %}
+    <script>
+      if (screen.width < 741){
+        const stickyelement = document.getElementsByClassName("sticky_add_to_cart")[0];
+        var cureleheight = document.getElementsByClassName("fixed_nav")[0].offsetHeight;
+        console.log(stickyelement);
+        stickyelement.setAttribute("style", "bottom: "+cureleheight+"px;");
+      }
+    </script>
+  {% endif %}
+{% endunless %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Sticky strip",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "disable_at_all",
+        "label": "Disable at all"
+      },
+      {
+        "type": "checkbox",
+        "id": "disable_on_product",
+        "label": "Disable on product page"
+      }
+    ],
+    "max_blocks": 5,
+    "blocks": [
+      {
+        "type": "icons_list",
+        "name": "Icons list",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "icon_image",
+            "label": "Icon Image",
+            "info": "Leave this setting blank if you want to use SVG"
+          },
+          {
+            "type": "html",
+            "id": "icon_svg",
+            "label": "Icon SVG"
+          },
+          {
+            "type": "text",
+            "id": "icon_title",
+            "label": "Icon title"
+          },
+          {
+            "type": "url",
+            "id": "icon_link",
+            "label": "Icon link"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

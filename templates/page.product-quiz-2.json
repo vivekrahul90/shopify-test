@@ -1,0 +1,23 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+    "sections": {
+      "product-quiz-2": {
+        "type": "product-quiz-2",
+        "settings": {
+          "quiz_banner_image": "shopify://shop_images/raw_pyrite_d72d158c-8503-4808-9275-43bf0a1e7fd4.jpg"
+        }
+      }
+    },
+    "order": [
+      "product-quiz-2"
+    ]
+  }
+  

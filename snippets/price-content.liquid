@@ -1,0 +1,44 @@
+{% comment %} Create snippet file: snippets/custom-price.liquid {% endcomment %}
+
+<span class="custom_price_wrapper">
+  <span class="mobile_atc_btn">
+    <span class="mobile_atc_price" style="font-weight: bold; font-size: 1.4em;">{{ product.price | money }}</span>
+    
+    {% if product.compare_at_price > product.price %}
+      <span class="btn_mrp" style="text-decoration: line-through; color: grey;font-size:16px; padding-right:10px;padding-left:10px;">
+        {{ product.compare_at_price | money }}
+      </span>
+      <span class="saved_price" style="color: green;font-size:16px; font-weight: bold;padding-right:10px;">
+        {% assign discount = product.compare_at_price | minus: product.price %}
+        {% assign discount_percent = discount | times: 100 | divided_by: product.compare_at_price %}
+        {{ discount_percent | round }}% OFF
+      </span>
+    {% endif %}
+  </span>
+
+  <!-- <span class="inclusive_text_content" style="color: darkgrey;">Inclusive of all&nbsp;taxes</span> -->
+</span>
+<div style=" min-height:4px;"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Get current variant data from Shopify's product JSON
+  const productData = {{ product | json }};
+  const currentVariant = productData.variants[0];
+  
+  // Update prices dynamically
+  document.querySelector('.mobile_atc_price').textContent = `${Shopify.formatMoney(currentVariant.price, "{{ shop.money_format }}")}`;
+  
+  if(currentVariant.compare_at_price) {
+    document.querySelector('.btn_mrp').textContent = `${Shopify.formatMoney(currentVariant.compare_at_price, "{{ shop.money_format }}")}`;
+    
+    const discount = Math.round(
+      ((currentVariant.compare_at_price - currentVariant.price) / currentVariant.compare_at_price) * 100
+    );
+    document.querySelector('.saved_price').textContent = `${discount}% Off`;
+  } else {
+    document.querySelector('.btn_mrp').style.display = 'none';
+    document.querySelector('.saved_price').style.display = 'none';
+  }
+});
+</script>

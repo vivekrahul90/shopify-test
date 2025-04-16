@@ -1,0 +1,88 @@
+{% comment %} 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 {% endcomment %}
+
+<!-- 
+GET https://astrotalk.store/admin/api/2023-04/orders.json?name=ORDER_ID
+
+
+-->
+
+<div class="track-order-container">
+    <h2>Track Your Order</h2>
+    <input type="text" id="order-id" placeholder="Enter Order ID">
+    <button onclick="fetchOrder()">Track Order</button>
+    
+    <div id="order-result"></div>
+</div>
+
+<script>
+async function fetchOrder() {
+    let orderId = document.getElementById("order-id").value;
+    if (!orderId) {
+        alert("Please enter an order ID");
+        return;
+    }
+
+    const apiUrl = `http://localhost:3000/order/${orderId}`; // Use backend instead of Shopify
+
+    try {
+        let response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch order details");
+        }
+
+        let data = await response.json();
+        displayOrderDetails(data);
+    } catch (error) {
+        console.error(error);
+        document.getElementById("order-result").innerHTML = `<p style="color: red;">Failed to fetch order details</p>`;
+    }
+}
+
+function displayOrderDetails(order) {
+    let resultDiv = document.getElementById("order-result");
+
+    if (!order || Object.keys(order).length === 0) {
+        resultDiv.innerHTML = `<p style="color: red;">Order not found</p>`;
+        return;
+    }
+
+    resultDiv.innerHTML = `
+        <h3>Order Details</h3>
+        <p><strong>Order ID:</strong> ${order.name}</p>
+        <p><strong>Financial Status:</strong> ${order.financial_status}</p>
+        <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleDateString()}</p>
+        <p><strong>Fulfillment Status:</strong> ${order.fulfillment_status || 'Unfulfilled'}</p>
+    `;
+}
+</script>
+
+<style>
+.track-order-container {
+    text-align: center;
+    padding: 20px;
+}
+input {
+    padding: 8px;
+    margin: 10px;
+    width: 200px;
+}
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+#order-result {
+    margin-top: 20px;
+}
+</style>
+
+
+
+
+
+
+
+

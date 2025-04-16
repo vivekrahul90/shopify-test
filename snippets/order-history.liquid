@@ -1,0 +1,258 @@
+<link rel="stylesheet" href="{{ 'order-history.css' | asset_url }}" />
+
+<div class="order-history-container">
+    <h2 class="order-title">Your Orders</h2>
+    {% if customer %}
+        {% paginate customer.orders by 5 %}
+            {% if customer.orders.size > 0 %}
+                {% for order in customer.orders %}
+                <div class="order-card">
+                    <!-- Order Header -->
+                    <div class="order-header">
+                        <div class="order-status">
+                            <span class="status-label {{ order.fulfillment_status | downcase }}">
+                            </span>
+                        </div>
+                        <div class="order-details">
+                            <p><strong>Order Number:</strong><br> {{ order.name }}</p>
+                            <p><strong>Order Date:</strong><br> {{ order.created_at | time_tag: format: 'date' }}</p>
+                            <p><strong>Payment Method:</strong><br> {{ order.financial_status }} </p>
+                            <p><strong>Shipping Address:</strong><br> {{ order.shipping_address.city }}, {{ order.shipping_address.province }}, {{ order.shipping_address.country }}</p>
+                        </div>
+                        <div class="order-total desk-total">
+                            <p><strong>Total Amount:</strong> {{ order.total_price | money }}</p>
+                            <div class="order-buttons">
+                                <div>
+                                    <a href="#" class="b_track button button-solid o-btn px-5 py-3" target="_blank" data-order-id="{{ order.name }}">Track</a>
+                                </div>
+                                <div>
+                                    {% unless settings.hide_cart %}
+                                        {% if settings.enable_reorder %}
+                                            <td class="md:w-[12%] flex items-center" data-label="Action">
+                                                {%- render 're-order', itemOrder: order -%}
+                                            </td>
+                                        {% endif %}
+                                    {% endunless %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="order-items" id="order-items">
+                        {% for line_item in order.line_items %}
+                        <div class="order-item"
+                            data-order-id="{{ order.name }}"
+                            data-customer-no="{{ order.customer.phone | remove: '+91' }}"
+                            data-product-name="{{ line_item.title }}">
+                            <img src="{{ line_item.product.featured_image | img_url: 'medium' }}" alt="{{ line_item.title }}">
+                            <div class="item-info" data-product-sku="{{ line_item.sku }}">
+                                <div class="info">
+                                    <p class="item-title">{{ line_item.title }}</p>
+                                    <p><strong>Qty:</strong> {{ line_item.quantity }}</p>
+                                    <div class="mob item-price">
+                                        <p>{{ line_item.line_price | money }}</p>
+                                    </div>
+                                    <a href="#" class="tracking-url" target="_blank" style="color: #007bff;">Track your order</a>
+                                    <a href="{{ line_item.product.url }}" class="buy-again">{% render 'eye-icon' %} View product</a>
+                                </div>
+                                <div class="item-price desk">
+                                    <p>{{ line_item.line_price | money }}</p>
+                                </div>
+                                <!-- Tracking Info Container -->
+                                <div class="tracking-info" style="margin-top: 10px; color: #555;">
+                                    <p><strong>Tracking Number:</strong> <span class="tracking-number">Loading...</span></p>
+                                    <p><strong>Status:</strong> <span class="shipment-status">Loading...</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Mobile Total -->
+                    <div class="order-total mob-total">
+                        <p><strong>Total Amount:</strong> {{ order.total_price | money }}</p>
+                        <div class="order-buttons">
+                            <div>
+                                <a href="#" class="b_track button button-solid o-btn px-5 py-3" target="_blank" data-order-id="{{ order.name }}">Track</a>
+                            </div>
+                            <div>
+                                <button class="b_cancel button button-solid o-btn px-5 py-3 coc-button coc-cancel-button" data-order-id="{{ order.id }}" disabled> Cancel order</button>
+                                {% unless settings.hide_cart %}
+                                    {% if settings.enable_reorder %}
+                                        <td class="md:w-[12%] flex items-center" data-label="Action">
+                                            {%- render 're-order', itemOrder: order -%}
+                                        </td>
+                                    {% endif %}
+                                {% endunless %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    {{ paginate | default_pagination }}
+                </div>
+            {% else %}
+                <p>You have no orders yet.</p>
+            {% endif %}
+        {% endpaginate %}
+    {% else %}
+        <p>Please <a href="{{ routes.account_login_url }}">log in</a> to view your order history.</p>
+    {% endif %}
+</div>
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+    const orderItems = document.querySelectorAll(".order-item");
+    const requestQueue = new Map();
+
+    async function fetchTrackingData(orderId, customerNo) {
+        const cacheKey = `${orderId}-${customerNo}`;
+        if (requestQueue.has(cacheKey)) return requestQueue.get(cacheKey);
+
+        const fetchPromise = new Promise(async (resolve) => {
+            try {
+                const response = await fetch(`https://api.astromall.astrotalk.com/AstroMall/shipment/track-order-data?entityId=${orderId}&mobile=${customerNo}`);
+                const data = await response.json();
+                resolve(data);
+            } catch (error) {
+                console.error("Error fetching tracking details:", error);
+                resolve(null);
+            }
+        });
+
+        requestQueue.set(cacheKey, fetchPromise);
+        return fetchPromise;
+    }
+
+    const groupedByOrder = {};
+    orderItems.forEach(item => {
+        const orderId = item.dataset.orderId;
+        if (!groupedByOrder[orderId]) groupedByOrder[orderId] = [];
+        groupedByOrder[orderId].push(item);
+    });
+
+    for (const [orderId, items] of Object.entries(groupedByOrder)) {
+        const encodedOrderId = encodeURIComponent(orderId);
+        const customerNo = encodeURIComponent(items[0].dataset.customerNo);
+
+        const orderCard = items[0].closest(".order-card");
+        const orderHeader = orderCard?.querySelector(".order-header");
+        const statusLabels = orderCard?.querySelectorAll(".status-label");
+        const bTrackButtons = document.querySelectorAll(`.b_track[data-order-id="${orderId}"]`);
+        const isCancelled = statusLabels?.[0]?.innerText.trim().toLowerCase() === "cancelled";
+
+        if (isCancelled) {
+            items.forEach(item => {
+                const trackingUrlElem = item.querySelector(".tracking-url");
+                if (trackingUrlElem) trackingUrlElem.style.display = "none";
+            });
+            bTrackButtons.forEach(btn => btn.style.display = "none");
+            return;
+        }
+
+        const data = await fetchTrackingData(encodedOrderId, customerNo);
+
+        if (!data || data.status !== "OK" || !data.trackOrderPage?.productDetailList?.length) {
+            items.forEach(item => {
+                const trackingUrlElem = item.querySelector(".tracking-url");
+                if (trackingUrlElem) trackingUrlElem.style.display = "none";
+            });
+            bTrackButtons.forEach(btn => btn.style.display = "none");
+
+            // No shipment status - hide .status-label
+            statusLabels?.forEach(label => label.style.display = "none");
+            orderHeader?.classList.remove("has-status");
+
+            continue;
+        }
+
+        const trackingList = data.trackOrderPage.productDetailList;
+        const trackingNumbers = trackingList.map(d => d.awbNumber);
+        const allSameTracking = new Set(trackingNumbers).size === 1;
+
+        if (allSameTracking) {
+            const sharedTracking = trackingList[0];
+            const url = sharedTracking.trackingUrl || "#";
+            const number = sharedTracking.awbNumber || "N/A";
+            const status = sharedTracking.shipmentStatus;
+
+            // Apply b_track
+            bTrackButtons.forEach(btn => {
+                btn.setAttribute("href", url);
+                btn.style.display = "flex";
+            });
+
+            // Hide individual tracking URLs
+            items.forEach(item => {
+                const trackingUrlElem = item.querySelector(".tracking-url");
+                const trackingNumberElem = item.querySelector(".tracking-number");
+                const shipmentStatusElem = item.querySelector(".shipment-status");
+
+                if (trackingUrlElem) trackingUrlElem.style.display = "none";
+                if (trackingNumberElem) trackingNumberElem.innerText = number;
+                if (shipmentStatusElem) shipmentStatusElem.innerText = status || "Pending";
+            });
+
+            // Set or hide status-label
+            if (status) {
+                statusLabels?.forEach(label => {
+                    label.innerText = status;
+                    label.style.display = "inline-block";
+                });
+                orderHeader?.classList.add("has-status");
+            } else {
+                statusLabels?.forEach(label => label.style.display = "none");
+                orderHeader?.classList.remove("has-status");
+            }
+
+        } else {
+            // Multiple tracking numbers - handle per item
+            items.forEach((item, i) => {
+                const tracking = trackingList[i];
+                if (!tracking) return;
+
+                const url = tracking.trackingUrl || "#";
+                const number = tracking.awbNumber || "N/A";
+                const status = tracking.shipmentStatus;
+
+                const trackingUrlElem = item.querySelector(".tracking-url");
+                const trackingNumberElem = item.querySelector(".tracking-number");
+                const shipmentStatusElem = item.querySelector(".shipment-status");
+
+                if (trackingUrlElem) {
+                    trackingUrlElem.setAttribute("href", url);
+                    trackingUrlElem.innerText = "Track your order";
+                    trackingUrlElem.style.display = "inline-block";
+                }
+
+                if (trackingNumberElem) trackingNumberElem.innerText = number;
+                if (shipmentStatusElem) shipmentStatusElem.innerText = status || "Pending";
+            });
+
+            // Hide global track button
+            bTrackButtons.forEach(btn => btn.style.display = "none");
+
+            // If at least one item has a status, show it
+            const anyStatus = trackingList.some(item => !!item.shipmentStatus);
+            if (anyStatus) {
+                statusLabels?.forEach(label => {
+                    label.innerText = "Multiple Statuses"; // or leave unchanged
+                    label.style.display = "inline-block";
+                });
+                orderHeader?.classList.add("has-status");
+            } else {
+                statusLabels?.forEach(label => label.style.display = "none");
+                orderHeader?.classList.remove("has-status");
+            }
+        }
+    }
+});
+</script>
+
+
+

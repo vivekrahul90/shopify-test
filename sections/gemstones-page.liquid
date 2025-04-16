@@ -1,0 +1,328 @@
+{% schema %}
+{
+  "name": "Gemstone Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Our Gemstone Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "range",
+      "id": "cards_per_row_mobile",
+      "label": "Cards per Row on Mobile",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "cards_per_row_desktop",
+      "label": "Cards per Row on Desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Gemstone Collection",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  /* General Section Styling */
+  #product-section {
+    padding: 30px 0;
+    background-color: #f8f8f8;
+  }
+
+  /* Section Title */
+  #product-section h2 {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  /* Filters Container */
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 0 15px;
+  }
+
+  #filters select {
+    padding: 8px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #fff;
+    appearance: none;
+    cursor: pointer;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+
+  #filters select:focus {
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* General Product Cards */
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    height: 100%;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+  }
+
+  .product-card .product-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  .product-card .product-content h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 10px 0;
+    color: #333;
+    text-align: center;
+  }
+
+  .product-card .product-content p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 15px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .product-card .trust-badge {
+    display: inline-block;
+    background: #f1c40f;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+  }
+
+  /* Tags Display */
+  .product-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .product-card .tags span {
+    background: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 15px;
+  }
+
+  /* Responsive Layout */
+  .collection-grid-simple__grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.cards_per_row_mobile }}, 1fr);
+    gap: 15px;
+    padding: 0 15px;
+  }
+
+  /* Adjust for Desktop Layout */
+  @media (min-width: 768px) {
+    .collection-grid-simple__grid {
+      grid-template-columns: repeat({{ section.settings.cards_per_row_desktop }}, 1fr);
+      gap: 20px;
+      padding: 0 20px;
+    }
+    
+    #filters select {
+      width: 200px;
+    }
+  }
+
+  /* Filters on Mobile */
+  @media (max-width: 767px) {
+    #filters {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    #filters select {
+      width: 100%;
+      font-size: 0.9rem;
+      padding: 8px 10px;
+    }
+  }
+{% endstyle %}
+
+<div id="product-section">
+  {% if section.settings.section_title != blank %}
+    <h2>{{ section.settings.section_title }}</h2>
+  {% endif %}
+
+  <!-- Filters Container -->
+  <div id="filters">
+    <select id="filter-name">
+      <option value="">Filter by Name</option>
+      {% assign coll = collections[section.settings.collection] %}
+      {% for product in coll.products %}
+        <option value="{{ product.title | downcase }}">{{ product.title }}</option>
+      {% endfor %}
+    </select>
+    
+    <select id="filter-planet">
+      <option value="">Filter by Planet</option>
+      {% assign planets = "" | split: "," %}
+      {% for product in coll.products %}
+        {% if product.metafields.custom.planet %}
+          {% unless planets contains product.metafields.custom.planet %}
+            {% assign planets = planets | push: product.metafields.custom.planet %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+      {% for planet in planets %}
+        <option value="{{ planet | downcase }}">{{ planet }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="filter-zodiac">
+      <option value="">Filter by Zodiac</option>
+      {% assign zodiacs = "" | split: "," %}
+      {% for product in coll.products %}
+        {% if product.metafields.custom.zodiac %}
+          {% unless zodiacs contains product.metafields.custom.zodiac %}
+            {% assign zodiacs = zodiacs | push: product.metafields.custom.zodiac %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+      {% for zodiac in zodiacs %}
+        <option value="{{ zodiac | downcase }}">{{ zodiac }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="filter-numerology">
+      <option value="">Filter by Numerology</option>
+      {% assign numerologies = "" | split: "," %}
+      {% for product in coll.products %}
+        {% if product.metafields.custom.numerology %}
+          {% unless numerologies contains product.metafields.custom.numerology %}
+            {% assign numerologies = numerologies | push: product.metafields.custom.numerology %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+      {% for number in numerologies %}
+        <option value="{{ number }}">{{ number }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Product Cards -->
+  <div class="collection-grid-simple__grid">
+    {% assign coll = collections[section.settings.collection] %}
+    {% for product in coll.products %}
+      <div class="product-card" data-title="{{ product.title | downcase }}" data-planet="{{ product.metafields.custom.planet | downcase }}" data-zodiac="{{ product.metafields.custom.zodiac | downcase }}" data-numerology="{{ product.metafields.custom.numerology }}">
+        <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+        <div class="product-content">
+          <h2>{{ product.title }}</h2>
+          <p>{{ product.description | truncatewords: 20 }}</p>
+          {% if product.metafields.custom.trust_badge %}
+            <div class="trust-badge">{{ product.metafields.custom.trust_badge }}</div>
+          {% endif %}
+          <!-- Display Product Tags -->
+          <div class="tags">
+            {% for tag in product.tags %}
+              <span>{{ tag }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const filters = document.querySelectorAll('#filters select');
+  
+  // Function to filter products based on selected filters
+  function applyFilters() {
+    const nameFilter = document.getElementById("filter-name").value.toLowerCase();
+    const planetFilter = document.getElementById("filter-planet").value.toLowerCase();
+    const zodiacFilter = document.getElementById("filter-zodiac").value.toLowerCase();
+    const numerologyFilter = document.getElementById("filter-numerology").value;
+
+    document.querySelectorAll('.product-card').forEach(card => {
+      const title = card.dataset.title || "";
+      const planet = card.dataset.planet || "";
+      const zodiac = card.dataset.zodiac || "";
+      const numerology = card.dataset.numerology || "";
+
+      const nameMatch = nameFilter === "" || title.includes(nameFilter);
+      const planetMatch = planetFilter === "" || planet.includes(planetFilter);
+      const zodiacMatch = zodiacFilter === "" || zodiac.includes(zodiacFilter);
+      const numerologyMatch = numerologyFilter === "" || numerology.includes(numerologyFilter);
+
+      if (nameMatch && planetMatch && zodiacMatch && numerologyMatch) {
+        card.style.display = "flex";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+
+  // Event listeners for filtering
+  filters.forEach(filter => {
+    filter.addEventListener("change", applyFilters);
+  });
+
+  // Initialize filters on page load
+  applyFilters();
+});
+</script>

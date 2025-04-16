@@ -1,0 +1,1662 @@
+{% comment %}
+  product-quiz.liquid
+  This section handles the multi-step quiz for personalized product recommendations based on Rashi.
+{% endcomment %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() { AOS.init(); });
+</script>
+
+<div class="quiz-container">
+  <!-- Preloader (Hidden Initially) -->
+  <div id="preloader-container">
+    <img id="preloader-image" src="{{ 'astro-preloader.png' | asset_url }}" alt="Loading">
+    <p id="loading-text">Analysing your Kundli...</p>
+  </div>
+
+  <!-- Progress Indicator and Back Button Container -->
+  <div class="progress-back-container">
+    <!-- Back Button -->
+    <button id="global-back-button" class="btn-back" aria-label="Go Back" style="display: none;">&#10094;</button>
+    <!-- Progress Indicator -->
+    <div class="progress-indicator" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- Page 1: Introduction -->
+  <div class="page-1" id="page-1">
+    <div class="spacing-div"></div>
+    <img
+      src="{{ settings.quiz_banner_image | default: 'default_quiz_banner.png' | asset_url }}"
+      alt="Rashi Quiz"
+      class="quiz-image"
+    >
+    <div class="spacing-div"></div>
+    <h4 data-aos="fade-left">GET A BRACELET THAT'S TRULY YOURS, BASED ON YOUR KUNDLI</h4>
+    <br>
+    <div class="quiz-text-page1" data-aos="fade-left">
+      <p class="subheadings">
+        Just answer 2 simple questions, and Astrotalk AI will suggest the perfect bracelet for you.
+      </p>
+    </div>
+
+    <div class="button-container" data-aos="fade-left">
+      <!-- Primary Button -->
+      <button id="start-quiz" class="btn">START</button>
+      <div class="spacing-div"></div>
+    </div>
+  </div>
+
+  <!-- Page 2: Date and Time of Birth -->
+  <div class="page-2" id="page-2" style="display: none;">
+    <br>
+    <h4 data-aos="fade-left">ENTER YOUR BIRTH DATE AND TIME</h4>
+    <p class="subheadings">
+      Your birth date and time are essential for creating your Kundli and providing accurate suggestions.
+    </p>
+    <div class="spacing-div"></div>
+    <div class="form-group">
+      <div class="input-group" data-aos="fade-left">
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" required class="input-field" max="{{ 'now' | date: '%Y-%m-%d' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="input-group" data-aos="fade-left">
+        <label for="tob">Time of Birth:</label>
+        <input type="time" id="tob" required class="input-field">
+      </div>
+    </div>
+    <!-- Checkbox for missing TOB -->
+    <div class="form-group">
+      <div class="checkbox-group" data-aos="fade-left">
+        <input type="checkbox" id="no-tob" class="checkbox-field">
+        <label for="no-tob"> I don't have my time of birth</label>
+      </div>
+    </div>
+    <div class="spacing-div"></div>
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons" data-aos="fade-left">
+      <!-- Primary Button -->
+      <button id="submit-dob" class="btn">NEXT</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Problem Selection -->
+  <div class="page-3" id="page-3" style="display: none;">
+    <h4>SELECT YOUR PROBLEM</h4>
+    <p class="subheadings">
+      Choose the most prominent issue, and our AI will suggest gemstone bracelets to boost positivity.
+    </p>
+    <br>
+    <div class="problem-buttons" data-aos="fade-left">
+      <!-- Problem Buttons as Primary Buttons -->
+      <button class="btn" data-problem="love">
+        <span>Love & Relationship Issues</span>
+      </button>
+      <button class="btn" data-problem="money">
+        <span>Financial Issues</span>
+      </button>
+      <button class="btn" data-problem="career">
+        <span>Career & Business Issues</span>
+      </button>
+      <button class="btn" data-problem="health">
+        <span>Health Issues</span>
+      </button>
+    </div>
+    <div class="spacing-div"></div>
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <!-- Primary Button -->
+      <button id="submit-problem" class="btn">SUBMIT</button>
+    </div>
+  </div>
+
+  <!-- Page 4: Product Recommendation -->
+  <div class="page-4" id="page-4" style="display: none;">
+    <h4 class="text-final-page">Your Personalized Gemstone Bracelet</h4>
+    <p class="subheadings">This bracelet is tailored to align with your unique energy and goals.</p>
+    <!-- Horizontally Scrollable Container for Product Cards -->
+    <div id="recommended-products-container" class="products-scroller">
+      <!-- Three Product Cards will dynamically load here -->
+    </div>
+    <div class="recommendation-actions">
+      <!-- Secondary Button -->
+      <button id="retake-quiz" class="btn btn-secondary">START OVER</button>
+    </div>
+  </div>
+</div>
+
+<!-- Font Awesome CDN for Icons -->
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Updated Product Recommendations Mapping with three products per problem
+    const PRODUCT_RECOMMENDATIONS = {
+      meshAries: {
+        love: [
+          { productId: "9437338173737", productHandle: "loveattractionbracelet" },
+          { productId: "9437341843753", productHandle: "rosequartzchipsbracelet" },
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" }
+        ],
+        money: [
+          { productId: "9500370403625", productHandle: "raw-pyrite-bracelet" },
+          { productId: "9437341385001", productHandle: "dhanrudrakshabracelet" },
+          { productId: "9470901354793", productHandle: "money-magnet-bracelet-cart-upsell" }
+        ],
+        career: [
+          { productId: "9437330964777", productHandle: "tigereyebracelet" },
+          { productId: "9437338239273", productHandle: "chakrabalancingbracelet" },
+          { productId: "9437330506025", productHandle: "7mukhirudrakshabracelet" }
+        ],
+        health: [
+          { productId: "9437338337577", productHandle: "anxietyrelieverbracelet" },
+          { productId: "9437339517225", productHandle: "goodhealthsilverbracelet" },
+          { productId: "9437334470953", productHandle: "blacktourmalinebracelet" }
+        ]
+      },
+
+      vrishabhaTaurus: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437340959017", productHandle: "rosequartzwithamethystbracelet" },
+          { productId: "9437341024553", productHandle: "rosequartzwithevileyebracelet" }
+        ],
+        money: [
+          { productId: "9462937551145", productHandle: "dhan-yog-bracelet" },
+          { productId: "9489733321001", productHandle: "money-protector-bracelet" },
+          { productId: "9437341319465", productHandle: "wealthombracelet" }
+        ],
+        career: [
+          { productId: "9496354947369", productHandle: "gold-plated-beaded-rudraksha-bracelet" },
+          { productId: "9437330637097", productHandle: "amethystbracelet" },
+          { productId: "9437331718441", productHandle: "greenaventurinewithtulsibracelet" }
+        ],
+        health: [
+          { productId: "9437330506025", productHandle: "7mukhirudrakshabracelet" },
+          { productId: "9437334798633", productHandle: "redjasperbracelet" },
+          { productId: "9437333324073", productHandle: "naturalsphatikcrystalbracelet" }
+        ]
+      },
+
+      mithunaGemini: {
+        love: [
+          { productId: "9462937420073", productHandle: "love-relationship-bracelet" },
+          { productId: "9437341745449", productHandle: "rosequartzheartbracelet" },
+          { productId: "9437341253929", productHandle: "rosequartzwithevileyehamsabracelet" }
+        ],
+        money: [
+          { productId: "9489733321001", productHandle: "money-protector-bracelet" },
+          { productId: "9489736859945", productHandle: "money-shield-bracelet" },
+          { productId: "9500370403625", productHandle: "raw-pyrite-bracelet" }
+        ],
+        career: [
+          { productId: "9481766699305", productHandle: "the-money-luck-combo" },
+          { productId: "9437338796329", productHandle: "concentration-focusbracelet" },
+          { productId: "9437334602025", productHandle: "lapislazulibracelet" }
+        ],
+        health: [
+          { productId: "9437330637097", productHandle: "amethystbracelet" },
+          { productId: "9437339255081", productHandle: "evileyebracelet" },
+          { productId: "9437338992937", productHandle: "harmonybracelet" }
+        ]
+      },
+
+      karkaCancer: {
+        love: [
+          { productId: "9437338173737", productHandle: "loveattractionbracelet" },
+          { productId: "9437338173737", productHandle: "loveattractionbracelet" },
+          { productId: "9437341843753", productHandle: "rosequartzchipsbracelet" }
+        ],
+        money: [
+          { productId: "9437338468649", productHandle: "moneymagnetbracelet" },
+          { productId: "9462937551145", productHandle: "dhan-yog-bracelet" },
+          { productId: "9532594389289", productHandle: "raw-pyrite-bracelet-1" }
+        ],
+        career: [
+          { productId: "9481771614505", productHandle: "the-money-focus-combo" },
+          { productId: "9437338239273", productHandle: "chakrabalancingbracelet" },
+          { productId: "9437330506025", productHandle: "7mukhirudrakshabracelet" }
+        ],
+        health: [
+          { productId: "9437341122857", productHandle: "evil-eye-protection-bracelet" },
+          { productId: "9458958270761", productHandle: "moonstone-bracelet" },
+          { productId: "9437339681065", productHandle: "silversouthseapearlbracelet" }
+        ]
+      },
+
+      simhaLeo: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437341221161", productHandle: "lovestressrelieverbracelet" },
+          { productId: "9437341253929", productHandle: "rosequartzwithevileyehamsabracelet" }
+        ],
+        money: [
+          { productId: "9462937551145", productHandle: "dhan-yog-bracelet" },
+          { productId: "9437341319465", productHandle: "wealthombracelet" },
+          { productId: "9489733321001", productHandle: "money-protector-bracelet" }
+        ],
+        career: [
+          { productId: "9437330964777", productHandle: "tigereyebracelet" },
+          { productId: "9437331718441", productHandle: "greenaventurinewithtulsibracelet" },
+          { productId: "9437338239273", productHandle: "chakrabalancingbracelet" }
+        ],
+        health: [
+          { productId: "9492902936873", productHandle: "hanuman-chalisa-pendant" },
+          { productId: "9437340270889", productHandle: "devinerudrakshalavabracelet" },
+          { productId: "9437341122857", productHandle: "evileyeprotectorbraceletmen" }
+        ]
+      },
+
+      kanyaVirgo: {
+        love: [
+          { productId: "9462937420073", productHandle: "love-relationship-bracelet" },
+          { productId: "9437340959017", productHandle: "rosequartzwithamethystbracelet" },
+          { productId: "9437341843753", productHandle: "rosequartzchipsbracelet" }
+        ],
+        money: [
+          { productId: "9437338468649", productHandle: "moneymagnetbracelet" },
+          { productId: "9437341385001", productHandle: "dhanrudrakshabracelet" },
+          { productId: "9437335552297", productHandle: "greenjadetulsibracelet" }
+        ],
+        career: [
+          { productId: "9481771614505", productHandle: "the-money-focus-combo" },
+          { productId: "9437338796329", productHandle: "concentration-focusbracelet" },
+          { productId: "9437339058473", productHandle: "positivityattractionbracelet" }
+        ],
+        health: [
+          { productId: "9437335781673", productHandle: "5mukhirudrakshabracelet" },
+          { productId: "9437340401961", productHandle: "evileyebutterflypendant-braceletcombo" },
+          { productId: "9437339517225", productHandle: "goodhealthsilverbracelet" }
+        ]
+      },
+
+      tulaLibra: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437341745449", productHandle: "rosequartzheartbracelet" },
+          { productId: "9437338173737", productHandle: "loveattractionbracelet" }
+        ],
+        money: [
+          { productId: "9437341319465", productHandle: "wealthombracelet" },
+          { productId: "9532594389289", productHandle: "raw-pyrite-bracelet-1" },
+          { productId: "9437334176041", productHandle: "goldenpyritebracelet" }
+        ],
+        career: [
+          { productId: "9500370403625", productHandle: "raw-pyrite-bracelet" },
+          { productId: "9437334602025", productHandle: "lapislazulibracelet" },
+          { productId: "9437338894633", productHandle: "luckycharmbracelet" }
+        ],
+        health: [
+          { productId: "9437341122857", productHandle: "evil-eye-protection-bracelet" },
+          { productId: "9437334798633", productHandle: "redjasperbracelet" },
+          { productId: "9437339189545", productHandle: "positiveemotionsbracelet" }
+        ]
+      },
+
+      vrishchikaScorpio: {
+        love: [
+          { productId: "9462937420073", productHandle: "love-relationship-bracelet" },
+          { productId: "9437341843753", productHandle: "rosequartzchipsbracelet" },
+          { productId: "9437341221161", productHandle: "lovestressrelieverbracelet" }
+        ],
+        money: [
+          { productId: "9437338468649", productHandle: "moneymagnetbracelet" },
+          { productId: "9500370403625", productHandle: "raw-pyrite-bracelet" },
+          { productId: "9489736859945", productHandle: "money-shield-bracelet" }
+        ],
+        career: [
+          { productId: "9437338796329", productHandle: "concentration-focusbracelet" },
+          { productId: "9437330964777", productHandle: "tigereyebracelet" },
+          { productId: "9437330506025", productHandle: "7mukhirudrakshabracelet" }
+        ],
+        health: [
+          { productId: "9437341122857", productHandle: "evil-eye-protection-bracelet" },
+          { productId: "9437338337577", productHandle: "anxietyrelieverbracelet" },
+          { productId: "9437333324073", productHandle: "naturalsphatikcrystalbracelet" }
+        ]
+      },
+
+      dhanuSagittarius: {
+        love: [
+          { productId: "9462937420073", productHandle: "love-relationship-bracelet" },
+          { productId: "9437340959017", productHandle: "rosequartzwithamethystbracelet" },
+          { productId: "9437341024553", productHandle: "rosequartzwithevileyebracelet" }
+        ],
+        money: [
+          { productId: "9481724133673", productHandle: "money-health-combo" },
+          { productId: "9470901354793", productHandle: "money-magnet-bracelet-cart-upsell" },
+          { productId: "9437341385001", productHandle: "dhanrudrakshabracelet" }
+        ],
+        career: [
+          { productId: "9496334762281", productHandle: "gold-plated-om-pendant-1" },
+          { productId: "9437338894633", productHandle: "luckycharmbracelet" },
+          { productId: "9437339058473", productHandle: "positivityattractionbracelet" }
+        ],
+        health: [
+          { productId: "9437330637097", productHandle: "amethystbracelet" },
+          { productId: "9437339517225", productHandle: "goodhealthsilverbracelet" },
+          { productId: "9437338992937", productHandle: "harmonybracelet" }
+        ]
+      },
+
+      makaraCapricorn: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437341253929", productHandle: "rosequartzwithevileyehamsabracelet" },
+          { productId: "9437338173737", productHandle: "loveattractionbracelet" }
+        ],
+        money: [
+          { productId: "9437338468649", productHandle: "moneymagnetbracelet" },
+          { productId: "9462937551145", productHandle: "dhan-yog-bracelet" },
+          { productId: "9437341319465", productHandle: "wealthombracelet" }
+        ],
+        career: [
+          { productId: "9437334470953", productHandle: "blacktourmalinebracelet" },
+          { productId: "9437338239273", productHandle: "chakrabalancingbracelet" },
+          { productId: "9437331718441", productHandle: "greenaventurinewithtulsibracelet" }
+        ],
+        health: [
+          { productId: "9437341122857", productHandle: "evil-eye-protection-bracelet" },
+          { productId: "9437334470953", productHandle: "blacktourmalinebracelet" },
+          { productId: "9437339255081", productHandle: "evileyebracelet" }
+        ]
+      },
+
+      kumbhAquarius: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437341221161", productHandle: "lovestressrelieverbracelet" },
+          { productId: "9437340959017", productHandle: "rosequartzwithamethystbracelet" }
+        ],
+        money: [
+          { productId: "9500370403625", productHandle: "raw-pyrite-bracelet" },
+          { productId: "9489733321001", productHandle: "money-protector-bracelet" },
+          { productId: "9470901354793", productHandle: "money-magnet-bracelet-cart-upsell" }
+        ],
+        career: [
+          { productId: "9437330964777", productHandle: "tigereyebracelet" },
+          { productId: "9437338894633", productHandle: "luckycharmbracelet" },
+          { productId: "9437334602025", productHandle: "lapislazulibracelet" }
+        ],
+        health: [
+          { productId: "9437330506025", productHandle: "7mukhirudrakshabracelet" },
+          { productId: "9437331783977", productHandle: "blackagatewithtulsibracelet" },
+          { productId: "9437338337577", productHandle: "anxietyrelieverbracelet" }
+        ]
+      },
+
+      meenaPisces: {
+        love: [
+          { productId: "9437333979433", productHandle: "rosequartzbraceletwithbuddha" },
+          { productId: "9437331128617", productHandle: "rosequartzwithtulsibracelet" },
+          { productId: "9437341843753", productHandle: "rosequartzchipsbracelet" }
+        ],
+        money: [
+          { productId: "9462937551145", productHandle: "dhan-yog-bracelet" },
+          { productId: "9489742594345", productHandle: "money-magnet-bracelet-men" },
+          { productId: "9532594389289", productHandle: "raw-pyrite-bracelet-1" }
+        ],
+        career: [
+          { productId: "9437330637097", productHandle: "amethystbracelet" },
+          { productId: "9437339058473", productHandle: "positivityattractionbracelet" },
+          { productId: "9437331718441", productHandle: "greenaventurinewithtulsibracelet" }
+        ],
+        health: [
+          { productId: "9437333815593", productHandle: "sevenchakraunisexbracelet" },
+          { productId: "9437334470953", productHandle: "blacktourmalinebracelet" },
+          { productId: "9437339517225", productHandle: "goodhealthsilverbracelet" }
+        ]
+      }
+    };
+
+    // Default Products Array (using the same product thrice)
+    const DEFAULT_PRODUCTS = [
+      { productId: "8170595188913", productHandle: "raw-pyrite-bracelet" },
+      { productId: "8170595188913", productHandle: "raw-pyrite-bracelet" },
+      { productId: "8170595188913", productHandle: "raw-pyrite-bracelet" }
+    ];
+
+    const quizSteps = {
+      currentStep: 1, // Initialize current step
+
+      init: function() {
+        // Event Listeners for Primary Buttons
+        document.getElementById('start-quiz').addEventListener('click', () => this.startQuiz());
+        document.getElementById('submit-dob').addEventListener('click', () => this.submitDOB());
+        document.getElementById('submit-problem').addEventListener('click', () => this.submitProblem());
+        document.getElementById('retake-quiz').addEventListener('click', () => this.retakeQuiz());
+
+        // Event Listener for Global Back Button
+        document.getElementById('global-back-button').addEventListener('click', () => this.navigateBack());
+
+        // Add event listeners to problem buttons
+        document.querySelectorAll('.btn[data-problem]').forEach(button => {
+          button.addEventListener('click', (e) => {
+            this.selectProblem(e.currentTarget);
+            this.autoNavigateAfterSelection();
+          });
+        });
+        console.log('Quiz initialized and event listeners attached.');
+
+        // Initialize progress
+        this.updateProgressIndicator(this.currentStep);
+        // Hide progress bar initially (since Page 1 is active)
+        document.querySelector('.progress-indicator').style.display = 'none';
+        console.log('Progress bar hidden on initialization.');
+      },
+
+      showPreloader: function() {
+      const preloader = document.getElementById('preloader-container');
+      const loadingText = document.getElementById('loading-text');
+      // Reset loading text to default
+      loadingText.textContent = "Analyzing your Kundli...";
+      preloader.style.opacity = '1';
+      preloader.style.pointerEvents = 'all';
+        
+      const messages = [
+        "Analysing your Kundli...",
+        "Understanding Your Issues...",
+        "Finding best gemstones...",
+        "Almost done..."
+      ];
+
+      preloader.style.opacity = '1';
+      preloader.style.pointerEvents = 'all';
+
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index >= messages.length) {
+          clearInterval(interval);
+        } else {
+          loadingText.textContent = messages[index];
+          index++;
+        }
+      }, 1000);
+
+      setTimeout(() => {
+        preloader.style.opacity = '0';
+        preloader.style.pointerEvents = 'none';
+        this.showPage(3, 4);
+        this.updateProgressIndicator(4);
+        this.recommendProducts();
+      }, 5000);
+    },
+
+      startQuiz: function() {
+        console.log('Start Quiz button clicked.');
+        clevertap.event.push("Product Quiz - Step 1 Started");
+        this.showPage(1, 2);
+        AOS.refreshHard();
+      },
+
+      submitDOB: function() {
+        console.log('Submit DOB button clicked.');
+        const dob = document.getElementById('dob').value;
+        const tob = document.getElementById('tob').value;
+        const noTobChecked = document.getElementById('no-tob').checked;
+
+        if (dob && (tob ||noTobChecked)) {
+          const rashiText = this.calculateRashi(dob, tob);
+          const rashiKey = this.mapRashiToCamelCase(rashiText);
+          console.log(`Calculated Rashi: ${rashiText}, Mapped Key: ${rashiKey}`);
+
+          sessionStorage.setItem('rashi', rashiKey);
+
+          // ----------------------------------------------
+          // CleverTap EVENT for Step 2 (DOB/TOB Submitted)
+          clevertap.event.push("Product Quiz - Step 2 DOB Submitted", {
+            date_of_birth: dob,
+            time_of_birth: tob,
+            rashi_calculated: rashiText
+          });
+          // ----------------------------------------------
+
+          this.showPage(2, 3);
+          AOS.refreshHard();
+          this.updateProgressIndicator(3);
+        } else {
+          alert("Please enter both Date of Birth or check the 'I don't have my time of birth' checkbox.");
+          console.log('DOB or TOB not entered.');
+        }
+      },
+
+      selectProblem: function(selectedButton) {
+        console.log(`Problem selected: ${selectedButton.getAttribute('data-problem')}`);
+        // Remove active state from all buttons
+        document.querySelectorAll('.btn[data-problem]').forEach(btn => {
+          btn.classList.remove('active');
+        });
+
+        // Add active state to selected button
+        selectedButton.classList.add('active');
+
+        // Store selected problem
+        const problem = selectedButton.getAttribute('data-problem');
+        sessionStorage.setItem('problem', problem);
+
+        // ----------------------------------------------
+        // CleverTap EVENT for Problem Selection
+        // (We fire this immediately upon selection)
+        clevertap.event.push("Product Quiz - Step 3 Problem Selected", {
+          problem_chosen: problem
+        });
+        // ----------------------------------------------
+      },
+
+      autoNavigateAfterSelection: function() {
+        const problem = sessionStorage.getItem('problem');
+        if (problem) {
+          this.showPreloader();
+          AOS.refreshHard();
+          this.updateProgressIndicator(4);
+          this.recommendProducts(); // Updated function to recommend multiple products
+        }
+      },
+
+      submitProblem: function() {
+        console.log('Submit Problem button clicked.');
+        const problem = sessionStorage.getItem('problem');
+
+        if (problem) {
+          this.showPreloader();
+          this.showPage(3, 4);
+          this.updateProgressIndicator(4);
+          this.recommendProducts(); // Updated function to recommend multiple products
+        } else {
+          alert("Please select a primary challenge.");
+          console.log('No problem selected.');
+        }
+      },
+
+      calculateRashi: function(dob, tob) {
+        console.log('Calculating Rashi...');
+        const birthDate = new Date(dob);
+        const month = birthDate.getMonth() + 1;
+        const day = birthDate.getDate();
+
+        const rashiMappings = {
+          "Mesh (Aries)": [[3, 21], [4, 20]],
+          "Vrishabha (Taurus)": [[4, 21], [5, 21]],
+          "Mithuna (Gemini)": [[5, 22], [6, 21]],
+          "Karka (Cancer)": [[6, 22], [7, 22]],
+          "Simha (Leo)": [[7, 23], [8, 22]],
+          "Kanya (Virgo)": [[8, 23], [9, 22]],
+          "Tula (Libra)": [[9, 23], [10, 22]],
+          "Vrishchika (Scorpio)": [[10, 23], [11, 21]],
+          "Dhanu (Sagittarius)": [[11, 22], [12, 21]],
+          "Makara (Capricorn)": [[12, 22], [1, 19]],
+          "Kumbh (Aquarius)": [[1, 20], [2, 18]],
+          "Meena (Pisces)": [[2, 19], [3, 20]]
+        };
+
+        for (const [rashi, [[startMonth, startDay], [endMonth, endDay]]] of Object.entries(rashiMappings)) {
+          if (
+            (month === startMonth && day >= startDay) ||
+            (month === endMonth && day <= endDay)
+          ) {
+            return rashi;
+          }
+        }
+
+        console.log('Default Rashi assigned: Mesh (Aries)');
+        return "Mesh (Aries)"; // Default
+      },
+
+      mapRashiToCamelCase: function(rashiText) {
+        // Map the textual Rashi to our camelCase keys
+        const mapping = {
+          "Mesh (Aries)": "meshAries",
+          "Vrishabha (Taurus)": "vrishabhaTaurus",
+          "Mithuna (Gemini)": "mithunaGemini",
+          "Karka (Cancer)": "karkaCancer",
+          "Simha (Leo)": "simhaLeo",
+          "Kanya (Virgo)": "kanyaVirgo",
+          "Tula (Libra)": "tulaLibra",
+          "Vrishchika (Scorpio)": "vrishchikaScorpio",
+          "Dhanu (Sagittarius)": "dhanuSagittarius",
+          "Makara (Capricorn)": "makaraCapricorn",
+          "Kumbh (Aquarius)": "kumbhAquarius",
+          "Meena (Pisces)": "meenaPisces"
+        };
+
+        return mapping[rashiText] || "meshAries"; // Default to meshAries if not found
+      },
+
+      // Updated function to recommend multiple products
+     async recommendProducts() {
+  console.log('Recommending products based on Rashi and Problem.');
+  const rashi = sessionStorage.getItem('rashi');
+  const problem = sessionStorage.getItem('problem');
+
+  let productsArray = [];
+
+  // Check if rashi and problem exist in the recommendations
+  if (PRODUCT_RECOMMENDATIONS[rashi] && PRODUCT_RECOMMENDATIONS[rashi][problem]) {
+    productsArray = PRODUCT_RECOMMENDATIONS[rashi][problem];
+    console.log(`Retrieved ${productsArray.length} recommended products:`, productsArray);
+  } else {
+    productsArray = DEFAULT_PRODUCTS;
+    console.log('Using default product recommendations.');
+  }
+
+  // ----------------------------------------------
+  // CleverTap EVENT for Step 4 (Recommendations Shown)
+  clevertap.event.push("Product Quiz - Step 4 Recommendations Shown", {
+    rashi,
+    problem,
+    product_count: productsArray.length
+  });
+  // ----------------------------------------------
+
+  // Get the container for recommended products
+  const productContainer = document.getElementById('recommended-products-container');
+  productContainer.innerHTML = ''; // Clear any existing content
+
+  // ONLY show the first product in productsArray
+  if (productsArray.length > 0) {
+    const { productHandle } = productsArray[0]; // first product
+    try {
+      const productData = await fetchProductData(productHandle);
+      if (!productData) {
+        throw new Error("No product data returned for first product.");
+      }
+
+      // Build a product card for that single item
+      const productCardHTML = buildProductCardHTML(productData);
+      productContainer.innerHTML = productCardHTML;
+
+      console.log(`1 recommended product displayed: ${productHandle}`);
+    } catch (error) {
+      console.error(`Failed to load product data for ${productHandle}:`, error);
+    }
+  } else {
+    console.error("No recommended products available.");
+  }
+},
+
+
+      retakeQuiz: function() {
+        console.log('Retake Quiz initiated.');
+
+        // CleverTap EVENT for Retake
+        clevertap.event.push("Product Quiz - Retake");
+        // ----------------------------------------------
+
+        // Clear stored Rashi and problem from sessionStorage
+        sessionStorage.removeItem('rashi');
+        sessionStorage.removeItem('problem');
+
+        // Hide all pages
+        this.hideAllPages();
+
+        // Reset any active states on problem buttons
+        document.querySelectorAll('.btn[data-problem]').forEach(btn => {
+          btn.classList.remove('active');
+        });
+
+        // Reset input fields
+        document.getElementById('dob').value = '';
+        document.getElementById('tob').value = '';
+
+        // Reset progress indicator
+        this.updateProgressIndicator(1);
+
+        // Show the introduction page
+        this.showPage(1, 1);
+        console.log('Quiz has been reset to the introduction page.');
+      },
+
+      navigateBack: function() {
+        console.log('Back button clicked.');
+        switch(this.currentStep) {
+          case 2:
+            this.showPage(2, 1);
+            this.updateProgressIndicator(1);
+            break;
+          case 3:
+            this.showPage(3, 2);
+            this.updateProgressIndicator(2);
+            break;
+          case 4:
+            this.showPage(4, 3);
+            this.updateProgressIndicator(3);
+            break;
+          default:
+            console.log('Already at the first step.');
+        }
+      },
+
+      // ---------------------------------------------
+      // Fade-in / Fade-out animation
+      // ---------------------------------------------
+      showPage: function(current, target) {
+        const currentPageEl = document.getElementById(`page-${current}`);
+        const targetPageEl = document.getElementById(`page-${target}`);
+
+        // Fade out the current page
+        currentPageEl.style.transition = 'opacity 0.5s ease-in-out';
+        currentPageEl.style.opacity = '0';
+
+        // After fade-out completes, hide current, show target, fade in target
+        setTimeout(() => {
+          currentPageEl.style.display = 'none';
+          currentPageEl.style.opacity = '1'; // reset for next show
+
+          // Display the new page
+          targetPageEl.style.display = 'block';
+          targetPageEl.style.opacity = '0';
+          targetPageEl.style.transition = 'opacity 0.5s ease-in-out';
+
+          // Start fade in
+          setTimeout(() => {
+            targetPageEl.style.opacity = '1';
+          }, 10);
+
+          this.updateProgressIndicator(target);
+          this.currentStep = target;
+
+          // Toggle back button visibility
+          if (target === 1) {
+            document.getElementById('global-back-button').style.display = 'none';
+            document.querySelector('.progress-indicator').style.display = 'none'; // Hide progress bar on Page 1
+            document.querySelector('.header-design').style.display = 'block';
+            console.log('Progress bar hidden on Page 1.');
+          } else {
+            document.getElementById('global-back-button').style.display = 'flex';
+            document.querySelector('.progress-indicator').style.display = 'block'; // Show progress bar on other pages
+            document.querySelector('.header-design').style.display = 'none';
+            console.log(`Progress bar shown on Page ${target}.`);
+          }
+
+        }, 500);
+      },
+
+      hideAllPages: function() {
+        for (let i = 1; i <=4; i++) {
+          document.getElementById(`page-${i}`).style.display = 'none';
+          document.getElementById(`page-${i}`).style.opacity = '1'; // Reset
+        }
+      },
+
+      updateProgressIndicator: function(step) {
+        const totalSteps = 4; // Update this if the number of steps changes
+        const progressPercentage = ((step - 1) / (totalSteps - 1)) * 100;
+        const progressBar = document.querySelector('.progress-bar');
+        const progressContainer = document.querySelector('.progress-indicator');
+
+        if (progressBar) {
+            progressBar.style.width = `${progressPercentage}%`;
+            progressContainer.setAttribute('aria-valuenow', progressPercentage);
+        }
+      }
+    };
+
+    // Helper function to strip HTML tags
+    function stripHtml(html) {
+      var tmp = document.createElement("DIV");
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || "";
+    }
+
+    // Add to Cart Function (if needed)
+    function addToCart(variantId) {
+      console.log(`Adding variant ID ${variantId} to cart.`);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Product added to cart:', data);
+        alert('Product added to cart!');
+      })
+      .catch(error => {
+        console.error('Error adding product to cart:', error);
+        alert('Failed to add product to cart.');
+      });
+    }
+
+    // View Product Details Function - Attached to Window
+    window.viewProductDetails = function(productUrl) {
+      console.log(`Viewing product details for URL: ${productUrl}`);
+
+      // ----------------------------------------------
+      // CleverTap EVENT: View Details clicked
+      clevertap.event.push("Product Quiz - View Product Details", {
+        product_url: productUrl
+      });
+      // ----------------------------------------------
+      
+      window.location.href = productUrl; // Enables redirection
+    };
+
+    // Separate function to fetch product data with better error handling
+    async function fetchProductData(handle) {
+      console.log(`Fetching product data for handle: ${handle}`);
+      try {
+        let response = await fetch(`/products/${handle}.js`);
+        if (!response.ok) {
+          console.warn(`Failed to fetch product with handle ${handle}. Trying fallback...`);
+          // Fallback to default product
+          response = await fetch(`/products/${DEFAULT_PRODUCTS[0].productHandle}.js`);
+          if (!response.ok) {
+            throw new Error(`Fallback fetch failed for handle ${DEFAULT_PRODUCTS[0].productHandle}`);
+          }
+        }
+        const productData = await response.json();
+        console.log('Product data fetched successfully:', productData);
+        return productData;
+      } catch (error) {
+        console.error('Error fetching product data:', error);
+        return null;
+      }
+    }
+
+    // Function to build product card HTML
+    function buildProductCardHTML(product) {
+      // Select the first available variant
+      const variant = product.variants[0];
+      if (!variant) {
+        console.warn('No variants found for this product.');
+        return '';
+      }
+
+      // Use the first product image as a fallback
+      const imageUrl = product.images[0] || '';
+      let percentOff = '';
+      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+        percentOff = ` <span class="percent-off">(${Math.round(((variant.compare_at_price - variant.price) / variant.compare_at_price) * 100)}% OFF)</span>`;
+      }
+
+      const productUrl = '/products/' + product.handle;
+
+      // ------------------------------------------------
+      // Show a simple "⭐5" text on the top-right corner of the image
+      // ------------------------------------------------
+      return `
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https:${imageUrl}" alt="${product.title}" class="product-image" loading="lazy">
+            <div class="rating-badge">⭐5</div>
+          </div>
+          <div class="product-details">
+            <h6 class="product-title">${product.title}</h6>
+            <div class="product-price">
+              <span class="current-price">₹${(variant.price / 100).toFixed(2)}</span>
+              ${
+                variant.compare_at_price 
+                ? `<span class="original-price">₹${(variant.compare_at_price / 100).toFixed(2)}</span>${percentOff}` 
+                : ''
+              }
+            </div>
+          </div>
+          <div class="product-actions" x-data="xProductCart()">
+            <form method="post" action="/cart/add" accept-charset="UTF-8" class="form" enctype="multipart/form-data" novalidate data-type="add-to-cart-form" x-ref="product_form">
+              <input type="hidden" name="form_type" value="product">
+              <input type="hidden" name="utf8" value="✓">
+              <input type="hidden" name="id" value="${variant.id}">
+              
+              <!-- Primary Add to Cart Button -->
+              <button 
+                  type="button" 
+                  class="btn atc-btn" 
+                  aria-label="Add to cart"
+                  @click="addToCart($event, true)"
+                  x-intersect.once.margin.200px="Alpine.store('xCartHelper').validateCart();">
+                  ADD TO CART
+              </button>
+            </form>
+            
+            <!-- Secondary Button -->
+            <button class="btn btn-secondary" onclick="viewProductDetails('${productUrl}')">EXPLORE BENEFITS</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize Quiz Steps
+    quizSteps.init();
+    console.log('Quiz Steps initialized.');
+  });
+</script>
+
+<style>
+      /* Import Fonts */
+      @import url('https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&family=Libre+Baskerville&display=swap');
+
+      /* Global Box Sizing */
+      *, *::before, *::after {
+          box-sizing: border-box;
+      }
+
+   /* Preloader Container */
+  #preloader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white overlay */
+    backdrop-filter: blur(10px); /* Blurs the background */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+    /* Rotating Image */
+    #preloader-image {
+    width: 30%;  /* Adjust size as needed */
+    /* height: 50%;  Keep aspect ratio */
+    animation: rotate360 8s linear infinite; /* Rotates continuously */
+  }
+  @media (max-width: 450px) {
+          #preloader-image {
+    width: 60%;  /* Adjust size as needed */
+    /* height: 60%;  Keep aspect ratio */
+    animation: rotate360 8s linear infinite; /* Rotates continuously */
+  }}
+
+
+
+  /* Text Below Image */
+  #loading-text {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+  }
+
+  /* Keyframes for Rotation */
+  @keyframes rotate360 {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+      /* General Styles */
+      .quiz-container {
+          max-width: 100%;
+          margin: 0 auto;
+          padding: 20px;
+          font-family: 'Avenir', sans-serif;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          min-height: 100vh; /* Use min-height instead of fixed height */
+          overflow-y: auto; /* Allows scrolling if content overflows */
+          position: relative; /* To position elements like back buttons */
+
+         /* background: -webkit-linear-gradient(to top, #000C40, #F0F2F0);  /* Chrome 10-25, Safari 5.1-6 */
+        /* background: linear-gradient(to top, #000C40, #F0F2F0);  W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
+        /* background-image: url("https://cdn.shopify.com/s/files/1/0878/4907/4985/files/quiz.bg.png?v=1739345247"); */
+      }
+      .page-2 {
+        background-image: none;
+      }
+
+      .spacing-div{
+        height:5vh;
+      }
+      .quiz-text-page1{
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19.36px;
+        text-align: center;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+        color:#000000;
+        padding-bottom:3rem;
+      }
+      h4{
+        color:#000000;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 24.2px;
+        text-align: center;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+        font-family: 'Avenir', sans-serif;
+      }
+
+      h2, h3 {
+          font-family: 'Libre Baskerville', serif;
+          font-weight: normal;
+          font-size: 1.5rem;
+          color: black;
+          text-align: center;
+          margin-bottom: 20px;
+          font-family: 'Avenir', sans-serif;
+      }
+
+      .highlight {
+          color: #f0df20; /* Changed to a yellow shade */
+          font-weight: bold;
+      }
+      .subheadings{
+
+        font-style: italic;
+        color:#1f1f1f;
+        padding:5px;
+        text-align: center;
+      }
+    .text-final-page{
+      font-size:16px;
+    }
+    .checkbox-field{margin-right: 10px;}
+      /* Updated Base Button Styles */
+      .btn {
+          display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 25px;
+    font-size: 1rem;
+    border-radius: 25px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease; /* Updated transition */
+    box-sizing: border-box;
+    min-width: 100px; /* Ensures buttons have a minimum width */
+    border: 1px solid #e0e0e0; /* Added 1px border */
+    background-color: #f0df20; /* Yellow shade */
+    color: black; /* Black text color */
+    text-decoration: none; /* Removes underline from buttons if any */
+    font-family: 'Avenir', sans-serif; /* Consistent font */
+    font-weight: 700; /* Bold text */
+    box-shadow: 2px 4px 0px #000000;
+    width: 90vw; /* 90% of viewport width */
+    max-width: 250px; /* Prevent excessively large buttons on very wide screens */
+
+      }
+    .atc-btn{
+      border-radius:5px;
+    }
+
+      /* Hover State */
+      .btn:hover {
+          background-color: #FFC107; /* Slightly darker yellow on hover */
+          box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+      }
+
+      /* Active/Pressed State */
+      .btn:active {
+          background-color: #FFA000; /* Even darker yellow when active */
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow when active */
+          transform: translateY(2px); /* Simulate button press */
+      }
+
+      /* Disabled State */
+      .btn:disabled {
+          background-color: #cccccc;
+          color: #666666;
+          cursor: not-allowed;
+          box-shadow: none;
+      }
+
+      /* Focus State for Accessibility */
+      .btn:focus {
+          outline: 3px solid #f0df20; /* Focus outline matching primary color */
+          outline-offset: 2px;
+      }
+
+      /* Secondary Button Styles */
+      .btn-secondary {
+          background-color: transparent; /* No fill */
+          border: 1px solid #C1BAA1; /* Maintained 1px border */
+          color: #202020; /* Text color */
+          box-shadow: none; /* Removed box-shadow */
+          width: 50vw; /* 90% of viewport width */
+          max-width: 400px; /* Prevent excessively large buttons on very wide screens */
+          font-weight: 700; /* Bold text */
+          text-transform: uppercase; /* Capitalize button text */
+          padding: 10px 25px; /* Consistent padding */
+          border-radius: 8px; /* Consistent border radius */
+          transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+          background-color: #f0df20; /* Fill on hover */
+          color: black; /* Text color on hover */
+      }
+
+      .btn-secondary:active {
+          background-color: #FFC107; /* Darker fill on active */
+          color: black; /* Text color on active */
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow when active */
+          transform: translateY(2px); /* Simulate button press */
+      }
+
+      .btn-secondary:focus {
+          outline: 3px solid #f0df20; /* Focus outline matching primary color */
+          outline-offset: 2px;
+      }
+
+      .quiz-image{
+        border-radius:7px;
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: cover;
+      }
+
+      /* Progress and Back Button Container */
+      .progress-back-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between; /* Ensure items are spaced out */
+          width: 100%;
+          max-width: 600px;
+          margin: 15px auto 15px auto; /* Centered with appropriate spacing */
+      }
+
+      /* Progress Indicator Styles */
+      .progress-indicator {
+           position: relative;
+          width: 85vw; /* 85% of viewport width */
+          max-width: 510px;
+          height: 4px;
+          background-color: #e0e0e0;
+          border-radius: 2px;
+          overflow: hidden;
+          flex-grow: 1; /* Ensures the progress bar takes the remaining space */
+      }
+
+      /* Existing Progress Bar */
+      .progress-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 0%; /* Initial width */
+          background-color: #000000; /* Changed to a yellow shade */
+          box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Glowing effect with yellow */
+          transition: width 0.3s ease, background-color 0.3s ease;
+          border-radius: 2px;
+      }
+
+      /* Back Button Styles */
+      .btn-back {
+          background-color: #ffffff; /* White background */
+          color: #000000; /* Black arrow */
+          border: solid 1px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 1.1rem;
+          transition: background-color 0.3s ease, transform 0.3s ease;
+          min-width: 36px;
+          width: 36px;
+          height: 36px;
+          margin-right: 15px; /* Adds spacing between back button and progress bar */
+      }
+
+      .btn-back:hover {
+          background-color: #f0df20; /* Yellow background on hover */
+          transform: scale(1.05);
+      }
+
+      .btn-back:active {
+          background-color: #555555; /* Darker background when active */
+          transform: scale(0.95);
+      }
+
+      .btn-back:focus {
+          outline: 2px solid #ffffff;
+          outline-offset: 2px;
+      }
+
+      /* Navigation Buttons Container */
+      .navigation-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 15px;
+          margin-top: 20px;
+      }
+
+      /* Form Group Styles */
+      .form-group {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start; /* Labels left aligned */
+          margin-bottom: 20px;
+          width: 100%; /* Ensures labels and inputs take full width */
+      }
+
+      .input-group {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start; /* Changed from center to flex-start */
+          width: 100%;
+          max-width: 300px; /* Retain for larger screens */
+          margin: 0 auto; /* Center on larger screens */
+      }
+
+      @media (max-width: 600px) {
+          .input-group {
+              max-width: 100%;
+              margin: 0;
+          }
+
+          .input-group label {
+              font-size: 1rem;
+          }
+
+          .input-group .input-field {
+              font-size: 1rem;
+              padding: 8px;
+          }
+      }
+
+      .input-group label {
+          font-size: 1.1rem;
+          margin-bottom: 5px;
+          color: #333;
+          text-align: left;
+          width: 100%;
+          font-family: 'Avenir', sans-serif;
+          font-weight: 400;
+      }
+
+      .input-group .input-field {
+          width: 100%;
+          padding: 10px;
+          border: 2px solid #eaeaea;
+          border-radius: 5px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          font-family: 'Avenir', sans-serif;
+          font-weight: 400;
+
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+
+          background-color: #eaeaea;
+          color: #000;
+      }
+
+      .input-group .input-field:focus {
+          border-color: #f0df20;
+          box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+          outline: none;
+      }
+
+      .helper-text {
+          font-size: 0.9rem;
+          color: #666;
+          margin-top: 5px;
+          text-align: center;
+      }
+
+      @media (max-width: 600px) {
+        .problem-buttons {
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+      }
+
+      /* Problem Selection Styles */
+      .problem-buttons {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 15px;
+          margin-top: 20px;
+          box-sizing: border-box;
+          justify-content: center;
+      }
+
+      .btn[data-problem] {
+          color: #202020;
+          padding: 12px 12px 12px 12px;
+          background-color: #ffffff;
+          border: 1px solid #131313;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          font-family: 'Avenir', sans-serif;
+          font-weight: 700;
+          width: 100%;
+          max-width: 100vw;
+      }
+
+      .btn[data-problem].active {
+          background-color: #f0df20;
+          color: black;
+          border-color: #f0df20;
+      }
+
+      .btn[data-problem] i {
+          margin-bottom: 10px;
+          font-size: 24px;
+          color: #f0df20;
+      }
+
+      .btn[data-problem] span {
+          font-size: 1.2rem;
+          font-weight: 700;
+      }
+
+      /* Buttons on Page 4 */
+      .recommendation-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          margin-top: 30px;
+          align-items: center;
+      }
+
+      .recommendation-actions .btn-secondary {
+        width: 50%;
+        border-radius: 8px;
+      }
+
+      /* Product Recommendation Styles */
+      .product-card {
+       display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e0e0e0; /* Added 1px border */
+    padding: 15px;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 300px; /*  Adjust as needed */
+    box-sizing: border-box;
+    transition: transform 0.3s ease, border 0.3s ease; /* Updated transition */
+
+    /* Removed box-shadow */
+      }
+
+      .product-image-container {
+        position: relative; /* For absolutely positioned rating badge */
+      }
+
+      /* Updated to top-right corner */
+      .rating-badge {
+        position: absolute;
+        bottom: 22px;
+        left: 6px;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2px 5px;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+
+      .product-image {
+        width: 100%;
+       /* height: 220px; */
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+      }
+
+      .product-details {
+        text-align: center;
+        width: 100%;
+        flex-grow: 1;
+      }
+
+      .product-title {
+        font-family: 'Avenir', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #333;
+        text-transform: uppercase;
+        word-wrap: break-word;
+      }
+
+      .product-price {
+        font-family: 'Avenir', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #000;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+      }
+
+      .original-price {
+        text-decoration: line-through;
+        color: #999;
+        margin-left: 10px;
+        font-size: 0.9rem;
+      }
+
+      .percent-off {
+        color: green;
+        margin-left: 10px;
+        font-size: 0.9rem;
+      }
+
+      .current-price {
+        font-weight: 700;
+        color: #000;
+      }
+
+      .product-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .product-actions .btn {
+        width: 100%;
+        max-width: 400px;
+      }
+      .checkbox-group{
+        display:flex;
+        align-items:center;
+      }
+      /* Responsive Styles */
+      @media (min-width: 601px) {
+          .quiz-container {
+              max-width: 800px;
+          }
+  .checkbox-group{
+        display:flex;
+        align-items:center;
+        align-self:center;
+      }
+          .problem-buttons {
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+          }
+
+          .recommendation-actions {
+              width: 100%;
+              max-width: 400px;
+              margin: 30px auto 0 auto;
+              display: flex;
+              flex-direction: column;
+              gap: 20px;
+          }
+
+          .recommendation-actions .btn-secondary {
+              width: 100%;
+              border-radius: 8px;
+          }
+
+          .product-actions {
+              flex-direction: column;
+              gap: 20px;
+              align-items: stretch;
+              width: 100%;
+              max-width: 400px;
+              margin: 0 auto;
+          }
+
+          .product-actions .btn,
+          .product-actions .btn-secondary {
+            width: 100%;
+            max-width: none;
+            flex: none;
+          }
+
+          .btn, .btn-secondary {
+              width: 150px;
+          }
+
+          .product-card {
+              width: 300px;
+              max-width: none;
+          }
+      }
+
+      .button-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Additional Styles for Smooth Transitions */
+      .page-1, .page-2, .page-3, .page-4 {
+
+          transition: opacity 0.5s ease-in-out;
+      }
+
+      .page-1[style*="display: none"],
+      .page-2[style*="display: none"],
+      .page-3[style*="display: none"],
+      .page-4[style*="display: none"] {
+          opacity: 0;
+      }
+
+      .page-1,
+      .page-2,
+      .page-3,
+      .page-4 {
+          opacity: 1;
+      }
+
+      /* Product Recommendation Styling */
+      .percent-off {
+          color: green;
+          margin-left: 10px;
+          font-size: 0.9rem;
+      }
+
+      @media (min-width: 450px) and (max-width: 600px) {
+        .recommendation-actions {
+            width: 90vw;
+            max-width: 400px;
+            margin: 30px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .recommendation-actions .btn-secondary {
+            width: 90%;
+            border-radius: 8px;
+        }
+        .product-card {
+            min-width: 250px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+      }
+
+      /* Horizontally Scrollable Container Styles */
+      .products-scroller {
+          display: flex;
+          gap: 20px;
+          overflow-x: auto;
+          padding-bottom: 10px;
+          -webkit-overflow-scrolling: touch;
+      }
+
+      .products-scroller::-webkit-scrollbar {
+          display: none;
+      }
+
+      .products-scroller {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        justify-content:center;
+      }
+
+      #shopify-section-sections--23790711669033__footer .shopify-section .shopify-section-group-footer-group-whiff {
+       display: none !important;
+       }
+
+
+  div .footer-wave {
+    max-width: 102%;
+    width: 100%;
+    height: 187.8px;
+    left: 0;
+    z-index: 1;
+    bottom: -67px;
+    background: url(https://1.bp.blogspot.com/-NYl6L8pz8B4/XoIVXwfhlNI/AAAAAAAAU3k/nxJKiLT706Mb7jUFiM5vdCsOSNnFAh0yQCLcBGAsYHQ/s1600/hero-wave.png)
+      repeat-x;
+    animation: wave 10s cubic-bezier(0.44, 0.66, 0.67, 0.37) infinite;
+  }
+
+  @keyframes wave {
+    0% {
+      background-position: 0;
+    }
+    100% {
+      background-position: 1440px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product Quiz",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "quiz_banner_image",
+      "label": "Quiz Banner Image"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Product Quiz"
+    }
+  ]
+}
+{% endschema %}

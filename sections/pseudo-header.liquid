@@ -1,0 +1,96 @@
+{%- style -%}
+/* Pseudo Header Styles */
+.pseudo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+}
+
+.pseudo-header__btn {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.pseudo-header__btn img,
+.pseudo-header__btn svg {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  fill: currentColor;
+}
+
+/* Add spacing between icon and label if needed */
+.pseudo-header__label {
+  margin-left: 8px;
+}
+{%- endstyle -%}
+
+<section class="pseudo-header" id="pseudo-header-{{ section.id }}">
+  <!-- Back Button -->
+  <a href="{{ section.settings.left_button_link }}" class="pseudo-header__btn">
+    {% if section.settings.back_button_image != blank %}
+      <img src="{{ section.settings.back_button_image | image_url: width: 40 }}" alt="Back" />
+    {% else %}
+      <svg viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    {% endif %}
+  </a>
+
+  <!-- Cart Button -->
+  <a href="{{ section.settings.right_button_link }}" class="pseudo-header__btn">
+    {% if section.settings.cart_button_image != blank %}
+      <img src="{{ section.settings.cart_button_image | image_url: width: 40 }}" alt="Cart" />
+    {% else %}
+      <svg viewBox="0 0 24 24">
+        <path d="M7 4h-2v2h2v14c0 1.103.897 2 2 2h8c1.103 0 2-.897 2-2V6h2V4H7zm3 2h4v14h-4V6z" />
+      </svg>
+    {% endif %}
+  </a>
+</section>
+
+{% schema %}
+{
+  "name": "Pseudo Header",
+  "settings": [
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Back Button Link",
+      
+    },
+    {
+      "type": "image_picker",
+      "id": "back_button_image",
+      "label": "Upload Back Button Icon (optional)"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Cart Button Link",
+    
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_button_image",
+      "label": "Upload Cart Button Icon (optional)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pseudo Header",
+      "category": "Header"
+    }
+  ]
+}
+{% endschema %}

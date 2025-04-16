@@ -1,0 +1,141 @@
+{% comment %} {% schema %}
+{
+  "name": "Order Tracking",
+  "tag": "section",
+  "class": "order-tracking-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tracking_api_url",
+      "label": "Tracking API URL",
+      "default": "https://dev4.api.astrotalk.in/AstroMall/shipment/track-order-page"
+    },
+    {
+      "type": "text",
+      "id": "shopify_api_url",
+      "label": "Shopify API URL",
+      "default": "https://c839d4-19.myshopify.com/admin/api/2025-01/orders/"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Track Your Order"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#0073e6"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Order Tracking",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="order-tracking">
+    <h2>{{ section.settings.heading }}</h2>
+    <input type="text" id="order-id" placeholder="Enter Order ID" />
+    <button id="track-order-btn" style="background: {{ section.settings.button_color }}; color: {{ section.settings.button_text_color }};">
+        Track Order
+    </button>
+    <div id="order-details"></div>
+</div>
+
+<script>
+document.getElementById('track-order-btn').addEventListener('click', async () => {
+    let orderId = document.getElementById('order-id').value.trim();
+    if (!orderId) {
+        alert("Please enter a valid Order ID.");
+        return;
+    }
+
+    try {
+        // Shopify API Credentials
+        const shopifyAccessToken = "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"; // Replace with your access token
+        const shopifyApiUrl = "{{ section.settings.shopify_api_url }}" + orderId + ".json";
+
+        // Fetch order details from Shopify Admin API
+        let shopifyResponse = await fetch(shopifyApiUrl, {
+            method: "GET",
+            headers: {
+                "X-Shopify-Access-Token": shopifyAccessToken,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!shopifyResponse.ok) {
+            throw new Error("Failed to fetch order details from Shopify.");
+        }
+
+        let shopifyOrderData = await shopifyResponse.json();
+        let order = shopifyOrderData.order;
+        
+        // Extract order details
+        let items = order.line_items.map(item => `${item.quantity}x ${item.title}`).join(", ");
+        let shippingAddress = order.shipping_address
+            ? `${order.shipping_address.address1}, ${order.shipping_address.city}, ${order.shipping_address.country}`
+            : "Not Available";
+        let orderStatus = order.financial_status || "Unknown";
+        
+        // Fetch tracking details from Astrotalk API
+        let trackingApiUrl = "{{ section.settings.tracking_api_url }}";
+        let trackingResponse = await fetch(`${trackingApiUrl}?entityId=${orderId}`);
+        let trackingData = await trackingResponse.json();
+
+        // Extract tracking details
+        let trackingStatus = trackingData.status || "Not Available";
+        let estimatedDelivery = trackingData.estimated_delivery || "N/A";
+        let currentLocation = trackingData.current_location || "N/A";
+
+        // Display results
+        document.getElementById('order-details').innerHTML = `
+            <h3>Order Details</h3>
+            <p><strong>Order ID:</strong> ${order.id}</p>
+            <p><strong>Status:</strong> ${orderStatus}</p>
+            <p><strong>Items:</strong> ${items}</p>
+            <p><strong>Shipping Address:</strong> ${shippingAddress}</p>
+            <h3>Tracking Information</h3>
+            <p><strong>Status:</strong> ${trackingStatus}</p>
+            <p><strong>Expected Delivery:</strong> ${estimatedDelivery}</p>
+            <p><strong>Current Location:</strong> ${currentLocation}</p>
+        `;
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        document.getElementById('order-details').innerHTML = `<p style="color: red;">Unable to fetch order details. Please check your Order ID.</p>`;
+    }
+});
+</script>
+
+<style>
+.order-tracking {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+input {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+</style>
+ {% endcomment %}

@@ -1,0 +1,150 @@
+{% liquid 
+if settings.lang_direction contains request.locale.iso_code
+  assign is_rtl = true
+else
+  assign is_rtl = false
+endif
+%}
+{% # Kwikpass added the hidden logout element %}
+<a style="display: none!important;">logout</a>
+
+<div class="customer account pt-[{{ section.settings.top_padding_mobile }}px] md:pt-[{{ section.settings.top_padding }}px] pb-[{{ section.settings.bottom_padding_mobile }}px] md:pb-[{{ section.settings.bottom_padding }}px]">
+  <div class="page-width mx-auto">
+    <div class="flex items-center justify-between border-b pb-3 md:pb-4">
+      <h1 class="h2">{{ 'customer.account.title' | t }}</h1>
+      {% comment %}
+      <a
+        class="flex transition px-1.5 h-fit duration-200 disable-effect items-end justify-center"
+        href="{{ routes.account_logout_url }}"
+      >
+        <span class="w-6{% if is_rtl %} ml-1.5{% else %} mr-1.5{% endif %}">
+          {% render 'icon-alls', icon: 'icon-account' %}
+        </span>
+        {{ 'customer.log_out' | t }}
+      </a>
+      {% endcomment %}
+      <a
+        class="flex transition px-1.5 h-fit duration-200 disable-effect items-end justify-center"
+        href="javascript:void(0);" onclick="handleLogout();"
+      >
+        <span class="w-6{% if is_rtl %} ml-1.5{% else %} mr-1.5{% endif %}">
+          {% render 'icon-alls', icon: 'icon-account' %}
+        </span>
+        {{ 'customer.log_out' | t }}
+      </a>
+    </div>
+<div>
+
+  
+</div>
+    
+    <div class="flex flex-col ">
+      <div class="w-full ">
+        <!-- <h2 class="text-large mt-9 pb-3.5 md:mt-12 md:pb-6 border-b md:border-none">{{ 'customer.orders.title' | t }}</h2> -->
+          {% render 'order-history' %} 
+      </div>
+
+<!-- MANAGE YOUR RETURNS SECTION -->
+<div class="w-full my-8 pb-4 border-b border-gray-300">
+  <!-- Left-aligned heading to match other headings -->
+  <h2 class="text-large   mb-4 text-left">
+    Manage your returns
+  </h2>
+
+  <!-- Two text pointers (left-aligned, italic, slightly heavier font, dark gray) -->
+  <div class="font-medium italic text-[#333] max-w-xl mb-4">
+    1. Return requests can only be submitted after delivery. <br />
+    2. Return requests must be submitted within 7 days of delivery.
+  </div>
+
+  <!-- Bigger button (increased padding) -->
+  <a
+    href="https://c839d4-19.myshopify.com/apps/return_prime"
+    class="button button-solid inline-block px-6 py-3"
+    style="background-color: #f0df20; color: #000;"
+  >
+    Initiate return request
+  </a>
+</div>
+      <div class="">
+        <h2 class="text-large mt-16 md:mt-12 mb-4">{{ 'customer.account.details' | t }}</h2>
+        <div>{{ customer.default_address | format_address }}</div>
+        <a class="nav-link effect-inline relative block mt-7 w-fit lg:hover:text-[rgb(var(--colors-text-link))]" href="{{ routes.account_addresses_url }}">
+          {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 're-order-popup' -%}
+{% schema %}
+{
+  "name": "t:sections.main-account.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "paginate_type",
+      "options": [
+        {
+          "value": "circle",
+          "label": "t:sections.main-collection-product-grid.settings.paginate_type.options__1.label"
+        },
+        {
+          "value": "underline",
+          "label": "t:sections.main-collection-product-grid.settings.paginate_type.options__2.label"
+        }
+      ],
+      "default": "circle",
+      "label": "t:sections.main-collection-product-grid.settings.paginate_type.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "top_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "bottom_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_layout_mobile"
+    },
+    {
+      "type": "range",
+      "id": "top_padding_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "bottom_padding_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

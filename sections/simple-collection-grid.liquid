@@ -1,0 +1,360 @@
+{%- style -%}
+/* 
+  Simple styling for the Collection Grid 
+*/
+
+/* Section title styling */
+.collection-grid-simple__title {
+  /* Margin above the title for extra spacing */
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  /* Use the customizer setting for the font size */
+  font-size: {{ section.settings.heading_font_size }}px;
+  text-align: center;
+}
+
+/* Outer grid with responsive columns
+   -- By default, use the mobile columns setting */
+.collection-grid-simple__grid {
+  display: grid;
+  grid-template-columns: repeat({{ section.settings.products_per_row_mobile }}, 1fr);
+  /* Smaller gap on mobile to let cards be wider, plus uniform padding */
+  gap: 0.3rem;
+  padding: 0 0.5rem;  
+  box-sizing: border-box;
+}
+
+/* Increase columns for desktop mode using the desktop setting */
+@media (min-width: 768px) {
+  .collection-grid-simple__grid {
+    grid-template-columns: repeat({{ section.settings.products_per_row_desktop | plus:0}}, 1fr);
+    /* Larger gap on desktop and bigger side padding */
+    gap: 0.6rem;
+    padding: 0 1rem;
+
+
+
+    
+  }
+}
+
+/* Each card container (constrains max width to match image) */
+.product-card-container {
+  width: 100%;
+  max-width: 250px; 
+  margin: 0 auto;
+}
+
+/* Product card */
+.product-card {
+  background-color: #fff;
+  padding: 0.6rem;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  
+  /* Keep uniform height across different product content (optional) */
+  min-height: 280px;
+}
+
+/* Container controlling image width */
+.product-card__media {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.product-card__image-wrapper {
+  margin-bottom: 0.75rem;
+}
+
+.product-card__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: {{ section.settings.border_radius }}px;
+}
+
+/* Product info (title, vendor, rating) */
+.product-card__info {
+  margin-top: 0.25rem; /* Reduced spacing */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.product-card__title {
+  font-size: 14px; 
+  margin-bottom: 0.25rem; /* Reduced spacing */
+  text-align: left;
+
+  /* Truncate very long titles to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card__vendor {
+  font-size: 14px; 
+  color: #666;
+  margin-bottom: 0.25rem; /* Reduced spacing */
+}
+
+/* Price, compare-at, and Add to Cart on the same line */
+.product-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-top: 0.25rem; /* Reduced spacing */
+  width: 100%;
+  margin: 0.25rem auto 0;
+}
+
+.product-card__price {
+  font-size: 14px; 
+  font-weight: 500;
+  margin: 0;
+}
+
+.product-card__compare-at {
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 0.1rem;
+  font-weight: 500;
+  font-size:10px;
+}
+
+/* Add to Cart Button */
+.product-card__add-to-cart {
+  border-radius: {{ section.settings.border_radius }}px;
+  background-color: #f0df20;  /* Yellow */
+  color: #000;               /* Black text */
+  padding: 0.4rem 0.5rem;    /* Reduced padding for smaller button height */
+  border: none;
+  cursor: pointer;
+  font-size: 0.675rem;
+  transition: background-color 0.2s ease;
+  width: auto;
+}
+@media (max-width: 30px) {
+    .product-card__add-to-cart {
+        font-size: 0.5rem;
+    }
+}
+
+.product-card__add-to-cart:hover {
+  background-color: #fcf000;
+}
+
+/* Sold out text style */
+.product-card__sold-out {
+  color: red;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Empty message styling */
+.collection-grid-simple__empty-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-top: 1rem;
+}
+
+/* Judge.me widget alignment */
+.jdgm-widget.jdgm-widget {
+  text-align: left;
+}
+{%- endstyle -%}
+
+<section id="collection-grid-simple-{{ section.id }}" class="collection-grid-simple">
+  {% if section.settings.section_title != blank %}
+    <h2 class="collection-grid-simple__title">
+      {{ section.settings.section_title }}
+    </h2>
+  {% endif %}
+
+  {% assign grid_collection = collections[section.settings.collection_handle] %}
+
+  {% if grid_collection and grid_collection.products_count > 0 %}
+    <div class="collection-grid-simple__grid">
+      
+      {% for product in grid_collection.products %}
+        <div class="collection-grid-simple__item">
+          <!-- Extra wrapper around the product card -->
+          <div class="product-card-container">
+
+            <div class="product-card">
+              <!-- Media container for image -->
+              <div class="product-card__media">
+                <a href="{{ product.url | within: grid_collection }}">
+                  <div class="product-card__image-wrapper">
+                    {% if product.featured_image %}
+                      <img
+                        src="{{ product.featured_image | img_url: 'medium' }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        class="product-card__image"
+                      />
+                    {% endif %}
+                  </div>
+                </a>
+              </div>
+
+              <!-- Info container for title, vendor, and rating -->
+              <div class="product-card__info">
+                <a href="{{ product.url | within: grid_collection }}">
+                  <h3 class="product-card__title">{{ product.title }}</h3>
+                </a>
+
+                {% if section.settings.show_vendor %}
+                  <p class="product-card__vendor">{{ product.vendor }}</p>
+                {% endif %}
+
+                <!-- Start of Judge.me code -->
+                <div style='{{ jm_style }}'
+                     class='jdgm-widget jdgm-preview-badge'
+                     data-id='{{ product.id }}'
+                     data-auto-install='false'>
+                  {{ product.metafields.judgeme.badge }}
+                </div>
+                <!-- End of Judge.me code -->
+              </div>
+
+              <!-- Footer container for price, compare at, and add to cart (same line) -->
+              <div class="product-card__footer" x-data="xProductCart()">
+                {% assign first_variant = product.selected_or_first_available_variant %}
+                
+                {% if first_variant %}
+                  {% if product.available %}
+                    <p class="product-card__price">
+                      {{ product.price | money }}
+                      {% if product.compare_at_price > product.price %}
+                        <span class="product-card__compare-at">
+                          {{ product.compare_at_price | money }}
+                        </span>
+                      {% endif %}
+                    </p>
+                    <form
+                      method="post"
+                      action="/cart/add"
+                      accept-charset="UTF-8"
+                      class="form"
+                      enctype="multipart/form-data"
+                      novalidate
+                      data-type="add-to-cart-form"
+                      x-ref="product_form"
+                    >
+                      <input type="hidden" name="form_type" value="product">
+                      <input type="hidden" name="utf8" value="✓">
+                      <input type="hidden" name="id" value="{{ first_variant.id }}">
+                      
+                      <button
+                        type="button"
+                        class="product-card__add-to-cart"
+                        aria-label="Add to cart"
+                        @click="addToCart($event, true)"
+                        x-intersect.once.margin.200px="Alpine.store('xCartHelper').validateCart();"
+                      >
+                        SHOP NOW
+                      </button>
+                    </form>
+                  {% else %}
+                    <p class="product-card__price">
+                      {{ product.price | money }}
+                      {% if product.compare_at_price > product.price %}
+                        <span class="product-card__compare-at">
+                          {{ product.compare_at_price | money }}
+                        </span>
+                      {% endif %}
+                    </p>
+                    <span class="product-card__sold-out">Sold Out</span>
+                  {% endif %}
+                {% else %}
+                  <span class="product-card__sold-out">Sold Out</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="collection-grid-simple__empty-message">
+      No products found in this collection.
+    </p>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Simple Collection Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section heading",
+      "default": "Our Products"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Section heading font size (px)",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "collection",
+      "id": "collection_handle",
+      "label": "Choose a collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "label": "Products per row (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (mobile)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendor",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Image/Button border radius (px)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Collection Grid",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

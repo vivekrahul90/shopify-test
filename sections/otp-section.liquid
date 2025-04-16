@@ -1,0 +1,265 @@
+{% if customer %}
+      <script>
+        window.simplyOtp = window.simplyOtp || {};
+        window.simplyOtp.customer = true
+      </script>
+
+    {% if template contains 'login' or template contains 'register' %}
+    <style>
+      .otp-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1.5s linear infinite;
+        margin:20px auto;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      </style>
+  <script>
+    if(location.hash == "#ref=gokwik"){
+      window.addEventListener("load", (event) => {
+        setTimeout(function(){
+          window.gokwikSdk.initCheckout(merchantInfo);
+        }, 4000);
+      });
+    } else {
+        location.href="/account";
+    }
+  </script>
+  <div class="otp-loader">&nbsp;</div>
+      {% endif %}
+  {% else %}
+    {% assign time_stamp = 'now' | date: '%s'  %}
+    {%- assign secret_potion = shop.id | append:time_stamp | md5 -%}
+    <style>
+      .simply-otp-wrapper {
+        display: block;
+      }
+      .otp-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1.5s linear infinite;
+        margin:20px auto;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+    <div id="otp-original-login" style="display:none">
+      {%- form 'customer_login', name: 'login', class: 'sotp-form', id: 'sotp-form' -%}
+        <input
+          type="email"
+          id="otp-original-email"
+          name="customer[email]">
+        <input
+          type="password"
+          id="otp-original-password"
+          name="customer[password]">
+        <input
+          type="hidden"
+          name="return_url"
+          id="otp-return_to">
+        <button type="submit" id="otp-original-submit">Login</button>
+      {%- endform -%}
+    </div>
+    <div id="recaptcha-container"></div>
+    {{ 'otp-login.css' | asset_url | stylesheet_tag }}
+    <script>
+      window.simplyOtp = window.simplyOtp || {};
+      window.simplyOtp.fpPromise = import("{{ 'simplyotp-status.js' | asset_url }}");
+      window.simplyOtp.time_stamp = "{{time_stamp}}";
+      window.simplyOtp.generated_hash = "{{ secret_potion }}";
+
+      window.simplyOtp.designMode = 1;{% comment %}
+        window.simplyOtp.pageUrl = location.href;{% endcomment %}
+      window.simplyOtp.initializeCss = () => {
+        simplyOtp.cartJson = {{ cart | json }};
+        window.olWrapper = document.querySelectorAll('.olWrapper');
+        olWrapper.forEach(ele => ele.style.display = "none")
+
+  // If available then change olWrapper display property
+
+  /* Load css */
+        var cssId = 'myCss'; // you could encode the css path itself to generate id..
+        if (!document.getElementById(cssId)) {
+          var head = document.getElementsByTagName('head')[0];
+          var link = document.createElement('link');
+          link.id = cssId;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = "{{ 'otp-login.css' | asset_url }}";
+          link.media = 'all';
+          head.appendChild(link);
+        }if (Shopify.designMode) {
+          document.addEventListener("shopify:section:load", () => {
+            let olWrapperDiv = document.querySelectorAll('.olWrapper'); // Parent element
+            if (olWrapperDiv) { // To check css is available in the DOM or not
+              olWrapperDiv.forEach(ele => ele.style.display = "flex") // If available then change olWrapper display property
+            }
+          });
+        }
+      }
+      window.simplyOtp.signUpEvent = (data) => {
+        {% comment %}
+          data
+            .email
+            data
+            .phone
+            data
+            .firstName
+            data
+            .lastName{% endcomment %}
+          console.log('signup', data);
+        }
+        window.simplyOtp.loginEvent = (data) => {
+          console.log('login', data);
+        }
+    </script>
+    <script>
+      {% if shop.metafields.simply-otp-login.otp_widgets %}
+      simplyOtp.otp_widgets = {{ shop.metafields.simply-otp-login.otp_widgets }};
+      {% else %}
+      simplyOtp.otp_widgets = {};
+      {% endif %}
+      {% if shop.metafields.simply-otp-login.custom_fields %}
+      simplyOtp.custom_fields = {{ shop.metafields.simply-otp-login.custom_fields }};
+      {% else %}
+      simplyOtp.custom_fields = [];
+    {% endif %}
+      simplyOtp.language = {
+        loginSubTitle: simplyOtp.otp_widgets.login_sub_title,
+        loginTitle: simplyOtp.otp_widgets.login_title,
+        phoneEnable: simplyOtp.otp_widgets.phone_enable,
+        emailEnable: simplyOtp.otp_widgets.email_enable,
+        whatsappEnable: simplyOtp.otp_widgets.whatsapp_enable,
+        phonePlaceholder: simplyOtp.otp_widgets.phone_placeholder,
+        emailPlaceholder: simplyOtp.otp_widgets.email_placeholder,
+        whatsappPlaceholder: simplyOtp.otp_widgets.whatsapp_placeholder,
+        otpTitle: simplyOtp.otp_widgets.otp_title,
+        otpSubTitle: simplyOtp.otp_widgets.otp_sub_title,
+        accountTitle: simplyOtp.otp_widgets.account_title,
+        marketingText: simplyOtp.otp_widgets.marketing_text,
+        emailOfferEnable: simplyOtp.otp_widgets.email_offer_enable,
+        phoneOfferEnable: simplyOtp.otp_widgets.sms_offer_enable,
+        whatsappOfferEnable: simplyOtp.otp_widgets.whatsapp_offer_enable,
+        enableCountries: simplyOtp.otp_widgets.enable_countries,
+        otherOptionText: simplyOtp.otp_widgets.other_option_text || "Or Login Using",
+        btn_bg_color: simplyOtp.otp_widgets.btn_bg_color,
+        btn_text_color: simplyOtp.otp_widgets.btn_text_color,
+        fname_required: simplyOtp.otp_widgets.fname_required || false,
+        lname_required: simplyOtp.otp_widgets.lname_required || false,
+        email_required: simplyOtp.otp_widgets.email_required || true,
+        phone_required: simplyOtp.otp_widgets.phone_required || true,
+        updateBtnText: simplyOtp.otp_widgets.update_btn_text || "Update",
+        requestOTP : simplyOtp.otp_widgets.request_otp_text || "Request OTP",
+        emText : simplyOtp.otp_widgets.em_text || "Email",
+        waText : simplyOtp.otp_widgets.wa_text || "WhatsApp",
+        phText : simplyOtp.otp_widgets.ph_text || "Phone",
+        emTextError : simplyOtp.otp_widgets.em_text_error || "Please enter a valid email",
+        phTextError : simplyOtp.otp_widgets.ph_text_error || "Please enter a valid Phone Number",
+        fnameTextError : simplyOtp.otp_widgets.fname_text_error || "Please enter First Name",
+        lnameTextError : simplyOtp.otp_widgets.lname_text_error || "Please enter Last Name",
+        fnameText : simplyOtp.otp_widgets.fname_text || "First Name",
+        lnameText : simplyOtp.otp_widgets.lname_text || "Last Name",
+        verifyOTPText : simplyOtp.otp_widgets.verify_otp_text || "Verify OTP",
+        resendOTPText : simplyOtp.otp_widgets.resend_otp_text || "Resend OTP",
+        didNotReceiveOTPText : simplyOtp.otp_widgets.did_not_receive_otp_text || "Didn't Receive the OTP?",
+      };
+      let ec = simplyOtp.language.enableCountries.split(',');
+      simplyOtp.settings = {
+        forceUpdateProfile : false,
+        onlyOTPNoLogin : false,
+        multipass_enabled : false,
+        skipPage3 : false,
+        goKwik:false,
+        onlyIndia: false,
+        selectedCountry: ec[0].toLowerCase(),
+        primaryColor: simplyOtp.otp_widgets.btn_bg_color,
+        resendTime: 5,
+        image: simplyOtp.otp_widgets.image_url
+          ? simplyOtp.otp_widgets.image_url
+          : null
+      };
+      simplyOtp.permanentDomain = "{{ shop.permanent_domain }}";
+      simplyOtp.shopId = "{{ shop.id }}";
+      simplyOtp.myFirebaseApi = '{{ shop.metafields.simply-otp-login.firebase_config }}';
+    </script>
+    <script src="{{'otp-login.js' | asset_url}}" type="text/javascript" defer="defer"></script>
+    <script
+      src="{{ 'customer-status-check.js' | asset_url }}"
+      type="text/javascript"
+      defer="defer"></script>
+  {% endif %}
+  <script>
+  var onloadCallback = function() {
+      grecaptcha.enterprise.render('otp-recaptcha-container-app', {
+        'sitekey' : ' 6LfninopAAAAACQt2rgxCkE-3gK8l4cPLi385K49',
+        'callback' : window.simplyOtp.captchTokenCallback,
+        'action': 'simply_otp_login'
+      });
+
+      grecaptcha.enterprise.render('otp-recaptcha-container-app-resend', {
+        'sitekey' : ' 6LfninopAAAAACQt2rgxCkE-3gK8l4cPLi385K49',
+        'callback' : window.simplyOtp.captchTokenCallback,
+        'action': 'simply_otp_login'
+      });
+    };
+  {% comment %}
+    if(location.pathname.includes('account/activate')){
+      var urlencoded = new URLSearchParams();
+      let timeStamp = new Date().getTime().toString();
+      let locationHref = location.pathname.split('/');
+      urlencoded.append("form_type", "activate_customer_password");
+      urlencoded.append("utf8", "✓");
+      urlencoded.append("customer[password]",timeStamp);
+      urlencoded.append("customer[password_confirmation]", timeStamp);
+      urlencoded.append("id", locationHref[3]);
+      urlencoded.append("token", locationHref[4]);
+      var requestOptions = {
+        method: 'POST',
+        body: urlencoded,
+        redirect: 'follow'
+      };
+      fetch("/account/activate", requestOptions)
+      .then(response => response.text())
+      .then(result => location.href = '/account/login')
+      .catch(error => console.log('error', error));
+    }
+    {% endcomment %}
+  </script>
+  <script>
+       document.querySelector('a[href^="/account/logout"]')?.addEventListener("click", function(e) {
+          e.preventDefault()
+          fetch("/account/logout").then(function() {
+              const date = new Date();
+              date.setTime(date.getTime() + (3 * 60 * 60 * 1000));
+              const expires = "expires=" + date.toUTCString();
+              document.cookie = "_skip_check_login_status=" + encodeURIComponent(true) + ";" + expires + ";path=/";
+              window.location.href = '/account'
+          });
+          return false;
+      });
+</script>
+{% schema %}
+  {
+    "name": "Simply OTP Section",
+    "tag": "section",
+    "class": "section",
+    "presets": [
+      {
+        "name": "Simply OTP Section"
+      }
+    ]
+  }
+{% endschema %}

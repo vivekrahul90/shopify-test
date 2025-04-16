@@ -1,0 +1,434 @@
+{% schema %}
+{
+  "name": "Collection Product Cards",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Our Collections"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_tab",
+      "name": "Collection Tab",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Tabbed Collection Product Cards",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  /* Overall Section */
+  #product-section {
+    padding: 15px;
+  }
+  
+  /* Search Box */
+  #search-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 0 auto 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: block;
+  }
+  
+  /* Section Title */
+  #product-section h2 {
+    text-align: center;
+    /* margin-bottom: 5px;
+    font-size:1.4rem; */
+  }
+  
+  /* Tab Headers */
+  .tab-headers {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 20px;
+    padding: 0;
+  }
+ @media screen and (min-width: 480px) {
+  .tab-headers {
+     justify-content: center;
+  }
+    .tab-headers li {
+    margin: 0 10px;
+   
+  }
+}
+  .tab-headers li {
+    /* margin: 0 10px; */
+    padding: 10px 30px;
+    background: #fff;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .tab-headers li.active {
+    background: #000;
+    color: #fff;
+  }
+  
+  /* Tab Panels */
+  .tab-content .tab-panel {
+    display: none;
+  }
+  
+  .tab-content .tab-panel.active {
+    display: block;
+  }
+  
+  /* Product Card (Collapsed State) */
+  .product-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #f9f9f9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    margin: 12px auto;
+    width: 360px;
+    height: 150px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  /* Image: fixed at 150x150 with object-fit: contain */
+  .product-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background-color: #fff;
+  }
+  
+  /* Product Content */
+  .product-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    overflow: hidden;
+    text-align: left;
+  }
+  
+  .product-content h2 {
+    font-size: 0.8rem;
+    margin: 0 0 6px;
+    font-weight: 600;
+    text-align:left;
+    text-overflow: ellipsis;
+  }
+  
+  /* Collapsed text: truncated to 3 lines */
+  .product-card:not(.expanded) .product-content p {
+    font-size: 0.88rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+  }
+  
+  /* "View More" button appears only when collapsed */
+  .view-more-btn {
+    background: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 4px;
+    align-self: flex-start;
+  }
+  
+  .product-card.expanded .view-more-btn {
+    /* display: none; */
+  }
+  
+  /* Expanded Card Layout */
+  .product-card.expanded {
+    flex-direction: column;
+    height: auto;
+    /* width: 360px; */
+  }
+  
+  .product-card.expanded img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .product-card.expanded .product-content {
+    padding: 12px 16px;
+    text-align: center;
+  }
+  
+  .product-card.expanded .product-content h2 {
+    font-size: 1.1rem;
+    margin-top: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .product-card.expanded .product-content p {
+    -webkit-line-clamp: unset;
+    max-height: none;
+    overflow: visible;
+    white-space: pre-line;
+    text-align: left;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  
+  /* CTA Buttons Container */
+  .cta-buttons {
+    display: none;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+  
+  .product-card.expanded .cta-buttons {
+    display: flex;
+  }
+  
+  /* CTA Button Styles */
+  .cta-btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .cta-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Product form styles */
+  .add-to-cart-form {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /*  Mobile Adjustments */
+  @media (max-width: 768px) {
+    .product-card {
+      width: 100%;
+      max-width: 100%;
+      margin: 12px 0;
+    }
+  
+    .product-card img {
+      width: 150px;
+      height: 150px;
+      border-radius: 5px;
+    }
+  
+    .product-content {
+      padding: 10px;
+    }
+  
+    .product-content h2 {
+      font-size: 0.95rem;
+    }
+  
+    .product-card:not(.expanded) .product-content p {
+      font-size: 0.85rem;
+      -webkit-line-clamp: 3;
+    }
+  
+    .product-card.expanded .product-content p {
+      font-size: 0.88rem;
+    }
+  }
+  @media (min-width: 769px) {
+  .product-card {
+    width: 600px;
+  }
+}
+
+{% endstyle %}
+
+<div id="product-section">
+  {% if section.settings.section_title != blank %}
+    <h2>{{ section.settings.section_title }}</h2>
+  {% endif %}
+  
+  <!-- Search Input -->
+  <input type="text" id="search-box" placeholder="Search by product name...">
+  
+  <!-- Tab Headers -->
+  <ul class="tab-headers">
+    {% for block in section.blocks %}
+      {% assign coll = collections[block.settings.collection] %}
+      <li data-tab="{{ forloop.index0 }}" class="{% if forloop.first %}active{% endif %}">
+        {{ coll.title }}
+      </li>
+    {% endfor %}
+  </ul>
+  
+  <!-- Tab Panels -->
+  <div class="tab-content">
+    {% for block in section.blocks %}
+      {% assign coll = collections[block.settings.collection] %}
+      <div class="tab-panel {% if forloop.first %}active{% endif %}" data-tab="{{ forloop.index0 }}">
+        {% for product in coll.products %}
+          {% assign first_variant = product.selected_or_first_available_variant %}
+          <div class="product-card" data-title="{{ product.title | downcase }}" data-index="{{ forloop.index }}">
+            <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+            <div class="product-content">
+              <h2>{{ product.title }}</h2>
+              <p>{{ product.metafields.custom.how_to_wear | escape }}</p>
+              <button class="view-more-btn">View More</button>
+              <!-- CTA Buttons -->
+              <div class="cta-buttons">
+                <a href="{{ product.url }}" class="cta-btn more-info-btn">More Info</a>
+                
+                <!-- Add to Cart Form using Alpine.js matching your theme's implementation -->
+                <div x-data="xProductCart()">
+                  <form
+                    method="post"
+                    action="/cart/add"
+                    accept-charset="UTF-8"
+                    class="form"
+                    enctype="multipart/form-data"
+                    novalidate
+                    data-type="add-to-cart-form"
+                    x-ref="product_form"
+                  >
+                    <input type="hidden" name="form_type" value="product">
+                    <input type="hidden" name="utf8" value="✓">
+                    <input type="hidden" name="id" value="{{ first_variant.id }}">
+                    
+                    <button
+                      type="button"
+                      class="cta-btn"
+                      aria-label="Add to cart"
+                      @click="addToCart($event, true)"
+                      x-intersect.once.margin.200px="Alpine.store('xCartHelper').validateCart();"
+                    >
+                      Add to Cart
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Tab Switching
+  const tabHeaders = document.querySelectorAll('.tab-headers li');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  const searchBox = document.getElementById("search-box");
+  
+  // Function to update the search placeholder based on active tab title
+  function updateSearchPlaceholder() {
+    const activeTab = document.querySelector('.tab-headers li.active');
+    if (activeTab) {
+      searchBox.placeholder = "Search " + activeTab.textContent.trim();
+    }
+  }
+  
+  tabHeaders.forEach(header => {
+    header.addEventListener('click', function() {
+      const tabIndex = this.getAttribute('data-tab');
+      tabHeaders.forEach(h => h.classList.remove('active'));
+      tabPanels.forEach(panel => panel.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelector('.tab-panel[data-tab="' + tabIndex + '"]').classList.add('active');
+      updateSearchPlaceholder();
+      // Reapply search filtering for the new active tab
+      filterActivePanel();
+    });
+  });
+  
+  // Function to filter product cards in the active tab panel based on search input
+  function filterActivePanel() {
+    const query = searchBox.value.toLowerCase();
+    const activePanel = document.querySelector('.tab-panel.active');
+    const productCards = activePanel.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+      if (card.dataset.title.includes(query)) {
+        card.style.display = "flex";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+  
+  // Attach search functionality to the search box
+  searchBox.addEventListener("input", filterActivePanel);
+  
+  // Function to toggle expanded state and update button text
+  function toggleCard(card) {
+    card.classList.toggle('expanded');
+    const btn = card.querySelector('.view-more-btn');
+    if (card.classList.contains('expanded')) {
+      btn.textContent = "View less";
+    } else {
+      btn.textContent = "View more";
+    }
+  }
+  
+  // Toggle expanded state on product card click (except when clicking CTA buttons)
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      // Don't toggle if clicking on buttons or forms
+      if (!e.target.closest('.cta-buttons') && !e.target.closest('.view-more-btn')) {
+        toggleCard(this);
+      }
+    });
+  });
+  
+  // "View More" button toggles expanded state and stops propagation
+  document.querySelectorAll('.view-more-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const card = this.closest('.product-card');
+      toggleCard(card);
+    });
+  });
+  
+  // Initialize the search placeholder on page load
+  updateSearchPlaceholder();
+});
+</script>

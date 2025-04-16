@@ -1,0 +1,195 @@
+<!-- Button to Open Bottom Sheet -->
+<button id="openDrawer" class="drawer-btn">ADD TO CART</button>
+
+<!-- Bottom Drawer -->
+<div id="bottomDrawer" class="drawer">
+  <div class="drawer-content">
+    <span id="closeDrawer" class="close-btn">&times;</span>
+    <h2>More benefits, more results. Lesser price.</h2>
+
+    <!-- Product List -->
+    <div class="bottom-product-list">
+      {% for product in collections['atc-click'].products %}
+        <div class="product-item">
+          <!-- Product Image from Metafield -->
+          <div class="inner-sheet">
+          {% if product.images.size > 0 %}
+              <img src="{{ product.images.last | img_url: 'medium' }}" alt="{{ product.title }}">
+            {% else %}
+              <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+            {% endif %}
+
+          <!-- Metafield Content -->
+          {% if product.metafields.custom.description %}
+            <p>{{ product.metafields.custom.description }}</p>
+          {% endif %}
+          </div>
+
+          <!-- Price & Sale Price -->
+          {% if product.compare_at_price > product.price %}
+            <p class="sale-price">
+              <span class="old-price">{{ product.compare_at_price | money }}</span>
+              <span class="new-price">{{ product.price | money }}</span>
+            </p>
+          {% else %}
+            <p class="price">{{ product.price | money }}</p>
+          {% endif %}
+
+          <!-- Add to Cart Button -->
+          <form method="post" action="/cart/add">
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+            <button type="submit" class="add-to-cart">Add</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Styles for Bottom Drawer -->
+<style>
+  .drawer {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.3s ease-in-out;
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .drawer.show {
+    bottom: 0;
+    border-radius: 15px;
+  }
+#openDrawer{
+  display: none;
+}
+  .drawer-content {
+    position: relative;
+  }
+
+  .close-btn {
+    position: absolute;
+    right: 10px;
+    top: -3px !important;
+    font-size: 30px !important;
+    cursor: pointer;
+  }
+  .drawer-btn {
+    background-color: var(--colors-button-hover);
+    color: #000;
+    font-weight: 600;
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: "Avenir Next", sans-serif;
+    border-radius: 6px;
+  }
+
+.bottom-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+ .bottom-product-list > .product-item {
+       display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f5f4f4;
+    padding: 8px 9px;
+    border-radius: 10px;
+}
+
+  .bottom-product-list .product-item img {
+    width: 38%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .bottom-product-list p.sale-price {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 7px;
+  }
+  .sale-price .old-price {
+    text-decoration: line-through;
+    /* color: red; */
+  }
+
+  .sale-price .new-price {
+    font-weight: bold;
+    /* color: green; */
+  }
+
+  .price {
+    font-weight: bold;
+  }
+
+  .add-to-cart {
+    display: inline-block;
+    /* margin-top: 10px; */
+    padding: 5px 10px;
+    background-color: #f0df20;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .inner-sheet {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 35%;
+    align-items: center;
+}
+  .drawer-content h2 {
+    padding: 10px 0px;
+    text-align : left;
+}
+@media screen and (max-width : 789px){
+  #openDrawer{
+  display: block;
+}
+  button#x-atc-button-template--23950298448169__main {
+    display: none;
+}
+ #ShopifyChat[is-open="false"] {
+    z-index: 25 !important;
+}
+   .drawer.show {
+    z-index: 26 !important;
+  }
+}
+
+</style>
+
+<!-- JavaScript for Toggle Functionality -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const openBtn = document.getElementById("openDrawer");
+    const closeBtn = document.getElementById("closeDrawer");
+    const drawer = document.getElementById("bottomDrawer");
+    
+    openBtn.addEventListener("click", function() {
+      drawer.classList.add("show");
+    });
+
+    closeBtn.addEventListener("click", function() {
+      drawer.classList.remove("show");
+    });
+  });
+</script>
+
+
+

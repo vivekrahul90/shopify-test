@@ -1,0 +1,83 @@
+.tracking-url[href=""], .tracking-url:not([href]), a.b_track, .order-header .status-label, .order-item .tracking-url, .order-card .b_track, .order-item .tracking-info {display: none;}
+a.b_track {text-align: center;}
+.order-history-container {max-width: 1200px;margin: 0 auto;padding: 40px 20px;font-family: Arial, sans-serif;}
+.order-title {margin: 20px 0 15px;color: #000;font-size: 21px;font-weight: 700;line-height: normal;}
+.order-card {display: flex;border: 1px solid #ddd;border-radius: 24px;background: #fff;box-shadow: 0 4px 10px rgba(0,0,0,0.1);margin-bottom: 30px;overflow: hidden;height: 320px;}
+.order-header {width: 100%;max-width: 58%;display: flex;gap: 20px;padding: 20px;border-bottom: 1px solid #eee;flex-direction: column;}
+.order-status .status-label {padding: 5px 12px;border-radius: 100px;color: #949605;font-weight: bold;font-size: 14px;background: var(--yelow-button-bg, #FCFDEC);}
+.order-status .status-label::before {content: " ";border: 4px solid;font-size: 1px;margin-right: 6px;vertical-align: super;padding: 0;border-radius: 50px;}
+.status-label.fulfilled {background:#73d07785; color: #379b3b; }
+.status-label.unfulfilled {background: #f44336;}
+.status-label.pending {background: #ff9800;}
+.order-buttons {display: flex;justify-content: space-between;align-items: center;}
+.order-buttons > div:last-child {display: flex;gap: 10px;}
+.o-btn {border-radius: 50px;text-transform: capitalize;padding: 10px 20px;border: 1px solid #D1D5DB !important;background-color: #fff !important;letter-spacing: 0.8px;font-family: poppins;font-size: 12px;font-weight: 700;line-height: 16px;width: 120px;}
+a.b_track.o-btn {justify-content: center;align-items: center;background: #000 !important;color: #fff;padding: 6.5px;border: none !important;font-size: 14px;}
+a.b_track.o-btn:hover {color: #fff !important;}
+.order-details {display: flex;flex-wrap: wrap;justify-content: space-between;row-gap: 15px;}
+.order-details > p {width: 100%;max-width: 48%;font-size: 16px;font-weight: 600;}
+.order-details p:nth-child(2n + 1) {border-right: 1px solid #9ca3af;}
+.order-details strong {color: #9CA3AF;font-weight: 600;}
+.order-total p {padding: 20px 0;border-top: 1px solid #D1D5DB;color: #000;font-size: 20px;font-weight: 600;line-height: 26px;}
+.order-total p strong {color: #9CA3AF;}
+.invoice-link {color: #007bff;text-decoration: none;font-size: 14px;}
+.invoice-link:hover {text-decoration: underline;}
+.tracking-info {display: none;}
+.order-items {width: 100%;max-width: 44%;display: flex;flex-direction: column;gap: 18px;padding: 0 20px;overflow: auto;margin: 20px 0;}
+.order-item {display: flex;align-items: center;border-radius: 8px;transition: transform 0.3s;}
+.order-item img {width: 100px;height: auto;border-radius: 8px;margin-right: 15px;object-fit: cover;}
+.item-info {gap: 8px;display: flex;flex-direction: row;justify-content: space-between;width: 68%;}
+.item-info p {color: #000;font-size: 16px;font-weight: 500;line-height: 20px;}
+.item-info p strong {color: #9CA3AF;}
+.item-title {font-size: 18px;font-weight: bold;color: #333;margin-bottom: 5px;}
+.item-price {font-size: 16px;color: #28a745;font-weight: bold;}
+p.item-title, .item-price p {font-size: 18px;}
+.buy-again {display: flex;text-decoration: underline;text-underline-position: under;gap: 7px;font-size: 14px;margin-top: 12px;}
+.buy-again:hover {text-decoration: underline;}
+.buy-again svg {fill: transparent;}
+.pagination {text-align: center;margin: 30px 0;}
+.pagination a, .pagination span {display: inline-block;padding: 10px 15px;margin: 0 5px;background: #f1f1f1;color: #555;text-decoration: none;border-radius: 5px;transition: background 0.3s;}
+.pagination a:hover {background: #007bff;color: #fff;}
+.mob-total, .mob {display: none;}
+button.b_cancel::before {content: url(https://cdn.shopify.com/s/files/1/0878/4907/4985/files/Vector.svg?v=1742993029);margin-right: 5px;}
+a.b_track.o-btn::before {content: url(https://cdn.shopify.com/s/files/1/0878/4907/4985/files/order-tracking_1_1.svg?v=1742993029);margin-right: 5px;}
+.re-order-action .o-btn::before {content: url(https://cdn.shopify.com/s/files/1/0878/4907/4985/files/refresh_1.svg?v=1742993030);margin-right: 5px;}
+.reorder-popup button[type="Submit"] {background: #000;color: #fff;border-radius: 50px;font-weight: 600;}
+.order-total.desk-total strong { font-weight: 600; }
+@media screen and (min-width:750px) {
+.order-buttons > div:last-child {display: flex;gap: 10px;width: max-content;}
+.order-buttons > div:last-child > * {width: 100%;max-width: max-content;}
+.re-order-action .o-btn {width: 100%;}
+}
+
+@media screen and (max-width:749px) {
+.order-items {grid-template-columns: 1fr 1fr;}
+.desk-total, .desk {display: none;}
+.mob {display: block;}
+.order-card {flex-wrap: wrap;height: 100%;}
+.order-card > * {max-width: 100%;}
+.order-buttons {flex-direction: column-reverse;gap: 10px;}
+.order-history-container {padding: 20px 0;}
+.order-total.mob-total {display: block;width: 100%;padding: 0 20px 30px;}
+.order-buttons > div:last-child {flex-direction: row-reverse;justify-content: space-between;gap: 8px;width: 100%;}
+button.b_cancel {width: 100%;max-width: 49%;font-size: 12px !important;}
+a.b_track {width: 100%;display: flex;justify-content: center;}
+.order-buttons > div:first-child, .re-order-action, .re-order-action .o-btn {width: 100%;}
+.re-order-action .o-btn, button.b_cancel {color: #636363;font-weight: 600;}
+.order-header {border-bottom: none;padding-bottom: 0;}
+.order-details {justify-content: space-between;row-gap: 10px;}
+.order-item img {width: 100px;height: 100%;}
+p.item-title, .item-price p {font-size: 14px;font-weight: 700;line-height: 18px;}
+.item-info p {font-size: 12px;line-height: normal;margin-bottom: 3px;}
+.order-details p {font-size: 12px;line-height: 16px;}
+.order-total.mob-total p, .order-total.mob-total p strong {font-size: 16px; font-weight: 600;}
+.order-total.mob-total p {padding: 10px 0;}
+.order-details > * {width: 100%;max-width: 50%;}
+a.b_track.o-btn { padding: 6px 9px;}
+.o-btn {padding: 7.5px 20px;}
+.buy-again {font-size: 12px;line-height: 16px;align-items: center;}
+.buy-again svg {width: 16px;}
+  .order-status .status-label { padding: 4px 10px; font-weight: 600; font-size: 12px;}
+}
+
+

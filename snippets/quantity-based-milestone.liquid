@@ -1,0 +1,89 @@
+<div class="shipping-notes-wrapper {% if settings.first_threshhold_short_message != blank or settings.second_threshhold_short_message != blank or settings.third_threshhold_short_message != blank %}has_short_message{% endif %}">  
+ {% assign total_quantity = cart.item_count %}               
+
+  {% if settings.second_threshhold != blank %}
+    {% assign first_threshhold = settings.first_threshhold | plus: 0 %}
+    {% assign second_threshhold = settings.second_threshhold | plus: 0 %} 
+    {% assign total_count = settings.second_threshhold %} 
+    {% assign checkpoint_1 = first_threshhold | times: 100 | divided_by: total_count %} 
+    {% assign checkpoint_2 = second_threshhold | times: 100 | divided_by: total_count %}      
+    {% assign progress = total_quantity | times: 100 | divided_by: total_count %}
+    {% if total_quantity >= second_threshhold %}  
+       {% if settings.success_message != blank %}                          
+        <span class="shipping-notes-wrapper-text">{{ settings.success_message }}</span>
+       {% endif %}
+        <div class="shipiing-progress-track">
+          <div class="shipping-progress-thumb" style="width: 100%">0</div>
+            <span class="check-point has_magenta check-point-first" style="left:{{checkpoint_1}}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.first_threshhold_short_message }}</span>
+           </span>
+           <span class="check-point has_magenta" style="left:{{ checkpoint_2 }}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.second_threshhold_short_message }}</span>
+           </span> 
+        </div>                   
+    
+     {% elsif total_quantity >= first_threshhold %}                                                                
+       {% assign first_ach = second_threshhold | minus: total_quantity %}           
+       {% if settings.first_threshhold_message != blank %}                          
+        <span class="shipping-notes-wrapper-text">{{ settings.first_threshhold_message | replace: '[price]' , first_ach }}</span>
+       {% endif %}
+        <div class="shipiing-progress-track">
+          <div class="shipping-progress-thumb" style="width: {{progress}}%">0</div>
+            <span class="check-point check-point-first {% if progress > checkpoint_1 %}has_magenta{% endif %}" style="left:{{checkpoint_1}}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.first_threshhold_short_message }}</span>
+           </span>
+           <span class="check-point {% if progress > checkpoint_2 %}has_magenta{% endif %}" style="left:{{ checkpoint_2 }}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.second_threshhold_short_message }}</span>
+           </span> 
+        </div>
+     {% else %}                                                
+       {% assign first_ach = first_threshhold | minus: total_quantity %}
+       {% if settings.default_message != blank %}                          
+          <span class="shipping-notes-wrapper-text">{{ settings.default_message | replace: '[price]', first_ach }}</span>
+       {% endif %}
+        <div class="shipiing-progress-track">
+          <div class="shipping-progress-thumb" style="width: {{progress}}%">0</div>
+            <span class="check-point check-point-first {% if progress > checkpoint_1 %}has_magenta{% endif %}" style="left:{{checkpoint_1}}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.first_threshhold_short_message }}</span>
+           </span>
+           <span class="check-point {% if progress > checkpoint_2 %}has_magenta{% endif %}" style="left:{{ checkpoint_2 }}%;">
+             <span class="checkpoint-price text--xxsmall">{{ settings.second_threshhold_short_message }}</span>
+           </span> 
+        </div>
+     {% endif %} 
+
+  {% elsif settings.first_threshhold != blank %}
+    {% assign first_threshhold = settings.first_threshhold | plus: 0 %}
+    {% assign total_count = settings.first_threshhold %} 
+    {% assign checkpoint_1 = first_threshhold | times: 100 | divided_by: total_count %} 
+    {% assign progress = total_quantity | times: 100 | divided_by: total_count %}
+
+     {% if total_quantity >= first_threshhold %}                                                                
+       {% if settings.success_message != blank %}                          
+          <span class="shipping-notes-wrapper-text">{{ settings.success_message }}</span>
+       {% endif %}
+        <div class="shipiing-progress-track">
+          <div class="shipping-progress-thumb" style="width: 100%">0</div>
+            <span class="check-point has_magenta check-point-first" style="left:{{checkpoint_1}}%;">
+              {% if settings.first_threshhold_short_message != blank %}
+               <span class="checkpoint-price text--xxsmall">{{ settings.first_threshhold_short_message }}</span>
+              {% endif %}
+           </span>
+        </div>
+       
+     {% else %}                                                
+       {% assign first_ach = first_threshhold  | minus: total_quantity %}
+       {% if settings.default_message != blank %}                          
+          <span class="shipping-notes-wrapper-text">{{ settings.default_message | replace: '[price]', first_ach }}</span>
+       {% endif %}
+        <div class="shipiing-progress-track">
+          <div class="shipping-progress-thumb" style="width: {{progress}}%">0</div>
+            <span class="check-point check-point-first {% if progress > checkpoint_1 %}has_magenta{% endif %}" style="left:{{checkpoint_1}}%;">
+              {% if settings.first_threshhold_short_message != blank %}
+               <span class="checkpoint-price text--xxsmall">{{ settings.first_threshhold_short_message }}</span>
+             {% endif %}
+           </span>
+        </div>
+     {% endif %} 
+  {% endif %}                    
+</div> 

@@ -1,0 +1,315 @@
+{%- comment -%}
+This file has been modified by the Yoast SEO for Shopify app.
+You can learn more about this (and learn how to cleanly revert these changes) at https://yoa.st/removing-theme-changes.
+{%- endcomment -%}
+<!doctype html>
+<html
+  class="no-js{% if settings.theme_mode_default == "dark" %} dark{% endif %}"
+  lang="{{ request.locale.iso_code }}"
+  {% if settings.lang_direction contains request.locale.iso_code %}
+    dir="rtl"
+  {% endif %}
+>
+  <head>
+<!--
+    <script>
+// Function to split dhan yog visitiors into two equal parts
+function generateUniform(min, max) {
+    return min + (Math.random() * (max - min));
+  }
+  
+  // Check if the URL contains the product names
+  if (
+    (window.location.href.includes("dhan-yog-bracelet") || window.location.href.includes("money-mantra-bracelet"))
+  ) {
+    // Generate a uniform random number between 0 and 1 for 50:50 random choice
+    var randomChoice = generateUniform(0, 1); // Using generateUniform instead of Math.random()
+    console.log("Random Choice: ", randomChoice);  // Debugging the random choice
+  
+    // Redirect based on random choice
+    setTimeout(function() {
+      window.location.replace(randomChoice < 0.5 ? 
+        "https://astrotalk.store/products/dhanyogbracelet-atc-checkout" : 
+        "https://astrotalk.store/products/dhanyogbracelet-control-copy"
+      );
+    }, 100);  // Adjust delay as necessary
+  }
+  
+    </script>
+
+-->
+    
+
+    <!-- Gokwik theme code start -->
+    <link rel="dns-prefetch" href="https://pdp.gokwik.co/">
+    <link rel="dns-prefetch" href="https://api.gokwik.co">
+    {% render 'gokwik' %}
+
+    
+    <!-- Google tag (gtag.js) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-P3V27WK28Z"></script>
+    <script>
+      
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config','G-P3V27WK28Z',{ 'groups': 'GA4'});
+    </script> -->
+    
+    <!-- Gokwik theme code End -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=1.0"
+    >
+    <meta name="theme-color" content="">
+    
+    {% if product.metafields.custom.canonical != blank %}
+        {%- comment -%}Auto-disabled. Yoast plugin is taking care of Meta Tags output.{%- endcomment -%}
+{%- if disabled_by_yoast_seo -%}
+<link rel="canonical" href="{{ product.metafields.custom.canonical }}">
+{%- comment -%} End Yoast auto-disable. {%- endcomment -%}
+{%- endif -%}
+    {% else %}
+        {%- comment -%}Auto-disabled. Yoast plugin is taking care of Meta Tags output.{%- endcomment -%}
+{%- if disabled_by_yoast_seo -%}
+<link rel="canonical" href="{{ canonical_url }}">
+{%- comment -%} End Yoast auto-disable. {%- endcomment -%}
+{%- endif -%}
+    {% endif %}
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    {%- comment -%}Auto-disabled. Yoast plugin is taking care of SEO output.{%- endcomment -%}
+{%- if disabled_by_yoast_seo -%}
+<title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+{%- comment -%} End Yoast auto-disable. {%- endcomment -%}
+{%- endif -%}
+    {%- if settings.enable_organization_schema and template.name == 'index' -%}
+      {% liquid
+        if settings.business_address_1 != null
+          assign first_business_addr = settings.business_address_1 | split: ','
+        endif
+        if settings.business_address_2 != null
+          assign second_business_addr = settings.business_address_2 | split: ','
+        endif
+      %}
+      <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "{{ settings.site_type }}",
+          "name": "{{ settings.business_name }}",
+          "description": "{{ settings.business_description }}",
+          {% if settings.business_logo != blank %}
+          "logo": {{ settings.business_logo | image_url: width: 112 | prepend: "https:" | json }},
+          {% endif %}
+          "telephone": "{{ settings.business_phone }}",
+          "address": [{
+            "@type": "PostalAddress",
+            "streetAddress": "{{ first_business_addr[0] }}",
+            "addressLocality": "{{ first_business_addr[1] }}",
+            "addressRegion": "{{ first_business_addr[2] }}",
+            "postalCode": "{{ first_business_addr[3] }}",
+            "addressCountry": "{{ first_business_addr[4] }}"
+          },{
+            "streetAddress": "{{ second_business_addr[0] }}",
+            "addressLocality": "{{ second_business_addr[1] }}",
+            "addressRegion": "{{ second_business_addr[2] }}",
+            "postalCode": "{{ second_business_addr[3] }}",
+            "addressCountry": "{{ second_business_addr[4] }}"
+          }],
+          "email": "{{ settings.business_email }}"
+        }
+      </script>
+    {%- endif -%}
+
+    {% if page_description %}
+      {%- comment -%}Auto-disabled. Yoast plugin is taking care of Meta Tags output.{%- endcomment -%}
+{%- if disabled_by_yoast_seo -%}
+<meta name="description" content="{{ page_description | escape }}">
+{%- comment -%} End Yoast auto-disable. {%- endcomment -%}
+{%- endif -%}
+    {% endif %}
+
+    {% liquid
+      render 'meta-tags'
+      render 'font-face'
+      echo 'theme.css' | asset_url | stylesheet_tag: preload: true
+      echo 'review.css' | asset_url | stylesheet_tag: preload: true
+      echo 'custom-product.css' | asset_url | stylesheet_tag: preload: true
+      echo 'custom.css' | asset_url | stylesheet_tag: preload: true
+      echo 'aos.css' | asset_url | stylesheet_tag: preload: true
+      render 'css-variables'
+      render 'theme-mode-control'
+    %}
+    {% if request.page_type == 'policy' %}
+      {{ 'page.css' | asset_url | stylesheet_tag: preload: true }}
+    {% endif %}
+    {{ content_for_header }}
+    {{ settings.additional_head }}
+
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "oqnvmhozde");
+    </script>    
+
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16679446133"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-16679446133');
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WJWZ9D5H');
+    </script>
+    <!-- End Google Tag Manager -->
+   
+ {% if handle contains 'khazani-joint-muscle-pain-relief-oil' %}
+<style>
+.announcement-bar_container-sections--23889103257897__announcement-bar {
+display: none !important;
+}
+ </style>
+{% endif %}
+     {% if handle contains 'ai-product-recommender' %}
+<style>
+.announcement-bar_container-sections--24027294859561__announcement-bar {
+display: none !important;}
+  #shopify-chat {
+    display: none !important;
+  }
+
+ </style>
+{% endif %}
+    {% if template == 'product.whiff-6-atc-checkout' %}
+  <style>
+    .button-product-buy_buttons .form {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items:baseline;
+      gap:10px;
+    }
+    button#x-atc-button-template--24098661695785__main {
+      flex: 1;
+      width: 95%;
+      max-width: calc(50%);
+      padding:12px;
+      background:#1a2024;
+      color:white;
+      /* max-height:40px; */
+    }
+    .relative.form-buy-it-now {
+      width: 95%;
+      max-width: calc(50%);
+    }
+    .add_to_cart_button .hyphen{
+      display:none;
+    }
+    .button-product.forever_sticky_atc .stickybar_price_wrapper{
+      display:none;
+    }
+    #gokwik-buy-now{
+      padding:12px 10px;
+    }
+    @media (max-width: 767px) {
+    .button-product.forever_sticky_atc > div:last-child {
+        padding: 9px;
+    }}
+  </style>
+{% endif %}
+{% if template == 'product.atc-checkout-new' %}
+  <style>
+    .button-product-buy_buttons .form {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: baseline;
+      gap: 10px;
+    }
+    button#x-atc-button-template--24051184763177__main {
+      flex: 1;
+      width: 75%; /* Buy Now button width */
+      max-width: 75%;
+      padding: 12px;
+      background: white;
+      border: 1px solid black;
+      max-height:40px;
+    }
+    .relative.form-buy-it-now {
+      width: 75%;
+      max-width: 75%;
+    }
+    .add_to_cart_button {
+      width: 25%; /* Add to Cart button width */
+      max-width: 25%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 1px solid black;
+      padding: 16px;
+    }
+    .add_to_cart_button .hyphen {
+      display: none;
+    }
+    .add_to_cart_button .icon {
+      font-size: 20px; /* Adjust icon size */
+    }
+    .button-product.forever_sticky_atc .stickybar_price_wrapper {
+      display: none;
+    }
+    @media (max-width: 767px) {
+      .button-product.forever_sticky_atc > div:last-child {
+        padding: 9px;
+      }
+    }
+  </style>
+  <script>
+    // Add an icon inside the Add to Cart button
+    document.addEventListener('DOMContentLoaded', function() {
+      var addToCartButton = document.querySelector('.add_to_cart_button');
+      if (addToCartButton) {
+        addToCartButton.innerHTML = '<i class="icon fa fa-cart-plus"></i>'; // Example Font Awesome cart icon
+      }
+    });
+  </script>
+{% endif %}
+
+
+</head>
+  <body
+    class="gradient temp-{{ template.suffix }} pro-{{ product.id }} {% for tag in product.tags %} {% if tag contains "apd" %} apd {% endif %} {% if tag contains "freecm" %} freecm{% endif %} {% if tag contains "offer-ad" %} offer-ad {% endif %} {% if tag contains "dyb-499" %} dyb-499 {% endif %} {% if tag contains "ppd-249" %} ppd-249 {% endif %} {% endfor %}{% if request.path contains 'cart' %}cart-page{% endif %} scrollbar-body overflow-x-hidden text-[{{ settings.text_base_size | times: 0.007875 }}rem] md:text-[{{ settings.text_base_size | times: 0.00875 }}rem]{% if settings.lang_direction contains request.locale.iso_code %} rtl{% endif %}"
+    x-data
+    :class="$store.xPopup.open && 'overflow-hidden padding-scrollbar'"
+  ><main
+      id="MainContent"
+      class="content-for-layout focus-none outline-none theme-template-{{ template.name }} theme-template-suffix-{{ template.suffix | default: 'none' }}"
+      role="main"
+      tabindex="-1"
+    >
+      {{ content_for_layout }}
+    </main></body>
+</html>

@@ -1,0 +1,64 @@
+{% comment %}
+  Snippet: offer-bar
+  Purpose: Show an offer bar only if the product metafield `custom.offer_bar` equals "1".
+{% endcomment %}
+
+{% assign show_offer_bar = false %}
+
+{%- comment -%}
+  1) Check if we are on a product page and have a `product` object
+{%- endcomment -%}
+{% if template contains 'product' and product %}
+  
+  {%- comment -%}
+    2) Compare the product's metafield value to "1"
+  {%- endcomment -%}
+  {% if product.metafields.custom.offer_bar == "1" %}
+    {% assign show_offer_bar = true %}
+  {% endif %}
+{% endif %}
+
+{%- comment -%}
+  3) If `show_offer_bar` is true, render the bar
+{%- endcomment -%}
+{% if show_offer_bar %}
+  <div class="offer-bar">
+    <ul class="offer-list">
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+      <li>80% of the users ordered a physical copy of the certificate!! 🥳🎊</li>
+    </ul>
+  </div>
+
+  <style>
+    .offer-bar {
+      display:none !important;
+      background: #fafafa;
+      color: #970000;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .offer-list {
+      display: inline-block;
+      margin-bottom: 5px;
+      padding: 5px 3px 0;
+      list-style: none;
+      animation: scroll 45s linear infinite;
+    }
+    .offer-list li:first-child {
+      padding-right: 20px;
+    }
+    .offer-list li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    @keyframes scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+{% endif %}

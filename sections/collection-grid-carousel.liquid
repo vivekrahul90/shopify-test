@@ -1,0 +1,490 @@
+{%- style -%}
+/* Updated Collection Grid Styles */
+.collection-grid-simple__title {
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  font-size: {{ section.settings.heading_font_size }}px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.collection-grid-simple__grid {
+  box-sizing: border-box;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 1.5rem;
+  gap: 1rem;
+}
+
+.collection-grid-simple__grid::-webkit-scrollbar {
+  display: none;
+}
+
+.collection-grid-simple__item {
+  flex: 0 0 auto;
+  width: 85%;
+  scroll-snap-align: start;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .collection-grid-simple__grid {
+    padding: 0 2rem;
+  }
+  
+  .collection-grid-simple__item {
+    width: calc(100% / {{ section.settings.products_per_row_desktop }} - 1rem);
+  }
+}
+
+.product-card {
+  background-color: #f8f6f1;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.product-card__media {
+  width: 90%;
+  height: 0;
+  padding-bottom: 90%;
+  position: relative;
+  overflow: hidden;
+  margin: 5% auto 0;
+  border-radius: {{ section.settings.image_border_radius }}%;
+}
+
+.product-card__image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: {{ section.settings.image_border_radius }}%;
+}
+
+.product-card__info {
+  padding: 1rem 1rem 0rem;
+  text-align: left;
+}
+
+.product-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  max-width: 100%;
+  text-align:left;
+}
+
+.product-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card__rating {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+}
+
+.product-card__vendor {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.product-card__price-and-cart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem 1rem;
+  gap: 0.5rem;
+}
+
+.product-card__price-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.product-card__price {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.product-card__compare-at {
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.product-card__add-to-cart {
+  border-radius: {{ section.settings.border_radius }}px;
+  background-color: #000;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  margin-left: auto;
+  transition: 
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.product-card__add-to-cart:hover {
+  background-color: #2F3645;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.product-card__add-to-cart:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Loading Animation */
+.product-card__add-to-cart.loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.product-card__add-to-cart.loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255,255,255,0.3), 
+    transparent
+  );
+  animation: loading-pulse 1.5s infinite;
+}
+
+@keyframes loading-pulse {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Success Animation */
+.product-card__add-to-cart.added {
+  background-color: #2F3645;
+  color: white;
+  animation: success-bounce 0.5s;
+}
+
+@keyframes success-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.product-card__sold-out {
+  color: #e53e3e;
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+/* Existing carousel dots and other styles remain the same */
+{%- endstyle -%}
+
+
+<section id="collection-grid-simple-{{ section.id }}" class="collection-grid-simple">
+  {% if section.settings.section_title != blank %}
+    <h2 class="collection-grid-simple__title">
+      {{ section.settings.section_title }}
+    </h2>
+  {% endif %}
+
+  {% assign grid_collection = collections[section.settings.collection_handle] %}
+
+  {% if grid_collection and grid_collection.products_count > 0 %}
+    <div class="collection-grid-simple__grid">
+      
+      {% if section.settings.max_products > 0 %}
+        {% assign products_limit = section.settings.max_products %}
+      {% else %}
+        {% assign products_limit = 100 %}
+      {% endif %}
+      
+      {% for product in grid_collection.products limit: products_limit %}
+        <div class="collection-grid-simple__item">
+          <div class="product-card">
+            <!-- Media container for image -->
+            <div class="product-card__media">
+              <a 
+                href="{{ product.url | within: grid_collection }}" 
+                onclick="clevertap.event.push('Home_card_click')"
+              >
+                <div class="product-card__image-wrapper">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | img_url: 'large' }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      class="product-card__image"
+                      loading="lazy"
+                    />
+                  {% endif %}
+                </div>
+              </a>
+            </div>
+
+            <!-- Info container for title, vendor, rating, price -->
+            <div class="product-card__info">
+              <a 
+                href="{{ product.url | within: grid_collection }}" 
+                onclick="clevertap.event.push('Home_card_click')"
+              >
+                <h3 class="product-card__title">{{ product.title }}</h3>
+              </a>
+              
+              {% if section.settings.show_vendor %}
+                <p class="product-card__vendor">{{ product.vendor }}</p>
+              {% endif %}
+              
+              <!-- Judge.me Product Rating -->
+              <div class="product-card__rating">
+                <!-- Start of Judge.me code -->
+                <div style='{{ jm_style }}' class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}' data-auto-install='false'>
+                  {{ product.metafields.judgeme.badge }}
+                </div>
+                <!-- End of Judge.me code -->
+              </div>
+            </div>
+
+            <!-- Price and Add to Cart in the same line -->
+            <div class="product-card__price-and-cart">
+              <div class="product-card__price-wrapper">
+                <span class="product-card__price">
+                  {{ product.price | money }}
+                </span>
+                {% if product.compare_at_price > product.price %}
+                  <span class="product-card__compare-at">
+                    {{ product.compare_at_price | money }}
+                  </span>
+                {% endif %}
+              </div>
+
+              <!-- Add to Cart (Alpine) -->
+              <div x-data="xProductCart()">
+                {% assign first_variant = product.selected_or_first_available_variant %}
+
+                {% if first_variant %}
+                  {% if product.available %}
+                    <form
+                      method="post"
+                      action="/cart/add"
+                      accept-charset="UTF-8"
+                      class="form"
+                      enctype="multipart/form-data"
+                      novalidate
+                      data-type="add-to-cart-form"
+                      x-ref="product_form"
+                    >
+                      <input type="hidden" name="form_type" value="product">
+                      <input type="hidden" name="utf8" value="✓">
+                      <input type="hidden" name="id" value="{{ first_variant.id }}">
+
+                      <!-- Add to Cart Button with Icon and Text -->
+                      <button
+                        type="button"
+                        class="product-card__add-to-cart"
+                        aria-label="Add to cart"
+                        @click="
+                          $el.classList.add('loading'); 
+                          addToCart($event, true);
+                          clevertap.event.push('Home_card_click');
+                        "
+                        x-intersect.once.margin.200px="Alpine.store('xCartHelper').validateCart();"
+                      >
+                        <!-- Provided SVG Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 18 20" fill="none" style="fill: none; padding-right:5px;">
+                          <path d="M3.97589 1.70605L1.48779 5.02351V16.6346C1.48779 17.0745 1.66255 17.4965 1.97362 17.8075C2.2847 18.1186 2.7066 18.2934 3.14652 18.2934H14.7576C15.1976 18.2934 15.6195 18.1186 15.9305 17.8075C16.2416 17.4965 16.4164 17.0745 16.4164 16.6346V5.02351L13.9283 1.70605H3.97589Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                          <path d="M1.48779 5.02344H16.4164" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                          <path d="M12.2697 8.34082C12.2697 9.22067 11.9202 10.0645 11.298 10.6866C10.6759 11.3088 9.83207 11.6583 8.95223 11.6583C8.07238 11.6583 7.22857 11.3088 6.60643 10.6866C5.98428 10.0645 5.63477 9.22067 5.63477 8.34082" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+
+                        <!-- Text -->
+                        Add
+                      </button>
+                    </form>
+                  {% else %}
+                    <span class="product-card__sold-out">Sold Out</span>
+                  {% endif %}
+                {% else %}
+                  <span class="product-card__sold-out">Sold Out</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_carousel_indicators %}
+      <!-- Carousel indicators for both mobile and desktop -->
+      <div class="carousel-dots">
+        {% assign displayed_products = grid_collection.products | limit: products_limit %}
+        {% for product in displayed_products %}
+          {% if forloop.index <= displayed_products.size %}
+            <span class="carousel-dot{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}"></span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% else %}
+    <p class="collection-grid-simple__empty-message">
+      No products found in this collection.
+    </p>
+  {% endif %}
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.product-card__add-to-cart').forEach(button => {
+      button.addEventListener('mousedown', (e) => {
+        // Add click effect
+        button.classList.add('clicked');
+        
+        // Remove click effect after animation
+        setTimeout(() => {
+          button.classList.remove('clicked');
+        }, 300);
+      });
+
+      button.addEventListener('click', (e) => {
+        // Add loading state
+        button.classList.add('loading');
+
+        // Simulate cart addition (replace with your actual cart logic)
+        setTimeout(() => {
+          button.classList.remove('loading');
+        }, 2000);
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Collection Carousel Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section heading",
+      "default": "Combo Deals"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Section heading font size (px)",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "collection",
+      "id": "collection_handle",
+      "label": "Choose a collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum products to display",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "info": "Set the maximum number of products to display from the collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "label": "Products per row (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_carousel_indicators",
+      "label": "Show carousel indicators",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Button border radius (px)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius (%)",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Carousel Grid",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

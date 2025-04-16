@@ -1,0 +1,2444 @@
+<div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start;--o-mobile:2"
+      class="g3QCCNLgzF gp-relative gp-flex gp-flex-col"
+    >
+      
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="gpGosT9h3b" data-id="gpGosT9h3b"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--cg:var(--g-s-2xl);--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="gpGosT9h3b gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="gZ6WH0OEoi gp-relative gp-flex gp-flex-col"
+    >
+      
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="gxS6hS5D9-" data-id="gxS6hS5D9-"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--bblr:10px;--bbrr:10px;--btlr:10px;--btrr:10px;--pt:var(--g-s-2xl);--pl:var(--g-s-2xl);--pb:var(--g-s-2xl);--pr:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--pt-mobile:var(--g-s-2xl);--pl-mobile:var(--g-s-xl);--pb-mobile:var(--g-s-2xl);--pr-mobile:var(--g-s-xl);--pt-tablet:21px;--pl-tablet:10px;--pb-tablet:21px;--pr-tablet:10px;--cg:var(--g-s-2xl);--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:var(--g-c-bg-3);--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="gxS6hS5D9- gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="g-sm3Ln22l gp-relative gp-flex gp-flex-col"
+    >
+      
+    {%- assign gpBkProduct = product -%}
+    
+        {%- liquid
+          if request.page_type == 'product'
+            if 'static' == 'static'
+              if 'latest' == 'latest'
+                paginate collections.all.products by 100000
+                  assign product = collections.all.products | sort: 'created_at' | reverse | first
+                endpaginate
+              else
+                assign product = all_products['']
+                assign productId = 'latest' | times: 1
+                if product == empty or product == null
+                  paginate collections.all.products by 100000
+                    for item in collections.all.products
+                      if item.id == productId
+                        assign product = item
+                      endif
+                    endfor
+                  endpaginate
+                endif
+              endif
+            endif
+          else
+            if 'latest' == 'latest'
+              paginate collections.all.products by 100000
+                assign product = collections.all.products | sort: 'created_at'| reverse | first
+              endpaginate
+            else
+              assign product = all_products['']
+              assign productId = 'latest' | times: 1
+              if product == empty or product == null
+                paginate collections.all.products by 100000
+                  for item in collections.all.products
+                    if item.id == productId
+                      assign product = item
+                    endif
+                  endfor
+                endpaginate
+              endif
+            endif
+          endif
+        -%}
+      
+
+    {%-if product != empty and product != null -%}
+      {%- assign initVariantId =  -%}
+      {%- assign product_form_id = 'product-form-' | append: "gNC7QESnZ2" -%}
+      {%- assign variant = product.selected_or_first_available_variant -%}
+      {%- assign productSelectedVariant = product.selected_or_first_available_variant -%}
+      {%-if productSelectedVariant == empty or productSelectedVariant == null -%}
+        {%- assign productSelectedVariant = product.selected_or_first_available_variant -%}
+      {%- endif -%}
+      {%-if variant == empty or variant == null -%}
+        {%- assign variant = product.selected_or_first_available_variant -%}
+      {%- endif -%}
+      <gp-product data-uid="gNC7QESnZ2" data-id="gNC7QESnZ2"   gp-context='{"productId": {{ product.id }}, "preSelectedOptionIds": [], "isSyncProduct": "", "variantSelected": {{ variant | json | escape }}, "inventoryQuantity": {{ variant.inventory_quantity }}, "quantity": 1, "formId": "{{ product_form_id }}" }'
+        gp-data='{"variantSelected": {{ variant | json | escape }}, "quantity": 1, "productUrl":{{ product.url | json | escape }}, "productHandle":{{ product.handle | json | escape }}, "collectionUrl": {{ collection.url | json | escape }}, "collectionHandle": {{ collection.handle | json | escape }}}'>
+        <product-form class="product-form">
+          {%- form 'product', product, id: product_form_id, class: 'form contents', data-type: 'add-to-cart-form', autocomplete: 'off'  -%}
+            <input type="hidden" name="id" value="{{ variant.id }}" />
+            <input type="hidden" name="quantity" value="{{ quantity }}" />
+            <button type="submit" onclick="return false;" style="display:none;"></button>
+            
+       
+      
+    <div
+      id="gNC7QESnZ2" data-id="gNC7QESnZ2-row"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--cg:30px;--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%"
+        class="gNC7QESnZ2 gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="gNmgrHa4fr gp-relative gp-flex gp-flex-col"
+    >
+      <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%" class="gSPcNv2Aj- ">
+      
+    {%- unless product -%}
+      <p>{{ "gempages.ProductTitle.product_not_found" | t }}</p>
+    {%- else -%}
+      
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gSPcNv2Aj-">
+    <div
+      
+        class="gSPcNv2Aj- "
+        
+      >
+      <div  >
+        <h3
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-product-title"
+          style="--w:100%;--ta:center;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;--ff:var(--g-font-heading, heading);--ls:0px;--size:19px;--size-mobile:17px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >{{ product.title }}</h3>
+      </div>
+    </div>
+    </gp-text>
+    
+      
+    {%- endunless -%}
+  
+      </div><div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--pt:var(--g-s-s);--pb:var(--g-s-s)" class="gmnLE7PTjq ">
+      
+    <div
+    data-id="gmnLE7PTjq"
+      class="gp-flex gp-justify-center"
+    >
+      <div
+        style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--t:gp-rotate(0deg);--bc:#EEEEEE"
+        class="gp-block tablet:gp-block mobile:gp-block"
+      ></div>
+      <div
+        class="gp-items-center gp-hidden tablet:gp-hidden mobile:gp-hidden"
+        style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--t:gp-rotate(0deg)"
+      >
+        
+    <div
+      class="gp-hidden"
+      style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--minw:68%;--minw-tablet:100%;--minw-mobile:68%"
+    ></div>
+  
+        
+            <span
+              class="gp-inline-flex gp-items-center gp-justify-center gp-flex-none"
+              style="--mr:var(--g-s-xs);--w:20px;--h:20px;--t:gp-rotate(0);--c:var(--g-c-text-1, text-1)"
+            >
+              <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M428.8 137.6h-86.177a115.52 115.52 0 0 0 2.176-22.4c0-47.914-35.072-83.2-92-83.2-45.314 0-57.002 48.537-75.707 78.784-7.735 12.413-16.994 23.317-25.851 33.253l-.131.146-.129.148C135.662 161.807 127.764 168 120.8 168h-2.679c-5.747-4.952-13.536-8-22.12-8H32c-17.673 0-32 12.894-32 28.8v230.4C0 435.106 14.327 448 32 448h64c8.584 0 16.373-3.048 22.12-8h2.679c28.688 0 67.137 40 127.2 40h21.299c62.542 0 98.8-38.658 99.94-91.145 12.482-17.813 18.491-40.785 15.985-62.791A93.148 93.148 0 0 0 393.152 304H428.8c45.435 0 83.2-37.584 83.2-83.2 0-45.099-38.101-83.2-83.2-83.2zm0 118.4h-91.026c12.837 14.669 14.415 42.825-4.95 61.05 11.227 19.646 1.687 45.624-12.925 53.625 6.524 39.128-10.076 61.325-50.6 61.325H248c-45.491 0-77.21-35.913-120-39.676V215.571c25.239-2.964 42.966-21.222 59.075-39.596 11.275-12.65 21.725-25.3 30.799-39.875C232.355 112.712 244.006 80 252.8 80c23.375 0 44 8.8 44 35.2 0 35.2-26.4 53.075-26.4 70.4h158.4c18.425 0 35.2 16.5 35.2 35.2 0 18.975-16.225 35.2-35.2 35.2zM88 384c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z" /></svg>
+            </span>
+          
+        
+            <span
+              class="gp-inline-flex gp-items-center gp-justify-center gp-flex-none gp-g-paragraph-1"
+              style="--tt:horizontal;--c:var(--g-c-text-1, text-1);--mr:var(--g-s-s)"
+            >
+              Title
+            </span>
+          
+        
+    <div
+      class="gp-flex"
+      style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--minw:68%;--minw-tablet:100%;--minw-mobile:68%"
+    ></div>
+  
+      </div>
+    </div>
+  
+      </div><div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%" class="g5E_Rds-52 ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.gg5E_Rds-52_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | append: ' 0% ' | append: suffixVal
+    else
+         assign salePercent = priceSave | divided_by: salePrice | times: 100  | round
+                assign pricePercentage = prefixVal | append: ' ' | append: salePercent | append: '% ' | append: suffixVal
+              
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="g5E_Rds-52"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"SAVE","suffix":"","unit":"percentage"},"translate":"customContent"}, "id": "g5E_Rds-52", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:center"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.gg5E_Rds-52_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full"
+         style="--pl:16px;--pr:16px;--pt:16px;--pb:16px;--pl-tablet:16px;--pr-tablet:16px;--pt-tablet:16px;--pb-tablet:16px;--pl-mobile:16px;--pr-mobile:16px;--pt-mobile:16px;--pb-mobile:16px;--bs:none;--bw:0px;--bc:transparent;--c:#242424;--bg:transparent;--radius:var(--g-radius-large)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-g5E_Rds-52"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--ta:center;--c:#242424;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:18px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div>
+  {% assign featured_image = product.featured_image %}
+  {%- if variant != null and variant.featured_image != null -%}
+  {% assign featured_image = variant.featured_image %}
+  {%- endif -%}
+    <gp-product-images-v2
+      gp-data='
+    {
+      "id":"gPeA_imTiF",
+      "pageContext": {"numberOfProductOfProductList":0,"isPreviewing":false,"pageType":"GP_PRODUCT","hasCollectionHandle":true,"isTranslateWithLocale":false,"sectionName":"gp-section-559447151621440632"},
+      "setting":{"arrowIcon":"","borderActive":{"borderType":"none","borderWidth":"1px","color":"#000000","isCustom":"false","width":"1px 1px 1px 1px"},"clickOpenLightBox":{"desktop":false,"mobile":false,"tablet":false},"dragToScroll":true,"ftArrowIcon":"<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0ZM10.6828 8.13017C10.5266 7.95661 10.2734 7.95661 10.1172 8.13017C9.96095 8.30374 9.96095 8.58515 10.1172 8.75871L13.0343 12L10.1172 15.2413C9.96095 15.4149 9.96095 15.6963 10.1172 15.8698C10.2734 16.0434 10.5266 16.0434 10.6828 15.8698L13.8828 12.3143C14.0391 12.1407 14.0391 11.8593 13.8828 11.6857L10.6828 8.13017Z\" fill=\"currentColor\"/>\n    </svg>","ftArrowIconColor":"#000000","ftClickOpenLightBox":{"desktop":"none"},"ftDotActiveColor":{"desktop":"line-3"},"ftDotColor":{"desktop":"bg-1"},"ftDotGapToCarousel":{"desktop":16},"ftDotSize":{"desktop":12},"ftDotStyle":{"desktop":"none"},"ftNavigationPosition":{"desktop":"none","mobile":"none","tablet":"none"},"hoverEffect":"none","loop":{"desktop":true,"mobile":true,"tablet":true},"navigationPosition":{"desktop":"inside","mobile":"inside","tablet":"inside"},"otherImage":0,"pauseOnHover":true,"speed":1,"type":{"desktop":"images","mobile":"images","tablet":"images"},"typeDisplay":"all-images","zoom":1.5,"zoomType":"default"},
+      "styles":{"align":{"desktop":"center","mobile":"center","tablet":"center"},"aspectHeight":{"desktop":0,"mobile":0,"tablet":0},"aspectWidth":{"desktop":0,"mobile":0,"tablet":0},"dotActiveColor":{"desktop":"highlight"},"dotColor":{"desktop":"bg-1"},"ftAspectHeight":{"desktop":0,"mobile":0,"tablet":0},"ftAspectWidth":{"desktop":0,"mobile":0,"tablet":0},"ftLayout":{"desktop":"cover","mobile":"cover","tablet":"cover"},"ftShape":{"desktop":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100px"},"tablet":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"}},"itemSpacing":{"desktop":"var(--g-s-s)","mobile":"var(--g-s-s)"},"layout":{"desktop":"cover","mobile":"cover","tablet":"cover"},"position":{"desktop":"only-feature","mobile":"only-feature","tablet":"only-feature"},"ratioLayout":{"desktop":{},"mobile":{},"tablet":{}},"ratioLayoutRight":{"desktop":{},"mobile":{},"tablet":{}},"shape":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeFor1Col":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeFor2Col":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"50%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeForBottom":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"20%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeForFtOnly":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"spacing":{"desktop":"var(--g-s-s)","mobile":"var(--g-s-s)"},"verticalLayout":{"desktop":false,"mobile":false,"tablet":false},"verticalLayoutRow":{"desktop":true,"mobile":true,"tablet":true}}, "productUrl":{{product.url | json | escape}}, "product":{{product | json | escape}}, "collectionUrl": {{ collection.url | json | escape }}, "collection": {{ collection | json | escape}}
+    }
+  '
+      section-id="{{section.id}}"
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--pt:var(--g-s-2xl);--pt-mobile:var(--g-s-2xl);--pt-tablet:14px"
+      data-id="gPeA_imTiF"
+      class="gPeA_imTiF gp-overflow-hidden"
+    >
+      <div
+        class="{%- if product.media.size > 1 -%} gp-grid gp-w-full !gp-m-0 gp-relative {%- else -%} gp-w-full !gp-m-0 gp-relative {%- endif -%}"
+        {%- if product.media.size > 1 -%}
+        style="--gtc:minmax(0, 12fr);--gtc-tablet:minmax(0, 12fr);--gtc-mobile:minmax(0, 12fr);--gg:var(--g-s-s);--gg-mobile:var(--g-s-s)"
+        {%- else -%}
+        style="--gtc:minmax(0, 12fr);--gg:var(--g-s-s);--gg-mobile:var(--g-s-s)"
+        {%- endif -%}
+      >
+        
+    {% capture featureImageOnlyOne %}
+      
+        {% assign featureMedia = variant.featured_media %}
+        {% unless featureMedia %}
+        {% assign featureMedia = product.featured_media %}
+        {% endunless %}
+        {% if product.media.size > 1 %}
+          
+          {% assign featureMedia = variant.featured_media %}
+          {% unless featureMedia %}
+          {% assign featureMedia = product.featured_media %}
+          {% endunless %}
+        
+        {% endif %}
+        {% assign largestRatio = 0 %}
+        {% assign height = featureMedia.height | times: 1.0 %}
+        {% assign width = featureMedia.width | times: 1.0 %}
+        {% assign ratio = height | divided_by: width %}
+        {% if ratio > largestRatio %}
+          {% assign largestRatio = ratio %}
+        {% endif %}
+        {% assign productImageWidth = 0 %}
+        {% case featureMedia.media_type %}
+          {% when 'image' %}
+            {% assign productImageWidth = featureMedia.width %}
+          {% else %}
+            {% assign productImageWidth = featureMedia.preview_image.width %}
+        {% endcase %}
+        {% if featureMedia == null %}
+        {% assign productImageWidth = 1600 %}
+        {% endif %}
+        <div 
+          class='gp-feature-image-carousel gp-feature-image-only' 
+          style="--o:0;--o-tablet:0;--o-mobile:0;--d:flex;--d-mobile:flex;--d-tablet:flex;--jc:center;--jc-tablet:center;--jc-mobile:center"
+        >
+          <div 
+            class="gp-relative"
+            style="--w:100%;--w-tablet:100%;--w-mobile:100px"
+          >
+            
+      
+    
+            <div 
+              type="gp-feature-image-only"
+              product-id="{{product.id}}"
+              product-media="{{product.media.size}}"
+              class="gp-image-item gp-ft-image-item gp-group gp-z-0 gp-flex !gp-max-w-full !gp-w-full gp-relative gp-items-start gp-justify-center gp-overflow-hidden gp-featured-image-wrapper"
+              style="--h:auto;--h-tablet:auto;--h-mobile:auto;width:{{productImageWidth}}px"
+            >
+              <div 
+                class="gp-w-full  {% if featureMedia == null or featureMedia.media_type == 'image' %} {{ 'gp-h-0' }} {% else %} {{ 'gp-h-full !gp-pb-0' }} {% endif %} gp-relative" 
+                style="--pb: calc((1/1)*100%);--pb-tablet: calc((1/1)*100%);--pb-mobile: calc((1/1)*100%); {% if featureMedia.media_type == 'video' or featureMedia.media_type == 'external_video' %} {{ 'display: flex; align-items: center; justify-content: center' }} {% endif %}"
+              >
+                
+    {% case featureMedia.media_type %}
+      {% when 'image' %}
+        
+      
+    {% assign src = featureMedia.src %}
+    
+    
+  <img
+      id="{%- if featureMedia != null -%}
+              {{featureMedia.id}}
+            {%- endif -%}"
+      
+      draggable="false"
+      class="gp-w-full gp-h-full gp-absolute gp-top-0 gp-left-0 featured-image-only gp-cursor-pointer !gp-rounded-none gp-w-full gp-transition-opacity {{shouldHidden}} gp_lazyload"
+      data-src="{{src | image_url}}" data-srcset="{%- if src != null -%}
+              {{src | img_url: '480x480'}} 480w, {{src | img_url: '768x768'}} 768w,{{src | img_url: '1024x1024'}} 1024w,{{src | img_url: '1440x1440'}} 1440w
+            {%- else -%}
+              {{ 'https://cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_large.gif' }}
+            {%- endif -%}" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgIDxkZWZzPgogICAgICA8bGluZWFyR3JhZGllbnQgaWQ9Imcte3tmZWF0dXJlTWVkaWEud2lkdGh9fS17e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSI+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSIyMCUiIC8+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSI1MCUiIC8+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSI3MCUiIC8+CiAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8cmVjdCB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgZmlsbD0icmdiYSg1MSwgNTEsIDUxLCAwKSIgLz4KICAgIDxyZWN0IGlkPSJyIiB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgZmlsbD0idXJsKCNnLXt7ZmVhdHVyZU1lZGlhLndpZHRofX0te3tmZWF0dXJlTWVkaWEuaGVpZ2h0fX0pIiAvPgogICAgPGFuaW1hdGUgeGxpbms6aHJlZj0iI3IiIGF0dHJpYnV0ZU5hbWU9IngiIGZyb209Ii17e2ZlYXR1cmVNZWRpYS53aWR0aH19IiB0bz0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgZHVyPSIxcyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiICAvPgogIDwvc3ZnPg==" width="{{featureMedia.width}}" height="{{featureMedia.height}}" alt="{{featureMedia.alt}}" base-src="{{src | image_url}}"
+      quality-type={}
+      quality-percent={}
+      data-sizes="auto"
+      sizes="100vw"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1;--objf:cover;--objf-tablet:cover;--objf-mobile:cover"
+    />
+  
+      
+      
+    
+      {% when 'external_video' %}
+        {% assign mediaSourceVideo = featureMedia | external_video_url %}
+        
+    <iframe
+      width="100%" height="100%"
+      class="feature-video gp-w-full gp-h-full gp-relative"
+      src="{{mediaSourceVideo}}"
+      controls="true"
+      allowfullscreen="true"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      frameborder="0"
+      autoplay="false"
+      alt="{{featureMedia.alt}}"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1"
+    >
+    </iframe>
+  
+      {% when 'video' %}
+        {% assign mediaSourceVideo = featureMedia.sources.last.url %}
+        
+  <gp-lite-html5-embed>
+    
+    <video
+      id="gp-video-undefined"
+      class=" gp-w-full lazy"
+      style="width:100%;max-height:100%"
+      controls
+      
+      
+      
+      title="{{featureMedia.alt}}"
+      preload="none"
+      data-src="{{mediaSourceVideo}}"
+      src=""
+      poster=""
+      playsinline
+    >
+    
+  </video>
+    <div
+      style="width:100%;max-height:100%"
+      class="gp-absolute gp-top-0 gp-left-0  gp-w-full gp-thumbnail-video gp-hidden"
+    >
+      <img
+        id="video-thumbnail"
+        src=""
+        class="gp-w-full gp-h-full gp-object-cover"
+        alt="Video Thumbnail"
+      ></img>
+      <button
+        type="button"
+        class="gp-absolute gp-left-1/2 gp-top-1/2 gp-flex gp-aspect-[56/32] gp-w-14 -gp-translate-x-1/2 -gp-translate-y-1/2 gp-items-center gp-justify-center gp-rounded gp-bg-black/80 gp-transition-colors hover:gp-bg-[#ef0800]"
+        aria-label="Play"
+      >
+        <svg class="gp-w-5 gp-text-white" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z"
+          />
+        </svg>
+      </button>
+    </div>
+    </gp-lite-html5-embed>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-lite-html5-embed.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+    <script>
+        if(lazyLoadInstance){lazyLoadInstance.update()}else{var lazyLoadInstance = new LazyLoad()}
+    </script>
+  
+      {% when 'model' %}
+        
+    <model-viewer
+      class="gp-w-full gp-h-full model-viewer gp-z-[90]"
+      width="100%"
+      
+      
+      
+      
+      src="{% if featureMedia.sources.first.url contains '.glb' %}{{ featureMedia.sources.first.url }}{% else %}{{featureMedia.sources.last.url}}{% endif %}"
+      alt="{{featureMedia.preview_image.alt}}"
+      camera-controls="true"
+      poster="{{featureMedia.preview_image.src | product_img_url: '1024x1024'}}"
+      data-js-focus-visible=""
+      data-shopify-feature="1.12"
+      ar-status="not-presenting"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1">
+    </model-viewer>
+  
+      {% else %}
+        
+    
+  <img
+      
+      
+      draggable="false"
+      class="gp-w-full gp-h-full gp-absolute gp-top-0 gp-left-0 featured-image-only gp-cursor-pointer !gp-rounded-none gp_lazyload"
+      data-src data-srcset="https://cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_large.gif" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIzNyIgaGVpZ2h0PSIxNjc4IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPGRlZnM+CiAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZy0yMjM3LTE2NzgiPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iMjAlIiAvPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iNTAlIiAvPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iNzAlIiAvPgogICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjIyMzciIGhlaWdodD0iMTY3OCIgZmlsbD0icmdiYSg1MSwgNTEsIDUxLCAwKSIgLz4KICAgIDxyZWN0IGlkPSJyIiB3aWR0aD0iMjIzNyIgaGVpZ2h0PSIxNjc4IiBmaWxsPSJ1cmwoI2ctMjIzNy0xNjc4KSIgLz4KICAgIDxhbmltYXRlIHhsaW5rOmhyZWY9IiNyIiBhdHRyaWJ1dGVOYW1lPSJ4IiBmcm9tPSItMjIzNyIgdG89IjIyMzciIGR1cj0iMXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAgLz4KICA8L3N2Zz4=" width="2237" height="1678" alt="No Image"
+      quality-type={}
+      quality-percent={}
+      data-sizes="auto"
+      sizes="100vw"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1;--objf:cover;--objf-tablet:cover;--objf-mobile:cover"
+    />
+  
+    {% endcase %}
+    
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    {% endcapture %}
+    {% if product.media.size > 1 %}
+      
+      {{ featureImageOnlyOne }}
+    {% else %}
+      {{ featureImageOnlyOne }}
+    {% endif %}
+  
+         
+      </div>
+    </gp-product-images-v2>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-images-v2.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="gKq7rFl-TZ" data-id="gKq7rFl-TZ"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--pt:var(--g-s-2xl);--pt-mobile:var(--g-s-2xl);--pt-tablet:21px;--cg:var(--g-s-s);--pc:start;--pc-tablet:center;--gtc:minmax(0, auto) minmax(0, auto) minmax(0, auto);--gtc-mobile:minmax(0, auto) minmax(0, auto) minmax(0, auto);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="gKq7rFl-TZ gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="gGpAgfZrDA gp-relative gp-flex gp-flex-col"
+    >
+      
+      <gp-product-price
+        data-id="goR9rSPpk5"
+        class="goR9rSPpk5 gp-product-price group-data-[state=loading]:gp-invisible data-[hidden=true]:gp-hidden"
+        gp-data='{"priceType":"regular","uid":"goR9rSPpk5","locale":"{{shop.locale}}","currency":"{{shop.currency}}","moneyFormat":"{{ shop.money_format | replace: '"', '\\"' | escape }}"}'
+        
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+        data-hidden="false"
+      >
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-price-goR9rSPpk5"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          type="regular"
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-price gp-money gp-decoration-g-text-1"
+          style="--w:100%;--tdc:text-1;--tdt:1;--ta:left;--c:#242424;--ff:var(--g-font-heading, heading);--weight:700;--size:19px;--size-mobile:17px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >
+     {% if variant.price %} 
+       {{ variant.price | money}}
+     {% endif %}
+   </div>
+      </div>
+    </div>
+    </gp-text>
+    
+      </gp-product-price>
+      <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-price.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div><div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="gbFeHterKr gp-relative gp-flex gp-flex-col"
+    >
+      
+      <gp-product-price
+        data-id="g7eGDIieY7"
+        class="g7eGDIieY7 gp-product-price group-data-[state=loading]:gp-invisible data-[hidden=true]:gp-hidden"
+        gp-data='{"priceType":"compare","uid":"g7eGDIieY7","locale":"{{shop.locale}}","currency":"{{shop.currency}}","moneyFormat":"{{ shop.money_format | replace: '"', '\\"' | escape }}"}'
+        
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+        data-hidden="{% if variant.compare_at_price > variant.price and variant.compare_at_price >= 0 %}false{% else %}true{% endif %}"
+      >
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-price-g7eGDIieY7"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          type="compare"
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-price gp-product-compare-price gp-line-through"
+          style="--w:100%;--tdc:#B4B4B4;--tdt:1;--ta:left;--c:#B4B4B4;--ff:var(--g-font-heading, heading);--ls:0px;--size:16px;--size-mobile:14px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >
+      {% if variant.compare_at_price  %} 
+        {{ variant.compare_at_price | money}}
+      {% else %}
+        
+      {% endif %}
+    </div>
+      </div>
+    </div>
+    </gp-text>
+    
+      </gp-product-price>
+      <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-price.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div><div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="gyCd8XQRx5 gp-relative gp-flex gp-flex-col"
+    >
+      <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:none;--op:100%" class="guzaCnXVYW ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.gguzaCnXVYW_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | money | append: ' ' | append: suffixVal
+    else
+        
+              if priceSave > 0
+                assign priceSaveMoney = priceSave | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              else
+                assign priceSaveMoney = 0 | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              endif
+            
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="guzaCnXVYW"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"You saved","suffix":"","unit":"price"},"translate":"customContent"}, "id": "guzaCnXVYW", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:left"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.gguzaCnXVYW_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full gp-text-g-error"
+         style="--pl:8px;--pr:8px;--pt:8px;--pb:8px;--pl-tablet:8px;--pr-tablet:8px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:8px;--pr-mobile:8px;--pt-mobile:8px;--pb-mobile:8px;--bs:solid;--bw:1px 1px 1px 1px;--bc:#EA3335;--bg:transparent;--radius:var(--g-radius-medium)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-guzaCnXVYW"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text-g-error"
+          style="--w:100%;--ta:left;--c:#EA3335;--fs:normal;--ff:var(--g-font-heading, heading);--weight:600;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:18px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div>
+    </div>
+    </div>
+   
+    <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:none;--d-mobile:none;--d-tablet:block;--op:100%;--mt:var(--g-s-s)" class="gAlrxWk9DS ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.ggAlrxWk9DS_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | money | append: ' ' | append: suffixVal
+    else
+        
+              if priceSave > 0
+                assign priceSaveMoney = priceSave | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              else
+                assign priceSaveMoney = 0 | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              endif
+            
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="gAlrxWk9DS"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"You saved","suffix":"","unit":"price"},"translate":"customContent"}, "id": "gAlrxWk9DS", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:center"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.ggAlrxWk9DS_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full gp-text-g-error"
+         style="--pl:8px;--pr:8px;--pt:8px;--pb:8px;--pl-tablet:8px;--pr-tablet:8px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:8px;--pr-mobile:8px;--pt-mobile:8px;--pb-mobile:8px;--bs:solid;--bw:1px 1px 1px 1px;--bc:#EA3335;--bg:transparent;--radius:var(--g-radius-medium)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-gAlrxWk9DS"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text-g-error"
+          style="--w:100%;--ta:center;--c:#EA3335;--fs:normal;--ff:var(--g-font-heading, heading);--weight:600;--ls:normal;--size:18px;--size-tablet:13px;--size-mobile:18px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div><div gp-el-wrapper  class="gJCMiAY_zT ">
+      
+    
+    <div
+      uid="gJCMiAY_zT"
+      data-id="gJCMiAY_zT"
+       style="--bs:solid;--bw:1px 0px 0px 0px;--bc:#EEEEEE;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-xl);--pt:var(--g-s-xl);--mt-mobile:var(--g-s-xl);--pt-mobile:var(--g-s-xl);--mt-tablet:14px;--pt-tablet:14px;--ta:left;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll">
+     
+     <ul
+        class="gp-inline-flex gp-flex-col"
+        style="--rg:var(--g-s-l);--rg-tablet:var(--g-s-s);--rg-mobile:var(--g-s-l)"
+        >
+        
+    <li
+       data-index="0"
+       data-id="gXt3lpxhk4"
+      class="gp-flex gp-w-full gp-items-center gp-icon-list-item gp-child-item-gJCMiAY_zT"
+      style="--cg:var(--g-s-l);--cg-tablet:var(--g-s-s);--cg-mobile:var(--g-s-l)"
+    >
+    <div
+      enableLazyloadImage="true"
+      
+      class="gNltqy9sKp gp-relative gp-flex gp-flex-col"
+    >
+      
+  <div
+      
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--ta:left"
+      class="gp-leading-[0] gnVqXGBzuj"
+    >
+      <div 
+      data-id="gnVqXGBzuj"
+      class="icon-wrapper gp-inline-flex gp-overflow-hidden"
+      style="--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+      >
+      <div
+      
+    >
+      <span
+        style="--c:#322B85;--t:rotate(0deg);--w:24px;--w-tablet:16px;--w-mobile:20px;--h:24px;--h-tablet:16px;--h-mobile:20px;--minw:24px;--minw-tablet:16px;--minw-mobile:20px;--height-desktop:24px;--height-tablet:16px;--height-mobile:20px"
+        class="gp-inline-flex gp-items-center gp-justify-center gp-overflow-hidden [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+      ><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">
+              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M512 256A256 256 0 1 1 0 256a256 256 0 0 1 512 0zm-127.04 -96.96a24 24 0 0 0 -34.56 0.704L239.264 301.344 172.288 234.336a24 24 0 0 0 -33.92 33.92L223.04 352.96a24 24 0 0 0 34.528 -0.64l127.744 -159.68a24 24 0 0 0 -0.32 -33.6z" /></svg></span>
+    </div>
+      </div>
+    </div>
+    
+    </div><div
+      enableLazyloadImage="true"
+      
+      class="gSk4P7gckF gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gY-Q_HOlMj">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gY-Q_HOlMj "
+        style="--tt:default;--ta:left;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+      >
+      <div class="gp-flex" style="--jc:left">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-g-paragraph-1 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:left;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggY-Q_HOlMj_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+  </li>
+    <li
+       data-index="1"
+       data-id="gGj8tN4NDt"
+      class="gp-flex gp-w-full gp-items-center gp-icon-list-item gp-child-item-gJCMiAY_zT"
+      style="--cg:var(--g-s-l);--cg-tablet:var(--g-s-s);--cg-mobile:var(--g-s-l)"
+    >
+    <div
+      enableLazyloadImage="true"
+      
+      class="gQFL7gx7A0 gp-relative gp-flex gp-flex-col"
+    >
+      
+  <div
+      
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--ta:left"
+      class="gp-leading-[0] g8AFy0W_8F"
+    >
+      <div 
+      data-id="g8AFy0W_8F"
+      class="icon-wrapper gp-inline-flex gp-overflow-hidden"
+      style="--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+      >
+      <div
+      
+    >
+      <span
+        style="--c:#322B85;--t:rotate(0deg);--w:24px;--w-tablet:16px;--w-mobile:20px;--h:24px;--h-tablet:16px;--h-mobile:20px;--minw:24px;--minw-tablet:16px;--minw-mobile:20px;--height-desktop:24px;--height-tablet:16px;--height-mobile:20px"
+        class="gp-inline-flex gp-items-center gp-justify-center gp-overflow-hidden [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+      ><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">
+              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M512 256A256 256 0 1 1 0 256a256 256 0 0 1 512 0zm-127.04 -96.96a24 24 0 0 0 -34.56 0.704L239.264 301.344 172.288 234.336a24 24 0 0 0 -33.92 33.92L223.04 352.96a24 24 0 0 0 34.528 -0.64l127.744 -159.68a24 24 0 0 0 -0.32 -33.6z" /></svg></span>
+    </div>
+      </div>
+    </div>
+    
+    </div><div
+      enableLazyloadImage="true"
+      
+      class="gr6RYYshIB gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gYrUTOYgb5">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gYrUTOYgb5 "
+        style="--tt:default;--ta:left;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+      >
+      <div class="gp-flex" style="--jc:left">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-g-paragraph-1 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:left;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggYrUTOYgb5_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+  </li>
+      </ul>
+  </div>
+  
+      </div>
+   {%- liquid
+      assign inventory_quantity = variant.inventory_quantity | default: 0
+    -%}
+    <gp-product-button
+      class="gp-product-button"
+      gp-data-wrapper="true"
+      gp-label-out-of-stock="{{section.settings.ggCaf4txXLZ_outOfStockLabel}}"
+      gp-label-unavailable="{{section.settings.ggCaf4txXLZ_unavailableLabel}}"
+      gp-data='{"setting":{"actionEffect":"open-cart-drawer","errorMessage":"Cannot add product to cart","successMessage":"Add product to cart successfully","enableSuccessMessage":true,"enableErrorMessage":true,"label":"Get mine now","outOfStockLabel":"Out of stocks","errorType":"built-in","customURL":{"link":"/cart","target":"_self"}},"styles":{"errorTypo":{"attrs":{"color":"error"},"type":"paragraph-2"},"successTypo":{"attrs":{"color":"success"},"type":"paragraph-2"}},"disabled":"{{variant.available}}","variantID":"{{variant.id}}","totalVariant":"{{product.variants.size}}"}' 
+       gp-href="{{ request.origin }}{{ routes.root_url | split: '/' | join: '/' }}/cart"
+       data-variant-selection-required-message="{{}}"
+    >
+        
+  <gp-button >
+  <div
+    style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--mt-tablet:21px;--ta:center"
+    class="{% unless variant.available %} !gp-hidden {% endunless %}"
+  >
+    <style>
+    .gCaf4txXLZ.gp-button-base::before {
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      pointer-events: none;
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #44A714;
+  
+      
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      
+    }
+
+    .gCaf4txXLZ:hover::before {
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #52C41A;
+  
+      
+      border-bottom-left-radius: 9999px;
+      border-bottom-right-radius: 9999px;
+      border-top-left-radius: 9999px;
+      border-top-right-radius: 9999px;
+      
+    }
+
+    .gCaf4txXLZ:hover .gp-button-icon {
+      color: #242424;
+    }
+
+     .gCaf4txXLZ .gp-button-icon {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ:hover .gp-button-price {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ .gp-button-price {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ .gp-product-dot-price {
+       color: #242424;
+    }
+
+    .gCaf4txXLZ:hover .gp-product-dot-price {
+      color: #242424;
+    }
+  </style>
+    <button
+      type="submit" data-id="gCaf4txXLZ" aria-label="Get mine now"
+      name="add" gp-data-hidden="{% unless variant.available %}true{% endunless %}"
+      data-state="idle"
+      class="gCaf4txXLZ gp-button-base gp-group/button gp-rounded-none gp-max-w-full gp-relative gp-inline-flex gp-items-center gp-justify-center gp-no-underline gp-transition-colors gp-duration-300 disabled:gp-btn-disabled disabled:gp-opacity-30 disabled:gp-pointer-events-none hover:gp-bg-g-bg-3 gp-bg-g-bg-3 gp-button-atc tcustomizer-submit-button"
+      style="--hvr-bg:var(--g-c-bg-3, bg-3);--bg:var(--g-c-bg-3, bg-3);--bblr:40px;--bbrr:40px;--btlr:40px;--btrr:40px;--shadow:2.4492935982947064e-16px 4px 8px 0px rgba(0, 0, 0, 0.25);--w:100%;--w-tablet:100%;--w-mobile:100%;--h:Auto;--h-tablet:Auto;--h-mobile:Auto;--pl:24px;--pr:24px;--pt:8px;--pb:8px;--pl-tablet:24px;--pr-tablet:24px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:24px;--pr-mobile:24px;--pt-mobile:8px;--pb-mobile:8px;--hvr-c:#242424;--c:#242424;--size:19px;--size-tablet:19px;--size-mobile:17px;--lh:130%;--fs:normal;--weight:600;--ls:normal;--lh-tablet:130%"
+    >
+        <svg
+          class="gp-invisible gp-absolute gp-h-5 gp-w-5 group-data-[state=loading]/button:gp-animate-spin group-data-[state=loading]/button:gp-visible"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="gp-opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="gp-opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+    <div
+    class="gp-inline-flex gp-flex-row-reverse">
+    <span
+        class="gp-inline-flex gp-button-icon gp-transition-colors gp-duration-300 gp-shrink-0 gp-items-center gp-justify-center group-data-[state=loading]/button:gp-invisible gp-z-1 [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+        style="--ml:8px;--height-desktop:1em;--height-tablet:1em;--height-mobile:1em"
+      ><svg style="width: 100%; height: 100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5625 19.6875C9.5625 19.8958 9.66667 20 9.875 20H25.3125V22.6875H9.3125C8.60417 22.6875 7.97917 22.4167 7.4375 21.875C6.9375 21.3333 6.6875 20.7083 6.6875 20C6.6875 19.5833 6.79167 19.1667 7 18.75L8.8125 15.4375L4 5.3125H1.3125V2.6875H5.6875C6.52083 4.4375 7.35417 6.20833 8.1875 8C8.39583 8.375 8.875 9.375 9.625 11C10.375 12.5833 10.9583 13.8125 11.375 14.6875H20.75C23.875 9.02083 25.5833 5.89583 25.875 5.3125L28.1875 6.625L23.0625 15.9375C22.5625 16.8542 21.7917 17.3125 20.75 17.3125H10.8125L9.625 19.5L9.5625 19.6875ZM20.8125 24.8125C21.3542 24.2708 21.9792 24 22.6875 24C23.3958 24 24 24.2708 24.5 24.8125C25.0417 25.3542 25.3125 25.9792 25.3125 26.6875C25.3125 27.3958 25.0417 28.0208 24.5 28.5625C24 29.0625 23.3958 29.3125 22.6875 29.3125C21.9792 29.3125 21.3542 29.0625 20.8125 28.5625C20.2708 28.0208 20 27.3958 20 26.6875C20 25.9792 20.2708 25.3542 20.8125 24.8125ZM7.4375 24.8125C7.97917 24.2708 8.60417 24 9.3125 24C10.0208 24 10.6458 24.2708 11.1875 24.8125C11.7292 25.3542 12 25.9792 12 26.6875C12 27.3958 11.7292 28.0208 11.1875 28.5625C10.6458 29.0625 10.0208 29.3125 9.3125 29.3125C8.60417 29.3125 7.97917 29.0625 7.4375 28.5625C6.9375 28.0208 6.6875 27.3958 6.6875 26.6875C6.6875 25.9792 6.9375 25.3542 7.4375 24.8125ZM14.6875 12V8H10.6875V5.3125H14.6875V1.3125H17.3125V5.3125H21.3125V8H17.3125V12H14.6875Z" fill="#D6D6D6"/></svg></span>
+      <span
+        data-gp-text
+        class="gp-content-product-button group-hover/button:!gp-text-inherit gp-button-text-only gp-break-words group-data-[state=loading]/button:gp-invisible [&_p]:gp-whitespace-pre-line gp-z-1 gp-h-full gp-flex gp-items-center gp-overflow-hidden 
+        "
+        style="--size:19px;--size-tablet:19px;--size-mobile:17px;--hvr-c:#242424;--c:#242424"
+      >
+        {{ section.settings.ggCaf4txXLZ_label }}
+      </span>
+      </div>
+    
+    </button>
+  </div>
+  </gp-button>
+
+        
+  <gp-button >
+  <div
+    style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--mt-tablet:21px;--ta:center"
+    class="{% if variant.available %} !gp-hidden {% endif %}"
+  >
+    <style>
+    .gCaf4txXLZ-sold-out.gp-button-base::before {
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      pointer-events: none;
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #44A714;
+  
+      
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      
+    }
+
+    .gCaf4txXLZ-sold-out:hover::before {
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #52C41A;
+  
+      
+      border-bottom-left-radius: 9999px;
+      border-bottom-right-radius: 9999px;
+      border-top-left-radius: 9999px;
+      border-top-right-radius: 9999px;
+      
+    }
+
+    .gCaf4txXLZ-sold-out:hover .gp-button-icon {
+      color: #242424;
+    }
+
+     .gCaf4txXLZ-sold-out .gp-button-icon {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ-sold-out:hover .gp-button-price {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ-sold-out .gp-button-price {
+      color: #242424;
+    }
+
+    .gCaf4txXLZ-sold-out .gp-product-dot-price {
+       color: #242424;
+    }
+
+    .gCaf4txXLZ-sold-out:hover .gp-product-dot-price {
+      color: #242424;
+    }
+  </style>
+    <button
+      type="button" data-id="gCaf4txXLZ" aria-label="{{section.settings.ggCaf4txXLZ_outOfStockLabel}}"
+      gp-data-hidden="{% if variant.available %}true{% endif %}"
+      data-state="idle"
+      class="gCaf4txXLZ-sold-out gp-button-base gp-group/button gp-rounded-none gp-max-w-full gp-relative gp-inline-flex gp-items-center gp-justify-center gp-no-underline gp-transition-colors gp-duration-300 disabled:gp-btn-disabled disabled:gp-opacity-30 disabled:gp-pointer-events-none hover:gp-bg-g-bg-3 gp-bg-g-bg-3 gp-button-sold-out btn-disabled gp-opacity-30 gp-cursor-default"
+      style="--hvr-bg:var(--g-c-bg-3, bg-3);--bg:var(--g-c-bg-3, bg-3);--bblr:40px;--bbrr:40px;--btlr:40px;--btrr:40px;--shadow:2.4492935982947064e-16px 4px 8px 0px rgba(0, 0, 0, 0.25);--w:100%;--w-tablet:100%;--w-mobile:100%;--h:Auto;--h-tablet:Auto;--h-mobile:Auto;--pl:24px;--pr:24px;--pt:8px;--pb:8px;--pl-tablet:24px;--pr-tablet:24px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:24px;--pr-mobile:24px;--pt-mobile:8px;--pb-mobile:8px;--hvr-c:#242424;--c:#242424;--size:19px;--size-tablet:19px;--size-mobile:17px;--lh:130%;--fs:normal;--weight:600;--ls:normal;--lh-tablet:130%"
+    >
+      
+    <div
+    class="gp-inline-flex gp-flex-row-reverse">
+    <span
+        class="gp-inline-flex gp-button-icon gp-transition-colors gp-duration-300 gp-shrink-0 gp-items-center gp-justify-center group-data-[state=loading]/button:gp-invisible gp-z-1 [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+        style="--ml:8px;--height-desktop:1em;--height-tablet:1em;--height-mobile:1em"
+      ><svg style="width: 100%; height: 100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5625 19.6875C9.5625 19.8958 9.66667 20 9.875 20H25.3125V22.6875H9.3125C8.60417 22.6875 7.97917 22.4167 7.4375 21.875C6.9375 21.3333 6.6875 20.7083 6.6875 20C6.6875 19.5833 6.79167 19.1667 7 18.75L8.8125 15.4375L4 5.3125H1.3125V2.6875H5.6875C6.52083 4.4375 7.35417 6.20833 8.1875 8C8.39583 8.375 8.875 9.375 9.625 11C10.375 12.5833 10.9583 13.8125 11.375 14.6875H20.75C23.875 9.02083 25.5833 5.89583 25.875 5.3125L28.1875 6.625L23.0625 15.9375C22.5625 16.8542 21.7917 17.3125 20.75 17.3125H10.8125L9.625 19.5L9.5625 19.6875ZM20.8125 24.8125C21.3542 24.2708 21.9792 24 22.6875 24C23.3958 24 24 24.2708 24.5 24.8125C25.0417 25.3542 25.3125 25.9792 25.3125 26.6875C25.3125 27.3958 25.0417 28.0208 24.5 28.5625C24 29.0625 23.3958 29.3125 22.6875 29.3125C21.9792 29.3125 21.3542 29.0625 20.8125 28.5625C20.2708 28.0208 20 27.3958 20 26.6875C20 25.9792 20.2708 25.3542 20.8125 24.8125ZM7.4375 24.8125C7.97917 24.2708 8.60417 24 9.3125 24C10.0208 24 10.6458 24.2708 11.1875 24.8125C11.7292 25.3542 12 25.9792 12 26.6875C12 27.3958 11.7292 28.0208 11.1875 28.5625C10.6458 29.0625 10.0208 29.3125 9.3125 29.3125C8.60417 29.3125 7.97917 29.0625 7.4375 28.5625C6.9375 28.0208 6.6875 27.3958 6.6875 26.6875C6.6875 25.9792 6.9375 25.3542 7.4375 24.8125ZM14.6875 12V8H10.6875V5.3125H14.6875V1.3125H17.3125V5.3125H21.3125V8H17.3125V12H14.6875Z" fill="#D6D6D6"/></svg></span>
+      <span
+        data-gp-text
+        class="gp-content-product-button group-hover/button:!gp-text-inherit gp-button-text-only gp-break-words group-data-[state=loading]/button:gp-invisible [&_p]:gp-whitespace-pre-line gp-z-1 gp-h-full gp-flex gp-items-center gp-overflow-hidden 
+        "
+        style="--size:19px;--size-tablet:19px;--size-mobile:17px;--hvr-c:#242424;--c:#242424"
+      >
+        {{section.settings.ggCaf4txXLZ_outOfStockLabel}}
+      </span>
+      </div>
+    
+    </button>
+  </div>
+  </gp-button>
+
+    </gp-product-button>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-button.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div>
+    </div>
+   
+    
+          {%- endform -%}
+        </product-form>
+      </gp-product>
+      {%- assign product = gpBkProduct -%}
+    {% else %}
+      <div class="gp-text-center">{{ "gempages.Product.product_not_found" | t }}</div>
+    {%- endif -%}
+     <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product.v2.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div>
+    </div>
+   
+    
+    </div>
+    </div>
+   
+    
+    </div><div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start;--o-mobile:1"
+      class="gTvAyronnF gp-relative gp-flex gp-flex-col"
+    >
+      
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="gi2tDtmedm" data-id="gi2tDtmedm"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--bblr:10px;--bbrr:10px;--btlr:10px;--btrr:10px;--pt:var(--g-s-2xl);--pl:var(--g-s-2xl);--pb:var(--g-s-2xl);--pr:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--pt-mobile:var(--g-s-2xl);--pl-mobile:var(--g-s-xl);--pb-mobile:var(--g-s-2xl);--pr-mobile:var(--g-s-xl);--pt-tablet:21px;--pl-tablet:10px;--pb-tablet:21px;--pr-tablet:10px;--cg:var(--g-s-2xl);--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:var(--g-c-bg-3);--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="gi2tDtmedm gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="g4r9gxcCZw gp-relative gp-flex gp-flex-col"
+    >
+      
+    {%- assign gpBkProduct = product -%}
+    
+        {%- liquid
+          if request.page_type == 'product'
+            if 'static' == 'static'
+              if 'latest' == 'latest'
+                paginate collections.all.products by 100000
+                  assign product = collections.all.products | sort: 'created_at' | reverse | first
+                endpaginate
+              else
+                assign product = all_products['']
+                assign productId = 'latest' | times: 1
+                if product == empty or product == null
+                  paginate collections.all.products by 100000
+                    for item in collections.all.products
+                      if item.id == productId
+                        assign product = item
+                      endif
+                    endfor
+                  endpaginate
+                endif
+              endif
+            endif
+          else
+            if 'latest' == 'latest'
+              paginate collections.all.products by 100000
+                assign product = collections.all.products | sort: 'created_at'| reverse | first
+              endpaginate
+            else
+              assign product = all_products['']
+              assign productId = 'latest' | times: 1
+              if product == empty or product == null
+                paginate collections.all.products by 100000
+                  for item in collections.all.products
+                    if item.id == productId
+                      assign product = item
+                    endif
+                  endfor
+                endpaginate
+              endif
+            endif
+          endif
+        -%}
+      
+
+    {%-if product != empty and product != null -%}
+      {%- assign initVariantId =  -%}
+      {%- assign product_form_id = 'product-form-' | append: "g1wR-z2SVM" -%}
+      {%- assign variant = product.selected_or_first_available_variant -%}
+      {%- assign productSelectedVariant = product.selected_or_first_available_variant -%}
+      {%-if productSelectedVariant == empty or productSelectedVariant == null -%}
+        {%- assign productSelectedVariant = product.selected_or_first_available_variant -%}
+      {%- endif -%}
+      {%-if variant == empty or variant == null -%}
+        {%- assign variant = product.selected_or_first_available_variant -%}
+      {%- endif -%}
+      <gp-product data-uid="g1wR-z2SVM" data-id="g1wR-z2SVM"   gp-context='{"productId": {{ product.id }}, "preSelectedOptionIds": [], "isSyncProduct": "", "variantSelected": {{ variant | json | escape }}, "inventoryQuantity": {{ variant.inventory_quantity }}, "quantity": 1, "formId": "{{ product_form_id }}" }'
+        gp-data='{"variantSelected": {{ variant | json | escape }}, "quantity": 1, "productUrl":{{ product.url | json | escape }}, "productHandle":{{ product.handle | json | escape }}, "collectionUrl": {{ collection.url | json | escape }}, "collectionHandle": {{ collection.handle | json | escape }}}'>
+        <product-form class="product-form">
+          {%- form 'product', product, id: product_form_id, class: 'form contents', data-type: 'add-to-cart-form', autocomplete: 'off'  -%}
+            <input type="hidden" name="id" value="{{ variant.id }}" />
+            <input type="hidden" name="quantity" value="{{ quantity }}" />
+            <button type="submit" onclick="return false;" style="display:none;"></button>
+            
+       
+      
+    <div
+      id="g1wR-z2SVM" data-id="g1wR-z2SVM-row"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--cg:30px;--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%"
+        class="g1wR-z2SVM gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="gN1EZj2bQc gp-relative gp-flex gp-flex-col"
+    >
+      <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%" class="gaS901c2Wz ">
+      
+    {%- unless product -%}
+      <p>{{ "gempages.ProductTitle.product_not_found" | t }}</p>
+    {%- else -%}
+      
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gaS901c2Wz">
+    <div
+      
+        class="gaS901c2Wz "
+        
+      >
+      <div  >
+        <h3
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-product-title"
+          style="--w:100%;--ta:center;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;--ff:var(--g-font-heading, heading);--ls:0px;--size:19px;--size-mobile:17px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >{{ product.title }}</h3>
+      </div>
+    </div>
+    </gp-text>
+    
+      
+    {%- endunless -%}
+  
+      </div><div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--pt:var(--g-s-s);--pb:var(--g-s-s)" class="gYxdspRd2u ">
+      
+    <div
+    data-id="gYxdspRd2u"
+      class="gp-flex gp-justify-center"
+    >
+      <div
+        style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--t:gp-rotate(0deg);--bc:#EEEEEE"
+        class="gp-block tablet:gp-block mobile:gp-block"
+      ></div>
+      <div
+        class="gp-items-center gp-hidden tablet:gp-hidden mobile:gp-hidden"
+        style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--t:gp-rotate(0deg)"
+      >
+        
+    <div
+      class="gp-hidden"
+      style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--minw:68%;--minw-tablet:100%;--minw-mobile:68%"
+    ></div>
+  
+        
+            <span
+              class="gp-inline-flex gp-items-center gp-justify-center gp-flex-none"
+              style="--mr:var(--g-s-xs);--w:20px;--h:20px;--t:gp-rotate(0);--c:var(--g-c-text-1, text-1)"
+            >
+              <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M428.8 137.6h-86.177a115.52 115.52 0 0 0 2.176-22.4c0-47.914-35.072-83.2-92-83.2-45.314 0-57.002 48.537-75.707 78.784-7.735 12.413-16.994 23.317-25.851 33.253l-.131.146-.129.148C135.662 161.807 127.764 168 120.8 168h-2.679c-5.747-4.952-13.536-8-22.12-8H32c-17.673 0-32 12.894-32 28.8v230.4C0 435.106 14.327 448 32 448h64c8.584 0 16.373-3.048 22.12-8h2.679c28.688 0 67.137 40 127.2 40h21.299c62.542 0 98.8-38.658 99.94-91.145 12.482-17.813 18.491-40.785 15.985-62.791A93.148 93.148 0 0 0 393.152 304H428.8c45.435 0 83.2-37.584 83.2-83.2 0-45.099-38.101-83.2-83.2-83.2zm0 118.4h-91.026c12.837 14.669 14.415 42.825-4.95 61.05 11.227 19.646 1.687 45.624-12.925 53.625 6.524 39.128-10.076 61.325-50.6 61.325H248c-45.491 0-77.21-35.913-120-39.676V215.571c25.239-2.964 42.966-21.222 59.075-39.596 11.275-12.65 21.725-25.3 30.799-39.875C232.355 112.712 244.006 80 252.8 80c23.375 0 44 8.8 44 35.2 0 35.2-26.4 53.075-26.4 70.4h158.4c18.425 0 35.2 16.5 35.2 35.2 0 18.975-16.225 35.2-35.2 35.2zM88 384c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z" /></svg>
+            </span>
+          
+        
+            <span
+              class="gp-inline-flex gp-items-center gp-justify-center gp-flex-none gp-g-paragraph-1"
+              style="--tt:horizontal;--c:var(--g-c-text-1, text-1);--mr:var(--g-s-s)"
+            >
+              Title
+            </span>
+          
+        
+    <div
+      class="gp-flex"
+      style="--w:68%;--w-tablet:100%;--w-mobile:68%;--bc:#EEEEEE;--bs:solid;--bbw:1px;--bbw-tablet:1px;--bbw-mobile:1px;--minw:68%;--minw-tablet:100%;--minw-mobile:68%"
+    ></div>
+  
+      </div>
+    </div>
+  
+      </div><div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%" class="gUWOfAOiEL ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.ggUWOfAOiEL_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | append: ' 0% ' | append: suffixVal
+    else
+         assign salePercent = priceSave | divided_by: salePrice | times: 100  | round
+                assign pricePercentage = prefixVal | append: ' ' | append: salePercent | append: '% ' | append: suffixVal
+              
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="gUWOfAOiEL"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"SAVE","suffix":"","unit":"percentage"},"translate":"customContent"}, "id": "gUWOfAOiEL", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:center"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.ggUWOfAOiEL_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full"
+         style="--pl:16px;--pr:16px;--pt:16px;--pb:16px;--pl-tablet:16px;--pr-tablet:16px;--pt-tablet:16px;--pb-tablet:16px;--pl-mobile:16px;--pr-mobile:16px;--pt-mobile:16px;--pb-mobile:16px;--bs:none;--bw:0px;--bc:transparent;--c:#242424;--bg:transparent;--radius:var(--g-radius-large)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-gUWOfAOiEL"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--ta:center;--c:#322B85;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:18px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div>
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="g27ZXZUbF9" data-id="g27ZXZUbF9"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--pos:relative;--mb:var(undefined);--pt:var(--g-s-2xl);--z:1;--cg:var(--g-s-2xl);--pc:start;--gtc:minmax(0, 12fr);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="g27ZXZUbF9 gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="gcQikCsh7p gp-relative gp-flex gp-flex-col"
+    >
+      
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="g01ltrklOc" data-id="g01ltrklOc"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--pos:absolute;--right:10px;--pt:var(--g-s-xl);--pl:var(--g-s-m);--pb:var(--g-s-xl);--pr:var(--g-s-m);--top:10px;--z:9;--cg:var(--g-s-2xl);--pc:start;--gtc:minmax(0, 12fr);--w:auto;--w-tablet:auto;--w-mobile:auto;--bgc:#322B85;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="g01ltrklOc gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:start"
+      class="g8G0Gi6WUX gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gCS20XhqRH">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gCS20XhqRH "
+        style="--tt:default;--ta:center;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:auto;--mb:auto"
+      >
+      <div class="gp-flex" style="--jc:center">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text-g-bg-3 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:center;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#FFFFFF;--fs:normal;--ff:var(--g-font-body, body);--weight:700;--ls:normal;--size:16px;--size-tablet:16px;--size-mobile:14px;--lh:120%;--lh-tablet:120%;--lh-mobile:120%;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggCS20XhqRH_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+    </div>
+   
+    
+  {% assign featured_image = product.featured_image %}
+  {%- if variant != null and variant.featured_image != null -%}
+  {% assign featured_image = variant.featured_image %}
+  {%- endif -%}
+    <gp-product-images-v2
+      gp-data='
+    {
+      "id":"gXbeT7MHFw",
+      "pageContext": {"numberOfProductOfProductList":0,"isPreviewing":false,"pageType":"GP_PRODUCT","hasCollectionHandle":true,"isTranslateWithLocale":false,"sectionName":"gp-section-559447151621440632"},
+      "setting":{"arrowIcon":"","borderActive":{"borderType":"none","borderWidth":"1px","color":"#000000","isCustom":"false","width":"1px 1px 1px 1px"},"clickOpenLightBox":{"desktop":false,"mobile":false,"tablet":false},"dragToScroll":true,"ftArrowIcon":"<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0ZM10.6828 8.13017C10.5266 7.95661 10.2734 7.95661 10.1172 8.13017C9.96095 8.30374 9.96095 8.58515 10.1172 8.75871L13.0343 12L10.1172 15.2413C9.96095 15.4149 9.96095 15.6963 10.1172 15.8698C10.2734 16.0434 10.5266 16.0434 10.6828 15.8698L13.8828 12.3143C14.0391 12.1407 14.0391 11.8593 13.8828 11.6857L10.6828 8.13017Z\" fill=\"currentColor\"/>\n    </svg>","ftArrowIconColor":"#000000","ftClickOpenLightBox":{"desktop":"none"},"ftDotActiveColor":{"desktop":"line-3"},"ftDotColor":{"desktop":"bg-1"},"ftDotGapToCarousel":{"desktop":16},"ftDotSize":{"desktop":12},"ftDotStyle":{"desktop":"none"},"ftNavigationPosition":{"desktop":"none","mobile":"none","tablet":"none"},"hoverEffect":"none","loop":{"desktop":true,"mobile":true,"tablet":true},"navigationPosition":{"desktop":"inside","mobile":"inside","tablet":"inside"},"otherImage":0,"pauseOnHover":true,"speed":1,"type":{"desktop":"images","mobile":"images","tablet":"images"},"typeDisplay":"all-images","zoom":1.5,"zoomType":"default"},
+      "styles":{"align":{"desktop":"center","mobile":"center","tablet":"center"},"aspectHeight":{"desktop":0,"mobile":0,"tablet":0},"aspectWidth":{"desktop":0,"mobile":0,"tablet":0},"dotActiveColor":{"desktop":"highlight"},"dotColor":{"desktop":"bg-1"},"ftAspectHeight":{"desktop":0,"mobile":0,"tablet":0},"ftAspectWidth":{"desktop":0,"mobile":0,"tablet":0},"ftLayout":{"desktop":"cover","mobile":"cover","tablet":"cover"},"ftShape":{"desktop":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100px"},"tablet":{"shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"}},"itemSpacing":{"desktop":"var(--g-s-s)","mobile":"var(--g-s-s)"},"layout":{"desktop":"cover","mobile":"cover","tablet":"cover"},"position":{"desktop":"only-feature","mobile":"only-feature","tablet":"only-feature"},"ratioLayout":{"desktop":{},"mobile":{},"tablet":{}},"ratioLayoutRight":{"desktop":{},"mobile":{},"tablet":{}},"shape":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeFor1Col":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"100%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeFor2Col":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"50%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeForBottom":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1","width":"20%"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"shapeForFtOnly":{"desktop":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"mobile":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"},"tablet":{"height":"","shape":"square","shapeLinked":true,"shapeValue":"1/1"}},"spacing":{"desktop":"var(--g-s-s)","mobile":"var(--g-s-s)"},"verticalLayout":{"desktop":false,"mobile":false,"tablet":false},"verticalLayoutRow":{"desktop":true,"mobile":true,"tablet":true}}, "productUrl":{{product.url | json | escape}}, "product":{{product | json | escape}}, "collectionUrl": {{ collection.url | json | escape }}, "collection": {{ collection | json | escape}}
+    }
+  '
+      section-id="{{section.id}}"
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--pt-mobile:var(--g-s-2xl);--pt-tablet:14px"
+      data-id="gXbeT7MHFw"
+      class="gXbeT7MHFw gp-overflow-hidden"
+    >
+      <div
+        class="{%- if product.media.size > 1 -%} gp-grid gp-w-full !gp-m-0 gp-relative {%- else -%} gp-w-full !gp-m-0 gp-relative {%- endif -%}"
+        {%- if product.media.size > 1 -%}
+        style="--gtc:minmax(0, 12fr);--gtc-tablet:minmax(0, 12fr);--gtc-mobile:minmax(0, 12fr);--gg:var(--g-s-s);--gg-mobile:var(--g-s-s)"
+        {%- else -%}
+        style="--gtc:minmax(0, 12fr);--gg:var(--g-s-s);--gg-mobile:var(--g-s-s)"
+        {%- endif -%}
+      >
+        
+    {% capture featureImageOnlyOne %}
+      
+        {% assign featureMedia = variant.featured_media %}
+        {% unless featureMedia %}
+        {% assign featureMedia = product.featured_media %}
+        {% endunless %}
+        {% if product.media.size > 1 %}
+          
+          {% assign featureMedia = variant.featured_media %}
+          {% unless featureMedia %}
+          {% assign featureMedia = product.featured_media %}
+          {% endunless %}
+        
+        {% endif %}
+        {% assign largestRatio = 0 %}
+        {% assign height = featureMedia.height | times: 1.0 %}
+        {% assign width = featureMedia.width | times: 1.0 %}
+        {% assign ratio = height | divided_by: width %}
+        {% if ratio > largestRatio %}
+          {% assign largestRatio = ratio %}
+        {% endif %}
+        {% assign productImageWidth = 0 %}
+        {% case featureMedia.media_type %}
+          {% when 'image' %}
+            {% assign productImageWidth = featureMedia.width %}
+          {% else %}
+            {% assign productImageWidth = featureMedia.preview_image.width %}
+        {% endcase %}
+        {% if featureMedia == null %}
+        {% assign productImageWidth = 1600 %}
+        {% endif %}
+        <div 
+          class='gp-feature-image-carousel gp-feature-image-only' 
+          style="--o:0;--o-tablet:0;--o-mobile:0;--d:flex;--d-mobile:flex;--d-tablet:flex;--jc:center;--jc-tablet:center;--jc-mobile:center"
+        >
+          <div 
+            class="gp-relative"
+            style="--w:100%;--w-tablet:100%;--w-mobile:100px"
+          >
+            
+      
+    
+            <div 
+              type="gp-feature-image-only"
+              product-id="{{product.id}}"
+              product-media="{{product.media.size}}"
+              class="gp-image-item gp-ft-image-item gp-group gp-z-0 gp-flex !gp-max-w-full !gp-w-full gp-relative gp-items-start gp-justify-center gp-overflow-hidden gp-featured-image-wrapper"
+              style="--h:auto;--h-tablet:auto;--h-mobile:auto;width:{{productImageWidth}}px"
+            >
+              <div 
+                class="gp-w-full  {% if featureMedia == null or featureMedia.media_type == 'image' %} {{ 'gp-h-0' }} {% else %} {{ 'gp-h-full !gp-pb-0' }} {% endif %} gp-relative" 
+                style="--pb: calc((1/1)*100%);--pb-tablet: calc((1/1)*100%);--pb-mobile: calc((1/1)*100%); {% if featureMedia.media_type == 'video' or featureMedia.media_type == 'external_video' %} {{ 'display: flex; align-items: center; justify-content: center' }} {% endif %}"
+              >
+                
+    {% case featureMedia.media_type %}
+      {% when 'image' %}
+        
+      
+    {% assign src = featureMedia.src %}
+    
+    
+  <img
+      id="{%- if featureMedia != null -%}
+              {{featureMedia.id}}
+            {%- endif -%}"
+      
+      draggable="false"
+      class="gp-w-full gp-h-full gp-absolute gp-top-0 gp-left-0 featured-image-only gp-cursor-pointer !gp-rounded-none gp-w-full gp-transition-opacity {{shouldHidden}} gp_lazyload"
+      data-src="{{src | image_url}}" data-srcset="{%- if src != null -%}
+              {{src | img_url: '480x480'}} 480w, {{src | img_url: '768x768'}} 768w,{{src | img_url: '1024x1024'}} 1024w,{{src | img_url: '1440x1440'}} 1440w
+            {%- else -%}
+              {{ 'https://cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_large.gif' }}
+            {%- endif -%}" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgIDxkZWZzPgogICAgICA8bGluZWFyR3JhZGllbnQgaWQ9Imcte3tmZWF0dXJlTWVkaWEud2lkdGh9fS17e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSI+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSIyMCUiIC8+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSI1MCUiIC8+CiAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0icmdiYSg1MSwgNTEsIDUxLCAwKSIgb2Zmc2V0PSI3MCUiIC8+CiAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8cmVjdCB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgZmlsbD0icmdiYSg1MSwgNTEsIDUxLCAwKSIgLz4KICAgIDxyZWN0IGlkPSJyIiB3aWR0aD0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgaGVpZ2h0PSJ7e2ZlYXR1cmVNZWRpYS5oZWlnaHR9fSIgZmlsbD0idXJsKCNnLXt7ZmVhdHVyZU1lZGlhLndpZHRofX0te3tmZWF0dXJlTWVkaWEuaGVpZ2h0fX0pIiAvPgogICAgPGFuaW1hdGUgeGxpbms6aHJlZj0iI3IiIGF0dHJpYnV0ZU5hbWU9IngiIGZyb209Ii17e2ZlYXR1cmVNZWRpYS53aWR0aH19IiB0bz0ie3tmZWF0dXJlTWVkaWEud2lkdGh9fSIgZHVyPSIxcyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiICAvPgogIDwvc3ZnPg==" width="{{featureMedia.width}}" height="{{featureMedia.height}}" alt="{{featureMedia.alt}}" base-src="{{src | image_url}}"
+      quality-type={}
+      quality-percent={}
+      data-sizes="auto"
+      sizes="100vw"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1;--objf:cover;--objf-tablet:cover;--objf-mobile:cover"
+    />
+  
+      
+      
+    
+      {% when 'external_video' %}
+        {% assign mediaSourceVideo = featureMedia | external_video_url %}
+        
+    <iframe
+      width="100%" height="100%"
+      class="feature-video gp-w-full gp-h-full gp-relative"
+      src="{{mediaSourceVideo}}"
+      controls="true"
+      allowfullscreen="true"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      frameborder="0"
+      autoplay="false"
+      alt="{{featureMedia.alt}}"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1"
+    >
+    </iframe>
+  
+      {% when 'video' %}
+        {% assign mediaSourceVideo = featureMedia.sources.last.url %}
+        
+  <gp-lite-html5-embed>
+    
+    <video
+      id="gp-video-undefined"
+      class=" gp-w-full lazy"
+      style="width:100%;max-height:100%"
+      controls
+      
+      
+      
+      title="{{featureMedia.alt}}"
+      preload="none"
+      data-src="{{mediaSourceVideo}}"
+      src=""
+      poster=""
+      playsinline
+    >
+    
+  </video>
+    <div
+      style="width:100%;max-height:100%"
+      class="gp-absolute gp-top-0 gp-left-0  gp-w-full gp-thumbnail-video gp-hidden"
+    >
+      <img
+        id="video-thumbnail"
+        src=""
+        class="gp-w-full gp-h-full gp-object-cover"
+        alt="Video Thumbnail"
+      ></img>
+      <button
+        type="button"
+        class="gp-absolute gp-left-1/2 gp-top-1/2 gp-flex gp-aspect-[56/32] gp-w-14 -gp-translate-x-1/2 -gp-translate-y-1/2 gp-items-center gp-justify-center gp-rounded gp-bg-black/80 gp-transition-colors hover:gp-bg-[#ef0800]"
+        aria-label="Play"
+      >
+        <svg class="gp-w-5 gp-text-white" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M5 5.274c0-1.707 1.826-2.792 3.325-1.977l12.362 6.726c1.566.853 1.566 3.101 0 3.953L8.325 20.702C6.826 21.518 5 20.432 5 18.726V5.274Z"
+          />
+        </svg>
+      </button>
+    </div>
+    </gp-lite-html5-embed>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-lite-html5-embed.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+    <script>
+        if(lazyLoadInstance){lazyLoadInstance.update()}else{var lazyLoadInstance = new LazyLoad()}
+    </script>
+  
+      {% when 'model' %}
+        
+    <model-viewer
+      class="gp-w-full gp-h-full model-viewer gp-z-[90]"
+      width="100%"
+      
+      
+      
+      
+      src="{% if featureMedia.sources.first.url contains '.glb' %}{{ featureMedia.sources.first.url }}{% else %}{{featureMedia.sources.last.url}}{% endif %}"
+      alt="{{featureMedia.preview_image.alt}}"
+      camera-controls="true"
+      poster="{{featureMedia.preview_image.src | product_img_url: '1024x1024'}}"
+      data-js-focus-visible=""
+      data-shopify-feature="1.12"
+      ar-status="not-presenting"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1">
+    </model-viewer>
+  
+      {% else %}
+        
+    
+  <img
+      
+      
+      draggable="false"
+      class="gp-w-full gp-h-full gp-absolute gp-top-0 gp-left-0 featured-image-only gp-cursor-pointer !gp-rounded-none gp_lazyload"
+      data-src data-srcset="https://cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_large.gif" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIzNyIgaGVpZ2h0PSIxNjc4IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPGRlZnM+CiAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZy0yMjM3LTE2NzgiPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iMjAlIiAvPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iNTAlIiAvPgogICAgICAgIDxzdG9wIHN0b3AtY29sb3I9InJnYmEoNTEsIDUxLCA1MSwgMCkiIG9mZnNldD0iNzAlIiAvPgogICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPC9kZWZzPgogICAgPHJlY3Qgd2lkdGg9IjIyMzciIGhlaWdodD0iMTY3OCIgZmlsbD0icmdiYSg1MSwgNTEsIDUxLCAwKSIgLz4KICAgIDxyZWN0IGlkPSJyIiB3aWR0aD0iMjIzNyIgaGVpZ2h0PSIxNjc4IiBmaWxsPSJ1cmwoI2ctMjIzNy0xNjc4KSIgLz4KICAgIDxhbmltYXRlIHhsaW5rOmhyZWY9IiNyIiBhdHRyaWJ1dGVOYW1lPSJ4IiBmcm9tPSItMjIzNyIgdG89IjIyMzciIGR1cj0iMXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAgLz4KICA8L3N2Zz4=" width="2237" height="1678" alt="No Image"
+      quality-type={}
+      quality-percent={}
+      data-sizes="auto"
+      sizes="100vw"
+      style="--aspect:1/1;--aspect-tablet:1/1;--aspect-mobile:1/1;--objf:cover;--objf-tablet:cover;--objf-mobile:cover"
+    />
+  
+    {% endcase %}
+    
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    {% endcapture %}
+    {% if product.media.size > 1 %}
+      
+      {{ featureImageOnlyOne }}
+    {% else %}
+      {{ featureImageOnlyOne }}
+    {% endif %}
+  
+         
+      </div>
+    </gp-product-images-v2>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-images-v2.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div>
+    </div>
+   
+    
+       
+      
+    <div
+      enableLazyloadImage="true" parentTag="Col" id="gcf4YWDG8F" data-id="gcf4YWDG8F"
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:grid;--d-mobile:grid;--d-tablet:grid;--op:100%;--pt:var(--g-s-2xl);--pt-mobile:var(--g-s-2xl);--pt-tablet:21px;--cg:var(--g-s-s);--pc:start;--pc-tablet:center;--gtc:minmax(0, auto) minmax(0, auto) minmax(0, auto);--gtc-mobile:minmax(0, auto) minmax(0, auto) minmax(0, auto);--w:100%;--w-tablet:100%;--w-mobile:100%;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll"
+        class="gcf4YWDG8F gp-mx-auto gp-mb-0 gp-grid gp-max-w-full gp-gap-y-0 gp-transition-colors gp-duration-200 gp-ease-in-out [&_*]:gp-max-w-full"
+    >
+    <div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="gRnA8LkyOY gp-relative gp-flex gp-flex-col"
+    >
+      
+      <gp-product-price
+        data-id="gwT_-Si-bS"
+        class="gwT_-Si-bS gp-product-price group-data-[state=loading]:gp-invisible data-[hidden=true]:gp-hidden"
+        gp-data='{"priceType":"regular","uid":"gwT_-Si-bS","locale":"{{shop.locale}}","currency":"{{shop.currency}}","moneyFormat":"{{ shop.money_format | replace: '"', '\\"' | escape }}"}'
+        
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+        data-hidden="false"
+      >
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-price-gwT_-Si-bS"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          type="regular"
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-price gp-money gp-decoration-g-text-1"
+          style="--w:100%;--tdc:text-1;--tdt:1;--ta:left;--c:#242424;--ff:var(--g-font-heading, heading);--weight:700;--size:19px;--size-mobile:17px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;word-break:break-word;overflow:hidden"
+        >
+     {% if variant.price %} 
+       {{ variant.price | money}}
+     {% endif %}
+   </div>
+      </div>
+    </div>
+    </gp-text>
+    
+      </gp-product-price>
+      <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-price.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div><div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="gGUz1TIxgs gp-relative gp-flex gp-flex-col"
+    >
+      
+      <gp-product-price
+        data-id="gsx7rMMaFv"
+        class="gsx7rMMaFv gp-product-price group-data-[state=loading]:gp-invisible data-[hidden=true]:gp-hidden"
+        gp-data='{"priceType":"compare","uid":"gsx7rMMaFv","locale":"{{shop.locale}}","currency":"{{shop.currency}}","moneyFormat":"{{ shop.money_format | replace: '"', '\\"' | escape }}"}'
+        
+        style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+        data-hidden="{% if variant.compare_at_price > variant.price and variant.compare_at_price >= 0 %}false{% else %}true{% endif %}"
+      >
+        
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-price-gsx7rMMaFv"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          type="compare"
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-price gp-product-compare-price gp-line-through"
+          style="--w:100%;--tdc:#B4B4B4;--tdt:1;--ta:left;--c:#B4B4B4;--ff:var(--g-font-heading, heading);--ls:0px;--size:16px;--size-mobile:14px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >
+      {% if variant.compare_at_price  %} 
+        {{ variant.compare_at_price | money}}
+      {% else %}
+        
+      {% endif %}
+    </div>
+      </div>
+    </div>
+    </gp-text>
+    
+      </gp-product-price>
+      <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-price.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div><div
+      enableLazyloadImage="true" label="Block" tag="Col" type="component"
+      style="--jc:center"
+      class="g1o3Qx7-R- gp-relative gp-flex gp-flex-col"
+    >
+      <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:none;--op:100%" class="gzvfyXs1Bw ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.ggzvfyXs1Bw_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | money | append: ' ' | append: suffixVal
+    else
+        
+              if priceSave > 0
+                assign priceSaveMoney = priceSave | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              else
+                assign priceSaveMoney = 0 | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              endif
+            
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="gzvfyXs1Bw"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"You saved","suffix":"","unit":"price"},"translate":"customContent"}, "id": "gzvfyXs1Bw", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:left"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.ggzvfyXs1Bw_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full gp-text-g-error"
+         style="--pl:8px;--pr:8px;--pt:8px;--pb:8px;--pl-tablet:8px;--pr-tablet:8px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:8px;--pr-mobile:8px;--pt-mobile:8px;--pb-mobile:8px;--bs:solid;--bw:1px 1px 1px 1px;--bc:#EA3335;--bg:transparent;--radius:var(--g-radius-medium)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-gzvfyXs1Bw"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text-g-error"
+          style="--w:100%;--ta:left;--c:#EA3335;--fs:normal;--ff:var(--g-font-heading, heading);--weight:600;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:18px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div>
+    </div>
+    </div>
+   
+    <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:none;--d-mobile:none;--d-tablet:block;--op:100%;--mt:var(--g-s-s)" class="gp9N7-BrNh ">
+      
+  {% liquid
+    assign price = variant.price | times: 1.0
+    assign salePrice = variant.compare_at_price | times: 1.0
+    assign priceSave = salePrice | minus: price
+    assign prefixVal = section.settings.ggp9N7-BrNh_customContent_prefix
+    assign suffixVal = 
+    if salePrice == null or price == null
+      assign pricePercentage = prefixVal | money | append: ' ' | append: suffixVal
+    else
+        
+              if priceSave > 0
+                assign priceSaveMoney = priceSave | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              else
+                assign priceSaveMoney = 0 | money
+                assign pricePercentage = prefixVal | append: ' ' | append: priceSaveMoney | append: ' ' | append: suffixVal
+              endif
+            
+    endif
+  %}
+
+  <gp-product-tag
+  data-id="gp9N7-BrNh"
+    data-disabled="{%- if priceSave > 0 -%} false {%- else -%} true {%- endif -%}"
+    gp-data='{"setting":{"customContent":{"prefix":"You saved","suffix":"","unit":"price"},"translate":"customContent"}, "id": "gp9N7-BrNh", "locale": "{{shop.locale}}", "currency": "{{shop.currency}}", "moneyFormat": "{{ shop.money_format | replace: '"', '\"' | escape }}"}'
+    class="gp-block data-[disabled=true]:gp-hidden "
+    style="--ta:center"
+    price-save="{{priceSave}}"
+    data-prefix="{{section.settings.ggp9N7-BrNh_customContent_prefix}}"
+    data-suffix="{{}}"
+  >
+     <div class="gp-inline-flex gp-flex-wrap gp-items-end gp-gap-3" >
+       <div
+         class="gp-flex gp-items-center gp-w-full gp-h-full gp-text-g-error"
+         style="--pl:8px;--pr:8px;--pt:8px;--pb:8px;--pl-tablet:8px;--pr-tablet:8px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:8px;--pr-mobile:8px;--pt-mobile:8px;--pb-mobile:8px;--bs:solid;--bw:1px 1px 1px 1px;--bc:#EA3335;--bg:transparent;--radius:var(--g-radius-medium)"
+       >
+         
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="">
+    <div
+      id="p-tag-gp9N7-BrNh"
+        class=" "
+        
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text-g-error"
+          style="--w:100%;--ta:center;--c:#EA3335;--fs:normal;--ff:var(--g-font-heading, heading);--weight:600;--ls:normal;--size:18px;--size-tablet:13px;--size-mobile:18px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >{{pricePercentage}}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+       </div>
+     </div>
+
+ </gp-product-tag>
+ <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-tag.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+   
+      </div><div gp-el-wrapper  class="gvkD3gna4w ">
+      
+    
+    <div
+      uid="gvkD3gna4w"
+      data-id="gvkD3gna4w"
+       style="--bs:solid;--bw:1px 0px 0px 0px;--bc:#EEEEEE;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-xl);--pt:var(--g-s-xl);--mt-mobile:var(--g-s-xl);--pt-mobile:var(--g-s-xl);--mt-tablet:14px;--pt-tablet:14px;--ta:left;--bgc:transparent;--bgi:url();--bgp:50% 50%;--bgs:cover;--bgr:no-repeat;--bga:scroll">
+     
+     <ul
+        class="gp-inline-flex gp-flex-col"
+        style="--rg:var(--g-s-l);--rg-tablet:var(--g-s-s);--rg-mobile:var(--g-s-l)"
+        >
+        
+    <li
+       data-index="0"
+       data-id="g9aqnFmlSt"
+      class="gp-flex gp-w-full gp-items-center gp-icon-list-item gp-child-item-gvkD3gna4w"
+      style="--cg:var(--g-s-l);--cg-tablet:var(--g-s-s);--cg-mobile:var(--g-s-l)"
+    >
+    <div
+      enableLazyloadImage="true"
+      
+      class="gk8OOD4R0Y gp-relative gp-flex gp-flex-col"
+    >
+      
+  <div
+      
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--ta:left"
+      class="gp-leading-[0] gov3pEgT2R"
+    >
+      <div 
+      data-id="gov3pEgT2R"
+      class="icon-wrapper gp-inline-flex gp-overflow-hidden"
+      style="--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+      >
+      <div
+      
+    >
+      <span
+        style="--c:#322B85;--t:rotate(0deg);--w:24px;--w-tablet:16px;--w-mobile:20px;--h:24px;--h-tablet:16px;--h-mobile:20px;--minw:24px;--minw-tablet:16px;--minw-mobile:20px;--height-desktop:24px;--height-tablet:16px;--height-mobile:20px"
+        class="gp-inline-flex gp-items-center gp-justify-center gp-overflow-hidden [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+      ><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">
+              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M512 256A256 256 0 1 1 0 256a256 256 0 0 1 512 0zm-127.04 -96.96a24 24 0 0 0 -34.56 0.704L239.264 301.344 172.288 234.336a24 24 0 0 0 -33.92 33.92L223.04 352.96a24 24 0 0 0 34.528 -0.64l127.744 -159.68a24 24 0 0 0 -0.32 -33.6z" /></svg></span>
+    </div>
+      </div>
+    </div>
+    
+    </div><div
+      enableLazyloadImage="true"
+      
+      class="g9_BkqeptD gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="g9wVYjJp-M">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="g9wVYjJp-M "
+        style="--tt:default;--ta:left;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+      >
+      <div class="gp-flex" style="--jc:left">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-g-paragraph-1 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:left;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;word-break:break-word;overflow:hidden"
+        >{{ section.settings.gg9wVYjJp-M_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+  </li>
+    <li
+       data-index="1"
+       data-id="gxRBb_fh44"
+      class="gp-flex gp-w-full gp-items-center gp-icon-list-item gp-child-item-gvkD3gna4w"
+      style="--cg:var(--g-s-l);--cg-tablet:var(--g-s-s);--cg-mobile:var(--g-s-l)"
+    >
+    <div
+      enableLazyloadImage="true"
+      
+      class="gbaPBDvt2n gp-relative gp-flex gp-flex-col"
+    >
+      
+  <div
+      
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--ta:left"
+      class="gp-leading-[0] giflGNAj4j"
+    >
+      <div 
+      data-id="giflGNAj4j"
+      class="icon-wrapper gp-inline-flex gp-overflow-hidden"
+      style="--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+      >
+      <div
+      
+    >
+      <span
+        style="--c:#322B85;--t:rotate(0deg);--w:24px;--w-tablet:16px;--w-mobile:20px;--h:24px;--h-tablet:16px;--h-mobile:20px;--minw:24px;--minw-tablet:16px;--minw-mobile:20px;--height-desktop:24px;--height-tablet:16px;--height-mobile:20px"
+        class="gp-inline-flex gp-items-center gp-justify-center gp-overflow-hidden [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+      ><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">
+              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M512 256A256 256 0 1 1 0 256a256 256 0 0 1 512 0zm-127.04 -96.96a24 24 0 0 0 -34.56 0.704L239.264 301.344 172.288 234.336a24 24 0 0 0 -33.92 33.92L223.04 352.96a24 24 0 0 0 34.528 -0.64l127.744 -159.68a24 24 0 0 0 -0.32 -33.6z" /></svg></span>
+    </div>
+      </div>
+    </div>
+    
+    </div><div
+      enableLazyloadImage="true"
+      
+      class="gZM_-w4wU8 gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gS7pcb6o6Q">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gS7pcb6o6Q "
+        style="--tt:default;--ta:left;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+      >
+      <div class="gp-flex" style="--jc:left">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-g-paragraph-1 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:left;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggS7pcb6o6Q_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+  </li>
+    <li
+       data-index="2"
+       data-id="gxhtWZR4ki"
+      class="gp-flex gp-w-full gp-items-center gp-icon-list-item gp-child-item-gvkD3gna4w"
+      style="--cg:var(--g-s-l);--cg-tablet:var(--g-s-s);--cg-mobile:var(--g-s-l)"
+    >
+    <div
+      enableLazyloadImage="true"
+      
+      class="griti7SFZU gp-relative gp-flex gp-flex-col"
+    >
+      
+  <div
+      
+      style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--ta:left"
+      class="gp-leading-[0] gts0_whffF"
+    >
+      <div 
+      data-id="gts0_whffF"
+      class="icon-wrapper gp-inline-flex gp-overflow-hidden"
+      style="--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+      >
+      <div
+      
+    >
+      <span
+        style="--c:#322B85;--t:rotate(0deg);--w:24px;--w-tablet:16px;--w-mobile:20px;--h:24px;--h-tablet:16px;--h-mobile:20px;--minw:24px;--minw-tablet:16px;--minw-mobile:20px;--height-desktop:24px;--height-tablet:16px;--height-mobile:20px"
+        class="gp-inline-flex gp-items-center gp-justify-center gp-overflow-hidden [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+      ><svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"  viewBox="0 0 512 512" fill="currentColor">
+              <path fill="currentColor" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M512 256A256 256 0 1 1 0 256a256 256 0 0 1 512 0zm-127.04 -96.96a24 24 0 0 0 -34.56 0.704L239.264 301.344 172.288 234.336a24 24 0 0 0 -33.92 33.92L223.04 352.96a24 24 0 0 0 34.528 -0.64l127.744 -159.68a24 24 0 0 0 -0.32 -33.6z" /></svg></span>
+    </div>
+      </div>
+    </div>
+    
+    </div><div
+      enableLazyloadImage="true"
+      
+      class="gPebJlSitV gp-relative gp-flex gp-flex-col"
+    >
+      
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gYKqqrcti6">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gYKqqrcti6 "
+        style="--tt:default;--ta:left;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%"
+      >
+      <div class="gp-flex" style="--jc:left">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-g-paragraph-1 gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:left;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#242424;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggYKqqrcti6_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+  </li>
+      </ul>
+  </div>
+  
+      </div>
+   {%- liquid
+      assign inventory_quantity = variant.inventory_quantity | default: 0
+    -%}
+    <gp-product-button
+      class="gp-product-button"
+      gp-data-wrapper="true"
+      gp-label-out-of-stock="{{section.settings.ggCAAUt8Or6_outOfStockLabel}}"
+      gp-label-unavailable="{{section.settings.ggCAAUt8Or6_unavailableLabel}}"
+      gp-data='{"setting":{"actionEffect":"open-cart-drawer","errorMessage":"Cannot add product to cart","successMessage":"Add product to cart successfully","enableSuccessMessage":true,"enableErrorMessage":true,"label":"Get mine now","outOfStockLabel":"Out of stocks","errorType":"built-in","customURL":{"link":"/cart","target":"_self"}},"styles":{"errorTypo":{"attrs":{"color":"error"},"type":"paragraph-2"},"successTypo":{"attrs":{"color":"success"},"type":"paragraph-2"}},"disabled":"{{variant.available}}","variantID":"{{variant.id}}","totalVariant":"{{product.variants.size}}"}' 
+       gp-href="{{ request.origin }}{{ routes.root_url | split: '/' | join: '/' }}/cart"
+       data-variant-selection-required-message="{{}}"
+    >
+        
+  <gp-button >
+  <div
+    style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--mt-tablet:21px;--ta:center"
+    class="{% unless variant.available %} !gp-hidden {% endunless %}"
+  >
+    <style>
+    .gCAAUt8Or6.gp-button-base::before {
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      pointer-events: none;
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #44A714;
+  
+      
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      
+    }
+
+    .gCAAUt8Or6:hover::before {
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #52C41A;
+  
+      
+      border-bottom-left-radius: 9999px;
+      border-bottom-right-radius: 9999px;
+      border-top-left-radius: 9999px;
+      border-top-right-radius: 9999px;
+      
+    }
+
+    .gCAAUt8Or6:hover .gp-button-icon {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+     .gCAAUt8Or6 .gp-button-icon {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6:hover .gp-button-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6 .gp-button-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6 .gp-product-dot-price {
+       color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6:hover .gp-product-dot-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+  </style>
+    <button
+      type="submit" data-id="gCAAUt8Or6" aria-label="Get mine now"
+      name="add" gp-data-hidden="{% unless variant.available %}true{% endunless %}"
+      data-state="idle"
+      class="gCAAUt8Or6 gp-button-base gp-group/button gp-rounded-none gp-max-w-full gp-relative gp-inline-flex gp-items-center gp-justify-center gp-no-underline gp-transition-colors gp-duration-300 disabled:gp-btn-disabled disabled:gp-opacity-30 disabled:gp-pointer-events-none hover:gp-text-g-bg-3 gp-text-g-bg-3 gp-button-atc tcustomizer-submit-button"
+      style="--hvr-bg:#52C41A;--bg:#44A714;--bblr:40px;--bbrr:40px;--btlr:40px;--btrr:40px;--shadow:2.4492935982947064e-16px 4px 8px 0px rgba(0, 0, 0, 0.25);--w:100%;--w-tablet:100%;--w-mobile:100%;--h:Auto;--h-tablet:Auto;--h-mobile:Auto;--pl:24px;--pr:24px;--pt:8px;--pb:8px;--pl-tablet:24px;--pr-tablet:24px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:24px;--pr-mobile:24px;--pt-mobile:8px;--pb-mobile:8px;--hvr-c:var(--g-c-bg-3, bg-3);--c:var(--g-c-bg-3, bg-3);--size:19px;--size-tablet:19px;--size-mobile:17px;--lh:130%;--fs:normal;--weight:600;--ls:normal;--lh-tablet:130%"
+    >
+        <svg
+          class="gp-invisible gp-absolute gp-h-5 gp-w-5 group-data-[state=loading]/button:gp-animate-spin group-data-[state=loading]/button:gp-visible"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="gp-opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="gp-opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+    <div
+    class="gp-inline-flex gp-flex-row-reverse">
+    <span
+        class="gp-inline-flex gp-button-icon gp-transition-colors gp-duration-300 gp-shrink-0 gp-items-center gp-justify-center group-data-[state=loading]/button:gp-invisible gp-z-1 [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+        style="--ml:8px;--height-desktop:1em;--height-tablet:1em;--height-mobile:1em"
+      ><svg style="width: 100%; height: 100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5625 19.6875C9.5625 19.8958 9.66667 20 9.875 20H25.3125V22.6875H9.3125C8.60417 22.6875 7.97917 22.4167 7.4375 21.875C6.9375 21.3333 6.6875 20.7083 6.6875 20C6.6875 19.5833 6.79167 19.1667 7 18.75L8.8125 15.4375L4 5.3125H1.3125V2.6875H5.6875C6.52083 4.4375 7.35417 6.20833 8.1875 8C8.39583 8.375 8.875 9.375 9.625 11C10.375 12.5833 10.9583 13.8125 11.375 14.6875H20.75C23.875 9.02083 25.5833 5.89583 25.875 5.3125L28.1875 6.625L23.0625 15.9375C22.5625 16.8542 21.7917 17.3125 20.75 17.3125H10.8125L9.625 19.5L9.5625 19.6875ZM20.8125 24.8125C21.3542 24.2708 21.9792 24 22.6875 24C23.3958 24 24 24.2708 24.5 24.8125C25.0417 25.3542 25.3125 25.9792 25.3125 26.6875C25.3125 27.3958 25.0417 28.0208 24.5 28.5625C24 29.0625 23.3958 29.3125 22.6875 29.3125C21.9792 29.3125 21.3542 29.0625 20.8125 28.5625C20.2708 28.0208 20 27.3958 20 26.6875C20 25.9792 20.2708 25.3542 20.8125 24.8125ZM7.4375 24.8125C7.97917 24.2708 8.60417 24 9.3125 24C10.0208 24 10.6458 24.2708 11.1875 24.8125C11.7292 25.3542 12 25.9792 12 26.6875C12 27.3958 11.7292 28.0208 11.1875 28.5625C10.6458 29.0625 10.0208 29.3125 9.3125 29.3125C8.60417 29.3125 7.97917 29.0625 7.4375 28.5625C6.9375 28.0208 6.6875 27.3958 6.6875 26.6875C6.6875 25.9792 6.9375 25.3542 7.4375 24.8125ZM14.6875 12V8H10.6875V5.3125H14.6875V1.3125H17.3125V5.3125H21.3125V8H17.3125V12H14.6875Z" fill="#D6D6D6"/></svg></span>
+      <span
+        data-gp-text
+        class="gp-content-product-button group-hover/button:!gp-text-inherit gp-button-text-only gp-break-words group-data-[state=loading]/button:gp-invisible [&_p]:gp-whitespace-pre-line gp-z-1 gp-h-full gp-flex gp-items-center gp-overflow-hidden 
+        "
+        style="--size:19px;--size-tablet:19px;--size-mobile:17px;--hvr-c:var(--g-c-bg-3, bg-3);--c:var(--g-c-bg-3, bg-3)"
+      >
+        {{ section.settings.ggCAAUt8Or6_label }}
+      </span>
+      </div>
+    
+    </button>
+  </div>
+  </gp-button>
+
+        
+  <gp-button >
+  <div
+    style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-2xl);--mt-mobile:var(--g-s-2xl);--mt-tablet:21px;--ta:center"
+    class="{% if variant.available %} !gp-hidden {% endif %}"
+  >
+    <style>
+    .gCAAUt8Or6-sold-out.gp-button-base::before {
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      pointer-events: none;
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #44A714;
+  
+      
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      
+    }
+
+    .gCAAUt8Or6-sold-out:hover::before {
+      border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: #52C41A;
+  
+      
+      border-bottom-left-radius: 9999px;
+      border-bottom-right-radius: 9999px;
+      border-top-left-radius: 9999px;
+      border-top-right-radius: 9999px;
+      
+    }
+
+    .gCAAUt8Or6-sold-out:hover .gp-button-icon {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+     .gCAAUt8Or6-sold-out .gp-button-icon {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6-sold-out:hover .gp-button-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6-sold-out .gp-button-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6-sold-out .gp-product-dot-price {
+       color: var(--g-c-bg-3, bg-3);
+    }
+
+    .gCAAUt8Or6-sold-out:hover .gp-product-dot-price {
+      color: var(--g-c-bg-3, bg-3);
+    }
+  </style>
+    <button
+      type="button" data-id="gCAAUt8Or6" aria-label="{{section.settings.ggCAAUt8Or6_outOfStockLabel}}"
+      gp-data-hidden="{% if variant.available %}true{% endif %}"
+      data-state="idle"
+      class="gCAAUt8Or6-sold-out gp-button-base gp-group/button gp-rounded-none gp-max-w-full gp-relative gp-inline-flex gp-items-center gp-justify-center gp-no-underline gp-transition-colors gp-duration-300 disabled:gp-btn-disabled disabled:gp-opacity-30 disabled:gp-pointer-events-none hover:gp-text-g-bg-3 gp-text-g-bg-3 gp-button-sold-out btn-disabled gp-opacity-30 gp-cursor-default"
+      style="--hvr-bg:#52C41A;--bg:#44A714;--bblr:40px;--bbrr:40px;--btlr:40px;--btrr:40px;--shadow:2.4492935982947064e-16px 4px 8px 0px rgba(0, 0, 0, 0.25);--w:100%;--w-tablet:100%;--w-mobile:100%;--h:Auto;--h-tablet:Auto;--h-mobile:Auto;--pl:24px;--pr:24px;--pt:8px;--pb:8px;--pl-tablet:24px;--pr-tablet:24px;--pt-tablet:8px;--pb-tablet:8px;--pl-mobile:24px;--pr-mobile:24px;--pt-mobile:8px;--pb-mobile:8px;--hvr-c:var(--g-c-bg-3, bg-3);--c:var(--g-c-bg-3, bg-3);--size:19px;--size-tablet:19px;--size-mobile:17px;--lh:130%;--fs:normal;--weight:600;--ls:normal;--lh-tablet:130%"
+    >
+      
+    <div
+    class="gp-inline-flex gp-flex-row-reverse">
+    <span
+        class="gp-inline-flex gp-button-icon gp-transition-colors gp-duration-300 gp-shrink-0 gp-items-center gp-justify-center group-data-[state=loading]/button:gp-invisible gp-z-1 [&>svg]:!gp-h-[var(--height-desktop)] [&>svg]:!gp-w-auto tablet:[&>svg]:!gp-h-[var(--height-tablet)] mobile:[&>svg]:!gp-h-[var(--height-mobile)]"
+        style="--ml:8px;--height-desktop:1em;--height-tablet:1em;--height-mobile:1em"
+      ><svg style="width: 100%; height: 100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5625 19.6875C9.5625 19.8958 9.66667 20 9.875 20H25.3125V22.6875H9.3125C8.60417 22.6875 7.97917 22.4167 7.4375 21.875C6.9375 21.3333 6.6875 20.7083 6.6875 20C6.6875 19.5833 6.79167 19.1667 7 18.75L8.8125 15.4375L4 5.3125H1.3125V2.6875H5.6875C6.52083 4.4375 7.35417 6.20833 8.1875 8C8.39583 8.375 8.875 9.375 9.625 11C10.375 12.5833 10.9583 13.8125 11.375 14.6875H20.75C23.875 9.02083 25.5833 5.89583 25.875 5.3125L28.1875 6.625L23.0625 15.9375C22.5625 16.8542 21.7917 17.3125 20.75 17.3125H10.8125L9.625 19.5L9.5625 19.6875ZM20.8125 24.8125C21.3542 24.2708 21.9792 24 22.6875 24C23.3958 24 24 24.2708 24.5 24.8125C25.0417 25.3542 25.3125 25.9792 25.3125 26.6875C25.3125 27.3958 25.0417 28.0208 24.5 28.5625C24 29.0625 23.3958 29.3125 22.6875 29.3125C21.9792 29.3125 21.3542 29.0625 20.8125 28.5625C20.2708 28.0208 20 27.3958 20 26.6875C20 25.9792 20.2708 25.3542 20.8125 24.8125ZM7.4375 24.8125C7.97917 24.2708 8.60417 24 9.3125 24C10.0208 24 10.6458 24.2708 11.1875 24.8125C11.7292 25.3542 12 25.9792 12 26.6875C12 27.3958 11.7292 28.0208 11.1875 28.5625C10.6458 29.0625 10.0208 29.3125 9.3125 29.3125C8.60417 29.3125 7.97917 29.0625 7.4375 28.5625C6.9375 28.0208 6.6875 27.3958 6.6875 26.6875C6.6875 25.9792 6.9375 25.3542 7.4375 24.8125ZM14.6875 12V8H10.6875V5.3125H14.6875V1.3125H17.3125V5.3125H21.3125V8H17.3125V12H14.6875Z" fill="#D6D6D6"/></svg></span>
+      <span
+        data-gp-text
+        class="gp-content-product-button group-hover/button:!gp-text-inherit gp-button-text-only gp-break-words group-data-[state=loading]/button:gp-invisible [&_p]:gp-whitespace-pre-line gp-z-1 gp-h-full gp-flex gp-items-center gp-overflow-hidden 
+        "
+        style="--size:19px;--size-tablet:19px;--size-mobile:17px;--hvr-c:var(--g-c-bg-3, bg-3);--c:var(--g-c-bg-3, bg-3)"
+      >
+        {{section.settings.ggCAAUt8Or6_outOfStockLabel}}
+      </span>
+      </div>
+    
+    </button>
+  </div>
+  </gp-button>
+
+    </gp-product-button>
+    <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product-button.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+    </div>
+    </div>
+   
+    
+          {%- endform -%}
+        </product-form>
+      </gp-product>
+      {%- assign product = gpBkProduct -%}
+    {% else %}
+      <div class="gp-text-center">{{ "gempages.Product.product_not_found" | t }}</div>
+    {%- endif -%}
+     <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-product.v2.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gcSwitkqE2">
+    <div
+      enableLazyloadImage="true" parentTag="Col"
+        class="gcSwitkqE2 "
+        style="--tt:default;--ta:center;--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%;--mt:var(--g-s-2xl);--mb:var(--g-s-s);--mt-mobile:var(--g-s-2xl);--mb-mobile:7px;--mt-tablet:21px;--mb-tablet:2px"
+      >
+      <div class="gp-flex" style="--jc:center">
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-text"
+          style="--w:100%;--w-tablet:100%;--w-mobile:100%;--ta:center;--line-clamp:unset;--line-clamp-tablet:unset;--line-clamp-mobile:unset;--c:#575757;--fs:normal;--ff:var(--g-font-body, body);--weight:600;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:12px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggcSwitkqE2_text | replace: '$locationOrigin', locationOrigin }}</div>
+      </div>
+    </div>
+    </gp-text>
+    <div gp-el-wrapper style="--bs:none;--bw:0px;--bc:transparent;--shadow:none;--d:block;--d-mobile:block;--d-tablet:block;--op:100%" class="gDssyUzHDh ">
+      
+    <gp-countdown-timer
+      data-id="gDssyUzHDh"
+     class="gp-flex "
+     gp-data='{"behaviour":"daily","dateStandard":1686074215248,"dayLabel":"Day","enableDay":true,"enableHour":true,"enableMinute":true,"enableSecond":true,"enableWeek":false,"hourLabel":"Hrs","loopAfterFinish":true,"minuteLabel":"Min","redirectUrl":{"link":"","target":"_self"},"secondLabel":"Sec","timeZone":"UTC+7","timerDaily":{"format":"am","hours":10,"mins":30},"timerEverygreen":{"days":1,"endTime":1685570353657,"hours":3,"mins":0,"startTime":1685469415248},"translate":"dayLabel,hourLabel,minuteLabel,secondLabel,weekLabel","weekLabel":"Weeks","uid":"gDssyUzHDh","builderData":{"advanced":{"border":{"desktop":{"normal":{"border":"none","borderType":"none","borderWidth":{},"color":"transparent","isCustom":false,"width":"0px"}}},"boxShadow":{"desktop":{"normal":{"angle":90,"blur":"4px","color":"rgba(18, 18, 18, 0.12)","distance":"2px","spread":"0px","type":"shadow-1"}}},"d":{"desktop":true,"mobile":true,"tablet":true},"hasBoxShadow":{"desktop":{"normal":false}},"op":{"desktop":"100%"},"rounded":{"desktop":{"normal":{"bblr":"0px","bbrr":"0px","btlr":"0px","btrr":"0px","radiusType":"none"}}},"spacing-setting":{"desktop":{"margin":{},"padding":""},"mobile":{"margin":"","padding":""},"tablet":{"margin":"","padding":""}}},"label":"CountDown Timer","settings":{"behaviour":"daily","dateStandard":1686074215248,"dayLabel":"Day","enableDay":true,"enableHour":true,"enableMinute":true,"enableSecond":true,"enableWeek":false,"hourLabel":"Hrs","loopAfterFinish":true,"minuteLabel":"Min","redirectUrl":{"link":"","target":"_self"},"secondLabel":"Sec","timeZone":"UTC+7","timerDaily":{"format":"am","hours":10,"mins":30},"timerEverygreen":{"days":1,"endTime":1685570353657,"hours":3,"mins":0,"startTime":1685469415248},"translate":"dayLabel,hourLabel,minuteLabel,secondLabel,weekLabel","weekLabel":"Weeks"},"styles":{"backgroundItemColor":"transparent","borderState":{"normal":{"border":"none","borderType":"none","color":"transparent","isCustom":false,"width":"0px"}},"colorLabel":"#575757","colorNumber":"text-2","horizontalGap":"auto","itemPadding":{"custom":{"desktop":{"horizontal":"16px","vertical":"0px"}}},"labelTypo":{"attrs":{"color":"#575757"},"custom":{"fontSize":{"desktop":"13px","mobile":"12px","tablet":"13px"},"fontStyle":"normal","fontWeight":"400","letterSpacing":"normal","lineHeight":{"desktop":"150%","mobile":"150%","tablet":"150%"}},"type":"paragraph-1"},"labelTypography":{"type":"paragraph-2"},"numTypo":{"attrs":{"color":"#242424"},"custom":{"fontSize":{"desktop":"23px","mobile":"23px","tablet":"23px"},"fontStyle":"normal","fontWeight":"700","letterSpacing":"normal","lineHeight":{"desktop":"130%","mobile":"130%","tablet":"130%"}},"type":"heading-2"},"numTypography":{"custom":{"desktop":{"fontSize":"23px","fontStyle":"normal","fontWeight":"700","letterSpacing":"normal","lineHeight":"130%"},"mobile":{"fontSize":"20px","fontWeight":"700"},"tablet":{"fontSize":"20px","fontWeight":"700"}}},"roundedState":{"normal":{"radiusType":"none"}},"textAlign":{"desktop":"center"}},"tag":"Countdown","uid":"gDssyUzHDh","childrens":[],"type":"component"}}'
+     gp-href=""
+     style="--jc:center"
+     >
+      <div id="section-countdown" class="gp-flex gp-flex-wrap gp-w-max gp-relative" style="gap:auto;--jc:center">
+        
+          
+          
+    <div
+        style="--pl:16px;--pr:16px;--pt:0px;--pb:0px;--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+    class="gp-flex-1 gp-text-center gp-min-w-max !gp-max-w-max">
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      id="day"
+        class="gDssyUzHDh "
+        style="--c:var(--g-c-text-2, text-2)"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-countdown-number"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:23px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;--c:#242424;word-break:break-word;overflow:hidden"
+        >00</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      
+        class="gDssyUzHDh "
+        style="--c:#575757"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-body, body);--weight:400;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:12px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;--c:#575757;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggDssyUzHDh_dayLabel }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+    
+          
+    <div
+        style="--pl:16px;--pr:16px;--pt:0px;--pb:0px;--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+    class="gp-flex-1 gp-text-center gp-min-w-max !gp-max-w-max">
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      id="hour"
+        class="gDssyUzHDh "
+        style="--c:var(--g-c-text-2, text-2)"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-countdown-number"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:23px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;--c:#242424;word-break:break-word;overflow:hidden"
+        >00</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      
+        class="gDssyUzHDh "
+        style="--c:#575757"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-body, body);--weight:400;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:12px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;--c:#575757;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggDssyUzHDh_hourLabel }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+    
+          
+    <div
+        style="--pl:16px;--pr:16px;--pt:0px;--pb:0px;--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+    class="gp-flex-1 gp-text-center gp-min-w-max !gp-max-w-max">
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      id="minute"
+        class="gDssyUzHDh "
+        style="--c:var(--g-c-text-2, text-2)"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-countdown-number"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:23px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;--c:#242424;word-break:break-word;overflow:hidden"
+        >00</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      
+        class="gDssyUzHDh "
+        style="--c:#575757"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-body, body);--weight:400;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:12px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;--c:#575757;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggDssyUzHDh_minuteLabel }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+    
+          
+    <div
+        style="--pl:16px;--pr:16px;--pt:0px;--pb:0px;--bs:none;--bw:0px;--bc:transparent;--bg:transparent"
+    class="gp-flex-1 gp-text-center gp-min-w-max !gp-max-w-max">
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      id="second"
+        class="gDssyUzHDh "
+        style="--c:var(--g-c-text-2, text-2)"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A'] gp-countdown-number"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-heading, heading);--weight:700;--ls:normal;--size:23px;--size-tablet:23px;--size-mobile:23px;--lh:130%;--lh-tablet:130%;--lh-mobile:130%;--c:#242424;word-break:break-word;overflow:hidden"
+        >00</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    
+  {% assign locationOrigin = request.origin | append: routes.root_url | split: '/' | join: '/' %}
+  <gp-text data-id="gDssyUzHDh-text">
+    <div
+      
+        class="gDssyUzHDh "
+        style="--c:#575757"
+      >
+      <div  >
+        <div
+          
+          data-gp-text
+          class="[&_p]:gp-inline [&_p]:after:gp-whitespace-pre-wrap [&_p]:after:gp-content-['\A']"
+          style="--w:100%;--fs:normal;--ff:var(--g-font-body, body);--weight:400;--ls:normal;--size:13px;--size-tablet:13px;--size-mobile:12px;--lh:150%;--lh-tablet:150%;--lh-mobile:150%;--c:#575757;word-break:break-word;overflow:hidden"
+        >{{ section.settings.ggDssyUzHDh_secondLabel }}</div>
+      </div>
+    </div>
+    </gp-text>
+    
+    </div>
+    
+      </div>
+     </gp-countdown-timer>
+     <script {% if section.settings.section_preload == "false" %}class="gps-link" delay {% else %}src{% endif %}="https://d2ls1pfffhvy22.cloudfront.net/assets-v2/gp-countdown.js?v={{ shop.metafields.GEMPAGES.ASSETS_VERSION }}" defer="defer"></script>
+  
+      </div>
+    </div>
+    </div>
+   
+    
+    </div>

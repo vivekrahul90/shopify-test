@@ -1,0 +1,112 @@
+<div class="sticky-textbar">
+  <div></div>
+
+      
+</div>
+
+<style>
+  .sticky-textbar,  .offer-ad .sticky-textbar{
+    display:none;
+    }
+@media (max-width: 767px) {
+  .offer-ad .sticky-textbar, .offer-ad .sticky-textbar::before{
+    display:none !important;
+  }
+ 
+ .sticky-textbar {
+    font-size: 14px;
+    padding: 4px;
+    background: #2F9567 !important;
+    color: #fff;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+}
+  .sticky-textbar {
+  background-color: #2F9567;
+  color: #fff;
+  /* padding: 10px 20px; */
+  /* border-radius: 5px; */
+  position: relative;
+  overflow: hidden;
+}
+
+.sticky-textbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+ .button-product.forever_sticky_atc > div:last-child {
+    padding: 12px;
+    border: 1px solid #e3e3e3;
+    border-radius: 0 0 12px 12px;
+}
+  .button-product.forever_sticky_atc {
+    max-width: 97%;
+    margin: auto;
+}
+     .forever_sticky_atc {
+    padding: 0 !important;
+}
+     .forever_sticky_atc > .sticky-textbar {
+        display: block;
+        font-weight: 600;
+       font-size: 12px;
+    }
+   .offer-ad  .button-product.forever_sticky_atc > div:last-child{
+          padding: 12px;
+        border: none;
+        border-radius: 0;
+    }
+   .offer-ad  .button-product.forever_sticky_atc {
+    max-width: 100%;
+    margin: auto;
+}
+    }
+   
+</style>
+<script>
+  function updateGiftText() {
+  const body = document.body;
+  const stickyTextbar = document.querySelector('.sticky-textbar div'); // Select the inner div
+
+  if (body.classList.contains('apd')) {
+    stickyTextbar.textContent = "Free ₹100 recharge on Astrotalk app on prepaid orders";
+  } 
+  // else if (body.classList.contains('freecm')) {
+  //   stickyTextbar.textContent = "Free 5 Mukhi pendant available with this purchase 🎁🔱";
+  // }
+  else if (body.classList.contains('ppd-249')) {
+    stickyTextbar.textContent = "Free ₹249 recharge on Astrotalk app on prepaid orders";
+  }
+  // else if (body.classList.contains('dyb-499')) {
+  //   stickyTextbar.textContent = "Free ₹499 recharge on Astrotalk app on prepaid orders";
+  // }
+  else {
+    stickyTextbar.textContent = "Hanuman Jayanti Sale: Extra 5% OFF at Checkout🤩";
+    // stickyTextbar.textContent = "Free gift worth ₹499 on prepaid orders🤩";
+  }
+}
+  
+
+// Call the function initially to set the correct text
+updateGiftText();
+  
+
+</script>

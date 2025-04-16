@@ -1,0 +1,258 @@
+{% schema %}
+{
+  "name": "Exclusive Offers",
+
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "EXCLUSIVE OFFERS"
+    },
+    {
+      "type": "image_picker",
+      "id": "heading_icon",
+      "label": "Heading Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Offer Card Background",
+      "default": "#f8f8f8"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Offer Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Offer Border Color",
+      "default": "#d5d5d5"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Divider Thickness",
+      "min": 1,
+      "max": 5,
+      "step": 0.5,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "Divider Style",
+      "options": [
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" }
+      ],
+      "default": "dashed"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Offer",
+      "settings": [
+        {
+          "type": "text",
+          "id": "offer_title",
+          "label": "Offer Title",
+          "default": "2 FOR ₹949"
+        },
+        {
+          "type": "textarea",
+          "id": "offer_description",
+          "label": "Offer Description",
+          "default": "Get any 2 Perfumes for just ₹949"
+        },
+        {
+          "type": "image_picker",
+          "id": "offer_icon",
+          "label": "Offer Icon"
+        },
+        {
+          "type": "url",
+          "id": "offer_link",
+          "label": "Offer Link"
+        },
+        {
+          "type": "text",
+          "id": "offer_link_text",
+          "label": "Offer Link Text",
+          "default": "Perfect Jodi"
+        },
+        {
+          "type": "text",
+          "id": "offer_code",
+          "label": "Offer Code (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Exclusive Offers",
+      "category": "Promotions",
+      "blocks": [
+        { "type": "offer" },
+        { "type": "offer" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="offers-section-container" style="background-image: url({% if section.settings.background_image %}{{ section.settings.background_image | image_url }}{% endif %});">
+  <div class="offer-section-heading">
+    {% if section.settings.heading_icon %}
+      <img src="{{ section.settings.heading_icon | image_url }}" alt="Offer Icon" width="22" height="22" loading="lazy">
+    {% endif %}
+   <p class="text-bold uppercase no-margin"> <strong>{{ section.settings.heading }}</strong></p>
+  </div>
+
+  <slider-component class="slider-mobile-gutter">
+    <ul class="offers-slider grid grid--2-col grid--3-col-desktop slider slider--tablet" role="list">
+      {% for block in section.blocks %}
+        <li class="offer-wrapper grid__item slider__slide shine-animation" {{ block.shopify_attributes }}
+            style="background: {{ section.settings.card_bg_color }}; border: 1px solid {{ section.settings.card_border_color }};">
+          <div class="offer-wrapper-top">
+            <div class="offer-grid" style="display: flex; padding-bottom:3px;">
+              {% if block.settings.offer_icon %}
+                <img src="{{ block.settings.offer_icon | image_url }}" alt="{{ block.settings.offer_title }}" width="18" height="18" loading="lazy">
+              {% endif %}
+              <p class="text-bold uppercase offer-title" style="color: {{ section.settings.card_text_color }};padding-left:5px;">{{ block.settings.offer_title }}</p>
+            </div>
+            <p class="offer-description" style="color: {{ section.settings.card_text_color }}; padding: 5px 0px 10px 0px;">{{ block.settings.offer_description }}</p>
+          </div>
+          <div class="offer-divider" style="border-top: {{ section.settings.divider_thickness }}px {{ section.settings.divider_style }} {{ section.settings.divider_color }};"></div>
+          <div class="offer-wrapper-bottom rte">
+            {% if block.settings.offer_code and block.settings.offer_code != "" %}
+              <p>Copy Code: <a href="#" onclick="event.preventDefault();copy(this)" class="text-bold">{{ block.settings.offer_code }}</a></p>
+            {% else %}
+              <p>
+                <a class="unstyled-link" href="{{ block.settings.offer_link }}" style="color: {{ section.settings.card_text_color }};">
+                  <strong>{{ block.settings.offer_link_text }}</strong>
+                </a>
+              </p>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </slider-component>
+</div>
+
+<script>
+  function copy(element) {
+    navigator.clipboard.writeText(element.textContent);
+    alert('Copied: ' + element.textContent);
+  }
+</script>
+
+<style>
+  /* Section Styling */
+  .offers-section-container {
+    padding: 20px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .offer-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    letter-spacing: 0.06rem;
+    text-align: left;
+  }
+
+  /* Slider Styling */
+  .offers-slider {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+  }
+
+  .slider {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 10px;
+  }
+
+  /* Offer Card Styling */
+  .offer-wrapper {
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto;
+    width: 250px;
+    scroll-snap-align: start;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .text-bold {
+    font-weight:800;
+  }
+  /* Shine Animation 
+  .shine-animation {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine-animation::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 0, 0.3) 50%, rgba(255, 255, 255, 0) 70%);
+    animation: shineEffect 2s infinite linear;
+  }
+
+  @keyframes shineEffect {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }*/
+
+  /* Mobile Scroll */
+  @media (max-width: 768px) {
+    .slider {
+      overflow-x: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,149 @@
+{% comment %}
+    Renders a mini product card
+
+    Accepts:
+    - card_product: {Object} Product Liquid object (optional)
+    - media_aspect_ratio: {String} Size of the product image card. Values are "square" and "portrait". Default is "square" (optional)
+    - ratio: media_aspect_ratio in number
+
+    Usage:
+    {% render 'mini-card-product', card_product: product %}
+{% endcomment %}
+
+{%- capture dataForCustomerEvent -%}
+  {
+    "product": {
+      "title": "{{ card_product.title | escape }}",
+      "listName": "{{ collection.title | default: list_name | escape }}",
+      "sku": "{{ card_product.id }}",
+      "currencyCode": "{{ cart.currency.iso_code }}",
+      "price": {{ card_product.price }},
+      "vendor": "{{ card_product.vendor }}"
+    }
+  }
+{%- endcapture %}
+
+{% if card_product.metafields.custom.minimum_order_quantity != blank %}
+  {% assign thisitem_qty = cart | line_items_for: card_product | sum: 'quantity' %}    
+  {% assign thiscnnt = card_product.metafields.custom.minimum_order_quantity | times: 1 | minus: thisitem_qty %}  
+{% else %}
+  {% assign thiscnnt = 100000000 %}
+{% endif %}
+
+<div class="mini_cart_recommandation_item group relative z-10 md:h-full lg:pb-5 lg:border-b{{ class_splide }}">
+  <div class="card flex flex-col md:flex-row gap-2 h-full">
+    <div class="relative z-20 cursor-pointer md:w-[30%] w-full md:w-1/4">
+      <a href="{{ card_product.url }}"
+        class="block disable-effect h-full"
+        @click='$store.xCustomerEvent.fire("product_selected", $el)'
+        x-customer-event-data="{{ dataForCustomerEvent | escape }}"
+      >
+        <div class="w-full relative h-full{% if settings.edges_type == 'rounded_corners' %} rounded{% endif %}{% if card_product.featured_media %} overflow-hidden before:h-0 before:block h-0 z-0{% endif %}{% unless media_aspect_ratio == "natural" %} pb-[{{ ratio | times: 100.0 }}%]{% else %}{% if card_product.featured_media.media_type == "model" %} pb-[100%]{% endif %}{% endunless %}"{% if media_aspect_ratio == "natural" and card_product.featured_media and card_product.featured_media.media_type != "model" %}style="padding-bottom: {{ 1 | divided_by: card_product.featured_media.aspect_ratio | times: 100 }}%;"{% endif %}>
+          {%- if card_product.featured_media -%}
+            <div class="absolute top-0 left-0 w-full h-full image-hover">
+              <img
+                src="{{ card_product.featured_media | image_url: width: 468 }}"
+                alt="{{ card_product.featured_media.alt | split: "#" | first | escape }}"
+                class="w-full h-full object-cover transition duration-300 z-10 ease-out"
+                loading="lazy"
+                width="{{ card_product.featured_media.width }}"
+                height="{{ card_product.featured_media.height }}">
+              </div>
+          {%- else -%}
+            <div class='bg-[#c9c9c9] flex{% unless image_ratio == "natural" %} absolute{% endunless %} top-0 left-0 w-full h-full items-center'>
+              {% render 'icon-placeholder', icon: 'icon-product' | class: 'w-full h-full' %}
+            </div>
+          {%- endif -%}
+        </div>
+      </a>
+    </div>
+    <div class="md:w-3/4 md:pt-0 md:pl-4 rtl:pl-0 rtl:pr-4 flex flex-col flex-1 md:block justify-between">
+      <div class="mb-1 flex flex-col md:block">
+        <div class="mb-1 leading-tight">
+          <a href="{{ card_product.url }}"
+            class="line-clamp-1 disable-effect hover-text-link cursor-pointer duration-200 p-break-words text-[rgba(var(--colors-heading))]"
+            @click='$store.xCustomerEvent.fire("product_selected", $el)'
+            x-customer-event-data="{{ dataForCustomerEvent | escape }}"
+          >
+            {{ card_product.title | escape }}
+          </a>
+        </div>
+        {% render 'price', product: card_product, price_class: 'cart_upsell-price-list text-xs md:text-base' %}
+      </div>
+      <div class="quick-view-container w-full" x-show="$store.xQuickView" x-cloak > 
+        <div x-data="xProductCart" x-show="$store.xQuickView && $store.xQuickView.show_atc_button" class="w-full" :class="$store.xQuickView && $store.xQuickView.btn_atc_bottom && 'hidden md:block'" x-cloak>
+          {%- assign product_form_id = 'product-form-' | append: section.id -%}
+          {%- form 'product', card_product, id: product_form_id, class: 'form h-full', novalidate: 'novalidate', data-type: 'add-to-cart-form', x-ref: 'product_form' -%}
+            <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+            {% if settings.show_in_cart_items != 'none' %}
+              {% render 'estimate-shipping-cart', product: product, message: settings.message_estimate_cart %}
+            {% endif %}
+            {% if can_show_preorder %}
+              <input name="properties[{{ 'general.preorder.name' | t }}]" class="hidden" value="{{ settings.message_preorder }}"/>
+            {% endif %}
+            <button
+              type="{% if thiscnnt <= 0 %}button{% else %}submit{% endif %}"
+              {% if thiscnnt <= 0 %}
+              disabled
+              {% endif %}
+              name="add"
+              onclick="clevertap.event.push('Cart_upsell', {'Product name': '{{ card_product.title }}'});"
+              @click.prevent="errorMessage == false && addToCart($event)"
+              data-id="{{ section_id }}-{{ card_product.id }}-{{ block_id }}"
+              class="button button-solid classproduct-{{ card_product.id }} not-icon w-full leading-normal lg:group-hover:block md:w-max py-1 px-2 h-full z-50 text-xs lg:-translate-x-0 disabled:lg:block disabled:cursor-not-allowed disabled:opacity-60"
+              :class="errorMessage && 'opacity-60 cursor-not-allowed'"
+              {% if card_product.selected_or_first_available_variant.available == false %}
+                disabled
+                aria-label="{{ 'products.product.sold_out' | t }}"
+              {% else %}
+                {%- if card_product.has_only_default_variant -%}
+                  aria-label="{{ 'products.product.add_to_cart' | t }}"
+                {% else %}
+                  aria-label="{{ 'products.product.add_to_cart' | t }}"
+                {% endif %}
+              {% endif %}
+            >
+              <span :class="{ 'lg:block opacity-0' : loading, 'hidden' : errorMessage}">
+                {%- if card_product.selected_or_first_available_variant.available -%}
+                  {%- if card_product.has_only_default_variant -%}
+                    {% liquid
+                      if can_show_preorder
+                        assign button_label = 'products.product.pre_order' | t
+                        if settings.card_button_preorder != blank
+                          assign button_label = settings.card_button_preorder
+                        endif
+                      else 
+                        assign button_label = 'products.product.add_to_cart' | t
+                      endif
+                    %}
+                    <span class="flex items-center justify-center">
+                      {% render 'button-label', button_label: button_label, show_button_style: 'primary' %}
+                    </span>
+                  {%- else -%}
+                    {% assign button_label = 'products.product.add_to_cart' | t %}
+                    <span class="flex items-center justify-center">
+                      {% render 'button-label', button_label: button_label, show_button_style: 'primary' %}
+                    </span>
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+              <div
+                class="flex gap-x-2 items-center justify-center"
+                role="alert"
+                x-cloak
+                x-show="errorMessage"
+              >
+                {{ 'products.product.sold_out' | t }}
+              </div>
+              <div class="lg:inline-block animate-spin w-4 h-4 md:w-5 md:h-5 absolute top-[calc(50%-8px)] left-[calc(50%-8px)] md:top-[calc(50%-10px)] md:left-[calc(50%-10px)]" x-show="loading" x-cloak>
+                {% render 'icon-alls', icon: 'icon-loading' %}
+              </div>
+            </button>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
