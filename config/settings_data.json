@@ -514,6 +514,11 @@
         "type": "shopify://apps/pixelfy-multi-facebook-pixels/blocks/pixelfy_embed/0631306f-15dc-4b2f-a748-43eab137c12a",
         "disabled": false,
         "settings": {}
+      },
+      "6502968457677098879": {
+        "type": "shopify://apps/mbc-bundle-builder/blocks/mbc-builder-core/b2760cbb-20b7-41db-a8ab-c4b55296aac0",
+        "disabled": false,
+        "settings": {}
       }
     }
   },
