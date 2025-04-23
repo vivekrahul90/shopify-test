@@ -1,213 +1,434 @@
-{% comment %}
-  Build Your Own Bundle Section — v2 (with thumbnail strip + Alpine‑friendly cart drawer)
-{% endcomment %}
-
-<section class="bundle-builder" data-min="{{ section.settings.min_products }}">
-  {% assign bundle_collection = section.settings.collection %}
-
-  {% if bundle_collection != nil %}
-    <div class="bundle-builder-grid">
-      {% for product in bundle_collection.products limit: section.settings.products_limit %}
-        {% assign first_variant = product.variants.first %}
-        <div class="product-card"
-             data-variant-id="{{ first_variant.id }}"
-             data-image-url="{{ product.featured_image | img_url: '100x' }}">
-          <img src="{{ product | img_url: '400x' }}" alt="{{ product.title }}" loading="lazy">
-
-          <div class="info">
-            <p class="title">{{ product.title }}</p>
-            <p class="price">{{ product.price | money }}</p>
-            <button class="bundle-btn" type="button">Add to Bundle</button>
+{% schema %}
+    {
+      "name": "Build Your Own Bundle",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "bundle_collection",
+          "label": "Collection for Bundle Products"
+        },
+        {
+          "type": "range",
+          "id": "products_per_row_desktop",
+          "min": 2,
+          "max": 5,
+          "step": 1,
+          "default": 4,
+          "label": "Products per row (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "min_products_for_bundle",
+          "min": 2,
+          "max": 10,
+          "step": 1,
+          "default": 2,
+          "label": "Minimum products required for bundle"
+        },
+        {
+          "type": "number",
+          "id": "tier_1_price",
+          "label": "Tier 1 Price (2 products)",
+          "default": 899
+        },
+        {
+          "type": "number",
+          "id": "tier_2_price",
+          "label": "Tier 2 Price (3 products)",
+          "default": 999
+        },
+        {
+          "type": "number",
+          "id": "tier_3_price",
+          "label": "Tier 3 Price (4 products)",
+          "default": 1299
+        },
+        {
+          "type": "text",
+          "id": "bundle_heading",
+          "default": "Build Your Own Bundle",
+          "label": "Section Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "bundle_description",
+          "default": "Select items to create your custom bundle and save!",
+          "label": "Section Description"
+        },
+        {
+          "type": "color",
+          "id": "progress_bar_color",
+          "default": "#1a73e8",
+          "label": "Progress Bar Color"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "default": "#000000",
+          "label": "Button Color"
+        }
+      ],
+      "presets": [
+        {
+          "name": "Build Your Own Bundle",
+          "category": "Custom"
+        }
+      ]
+    }
+    {% endschema %}
+    
+    <!-- root colour variable for reuse -->
+    <style>
+      :root {
+        --progress-color: {{ section.settings.progress_bar_color }};
+      }
+    </style>
+    
+    <div class="custom-bundle-section" 
+         data-min-products="{{ section.settings.min_products_for_bundle }}" 
+         data-tier1-price="{{ section.settings.tier_1_price }}"
+         data-tier2-price="{{ section.settings.tier_2_price }}"
+         data-tier3-price="{{ section.settings.tier_3_price }}">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2>{{ section.settings.bundle_heading }}</h2>
+          <div class="bundle-description">{{ section.settings.bundle_description }}</div>
+          <div class="tiered-discount-info">
+            <div class="tier-item">
+              <div class="tier-marker" style="background-color: var(--progress-color)"></div>
+              <span>2 products for ₹{{ section.settings.tier_1_price }}</span>
+            </div>
+            <div class="tier-item">
+              <div class="tier-marker" style="background-color: var(--progress-color)"></div>
+              <span>3 products for ₹{{ section.settings.tier_2_price }}</span>
+            </div>
+            <div class="tier-item">
+              <div class="tier-marker" style="background-color: var(--progress-color)"></div>
+              <span>4 products for ₹{{ section.settings.tier_3_price }}</span>
+            </div>
           </div>
         </div>
-      {% endfor %}
+        
+        <div class="bundle-products-grid">
+          {% if section.settings.bundle_collection != blank %}
+            {% paginate section.settings.bundle_collection.products by 24 %}
+              <div class="products-grid" data-products-per-row="{{ section.settings.products_per_row_desktop }}">
+                {% for product in section.settings.bundle_collection.products %}
+                  <div class="bundle-product-card" 
+                       data-product-id="{{ product.id }}" 
+                       data-product-price="{{ product.price | divided_by: 100.0 }}"
+                       data-product-title="{{ product.title }}"
+                       data-product-image="{{ product.featured_image | img_url: '100x100', crop: 'center' }}">
+                    <div class="bundle-product-card__inner">
+                      <div class="bundle-product-card__image">
+                        <a href="{{ product.url }}">
+                          {% if product.featured_image != blank %}
+                            <img src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}">
+                          {% else %}
+                            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          {% endif %}
+                        </a>
+                      </div>
+                      <div class="bundle-product-card__info">
+                        <h3 class="bundle-product-card__title">
+                          <a href="{{ product.url }}">{{ product.title }}</a>
+                        </h3>
+                        <div class="bundle-product-card__price">
+                          {{ product.price | money_without_trailing_zeros  }}
+                        </div>
+                        <button type="button" class="add-to-bundle-btn" data-product-id="{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                          Add to Bundle
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endpaginate %}
+          {% else %}
+            <div class="empty-collection-message">
+              Please select a collection in the section settings.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="bundle-progress-footer">
+        <div class="container">
+          <div class="bundle-progress" x-data="{}">
+            <div class="bundle-progress__top">
+              <div class="bundle-progress__count"><span class="selected-count">0</span>/<span class="min-count">{{ section.settings.min_products_for_bundle }}</span> products selected</div>
+              <div class="tiered-progress-container">
+                <div class="tiered-progress">
+                  <div class="tier tier-1" data-tier="1">
+                    <div class="tier-progress"></div>
+                  </div>
+                  <div class="tier tier-2" data-tier="2">
+                    <div class="tier-progress"></div>
+                  </div>
+                  <div class="tier tier-3" data-tier="3">
+                    <div class="tier-progress"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bundle-summary__price">
+                <span>Total: <span class="original-price">₹0.00</span> | Bundle Price: <span class="bundle-price">₹0.00</span> | You Save: <span class="savings">₹0.00</span></span>
+              </div>
+            </div>
+            <div class="bundle-selected-products">
+              <!-- Selected products thumbnails injected here -->
+            </div>
+          </div>
+          <div class="bundle-summary">
+            <button type="button" class="add-bundle-to-cart" disabled>
+              ADD TO CART
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  {% else %}
-    <p class="text-center">No collection selected.</p>
-  {% endif %}
-
-  <!-- Sticky thumbnail strip & CTA -->
-  <div id="bundle-progress-bar" aria-live="polite">
-    <div class="items" id="bundle-items"></div>
-
-    <div class="summary">
-      <span class="progress-text">0/{{ section.settings.min_products }} selected</span>
-      <button id="bundle-checkout" disabled>Add Bundle to Cart</button>
-    </div>
-  </div>
-</section>
-
-<style>
-  :root {
-    --cards-mobile: {{ section.settings.cards_mobile }};
-    --cards-desktop: {{ section.settings.cards_desktop }};
-  }
-
-  /* --- Grid --- */
-  .bundle-builder-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--cards-mobile), 1fr);
-    gap: 1rem;
-  }
-  @media (min-width: 768px) {
-    .bundle-builder-grid {
-      grid-template-columns: repeat(var(--cards-desktop), 1fr);
-    }
-  }
-
-  /* --- Product card --- */
-  .product-card {
-    background:#fff;border-radius:12px;box-shadow:0 1px 6px rgb(0 0 0 / 5%);
-    display:flex;flex-direction:column;overflow:hidden;transition:transform .2s;
-  }
-  .product-card:hover { transform:translateY(-3px); }
-  .product-card img { width:100%; height:auto; object-fit:cover; }
-  .product-card .info { padding:0.75rem; display:flex; flex-direction:column; flex:1; }
-  .product-card .title { font-weight:600; font-size:0.95rem; margin-bottom:0.25rem; }
-  .product-card .price { font-size:0.9rem; color:#3c3c3c; margin-bottom:0.5rem; }
-
-  /* --- CTA button tweaks --- */
-  .bundle-btn {
-    background:transparent;
-    color:#000;
-    font-size:0.85rem;
-    padding:0.5rem 0;
-    border:1px solid #000; /* thin border */
-    border-radius:8px;
-    cursor:pointer;
-    width:100%;
-    transition:background 0.25s, color 0.25s;
-  }
-  .bundle-btn.selected {
-    background:#1e90ff;
-    color:#fff;
-    border-color:#1e90ff;
-  }
-
-  /* --- Sticky footer --- */
-  #bundle-progress-bar {
-    position:fixed;left:0;right:0;bottom:0;
-    padding:0.75rem 1rem;background:#fff;box-shadow:0 -1px 10px rgb(0 0 0 / 10%);z-index:30;
-  }
-  #bundle-progress-bar .items {
-    display:flex;align-items:center;gap:0.5rem;overflow-x:auto;margin-bottom:0.5rem;
-  }
-  .thumbnail {
-    position:relative;width:40px;height:40px;flex:0 0 auto;
-  }
-  .thumbnail img { width:100%;height:100%;object-fit:cover;border-radius:4px; }
-  .thumbnail button {
-    position:absolute;top:-6px;right:-6px;width:16px;height:16px;
-    border-radius:50%;border:1px solid #aaa;background:#fff;font-size:12px;line-height:14px;padding:0;cursor:pointer;
-  }
-
-  #bundle-progress-bar .summary { display:flex;justify-content:space-between;align-items:center;font-size:0.9rem; }
-  #bundle-checkout {
-    background:#1e90ff;color:#fff;border:none;border-radius:8px;padding:0.5rem 1rem;cursor:pointer;transition:opacity 0.25s;
-  }
-  #bundle-checkout:disabled { opacity:0.45;cursor:not-allowed; }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const minRequired = {{ section.settings.min_products | json }};
-    const selected    = new Map(); // variantId -> { img }
-
-    const itemsContainer = document.getElementById('bundle-items');
-    const progressText   = document.querySelector('#bundle-progress-bar .progress-text');
-    const checkoutBtn    = document.getElementById('bundle-checkout');
-
-    function renderItems() {
-      itemsContainer.innerHTML = '';
-      selected.forEach(({ img }, variantId) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'thumbnail';
-        thumb.dataset.variantId = variantId;
-        thumb.innerHTML = `<img src="${img}" alt="">\n           <button aria-label="Remove" class="remove">×</button>`;
-        itemsContainer.appendChild(thumb);
-      });
-    }
-
-    function updateUI() {
-      const count = selected.size;
-      progressText.textContent = `${count}/${minRequired} selected`;
-      checkoutBtn.disabled = count < minRequired;
-      renderItems();
-    }
-
-    // Toggle selection on card button
-    document.querySelectorAll('.bundle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card       = btn.closest('.product-card');
-        const variantId  = card.dataset.variantId;
-        const imageUrl   = card.dataset.imageUrl;
-
-        if (selected.has(variantId)) {
-          selected.delete(variantId);
-          btn.classList.remove('selected');
-          btn.textContent = 'Add to Bundle';
-        } else {
-          selected.set(variantId, { img: imageUrl });
-          btn.classList.add('selected');
-          btn.textContent = 'Added';
-        }
-        updateUI();
-      });
-    });
-
-    // Remove thumbnail via event delegation
-    itemsContainer.addEventListener('click', e => {
-      if (e.target.matches('.remove')) {
-        const thumb = e.target.closest('.thumbnail');
-        const variantId = thumb.dataset.variantId;
-        selected.delete(variantId);
-
-        // unselect corresponding card button
-        const cardBtn = document.querySelector(`.product-card[data-variant-id="${variantId}"] .bundle-btn`);
-        if (cardBtn) {
-          cardBtn.classList.remove('selected');
-          cardBtn.textContent = 'Add to Bundle';
-        }
-        updateUI();
+    
+    <style>
+      /* --- GENERAL LAYOUT & TYPOGRAPHY ----------------------------------- */
+      .custom-bundle-section {
+        padding: 60px 4px 120px;
+        position: relative;
       }
-    });
-
-    async function addVariant(variantId) {
-      return fetch('/cart/add.js', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body:JSON.stringify({ id:variantId, quantity:1 })
+    
+      .section-header {
+        margin-bottom: 30px;
+      }
+    
+      .bundle-description {
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+    
+      /* Tiered discount text container */
+      .tiered-discount-info {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+      .tier-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        max-width: 200px;
+        text-align: center;
+      }
+      .tier-marker {
+        min-width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+    
+      /* --- PRODUCT GRID --------------------------------------------------- */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+      @media (max-width:1200px){ .products-grid{ grid-template-columns: repeat(3,1fr);} }
+      @media (max-width:768px){ .products-grid{ grid-template-columns: repeat(2,1fr); gap: 15px;} }
+    
+      .bundle-product-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: #fff;
+      }
+      .bundle-product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.15);}  
+      .bundle-product-card__inner { display:flex; flex-direction:column; height:100%; }
+      .bundle-product-card__image{ position:relative; overflow:hidden; padding-bottom:100%;}
+      .bundle-product-card__image img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease;}
+      .bundle-product-card:hover .bundle-product-card__image img{ transform:scale(1.05);}  
+      .bundle-product-card__info{ padding:15px; display:flex; flex-direction:column; flex-grow:1; }
+      .bundle-product-card__title{ font-size:16px; margin-bottom:10px; font-weight:500; line-height:1.4; }
+      .bundle-product-card__title a{ color:#333; text-decoration:none; }
+      .bundle-product-card__price{ font-size:16px; font-weight:600; margin-bottom:15px; }
+    
+      .add-to-bundle-btn{ padding:10px 15px; background:transparent; border:1px solid #ddd; border-radius:4px; cursor:pointer; font-weight:500; transition:all 0.3s ease; margin-top:auto; }
+      .add-to-bundle-btn:hover{ border-color:#aaa; }
+      .add-to-bundle-btn.selected{ border-color:red; color:red;}  
+    
+      /* --- FIXED FOOTER --------------------------------------------------- */
+      .bundle-progress-footer{ position:fixed; bottom:0; left:0; width:100%; background:#fff; padding:15px 10px; box-shadow:0 -2px 10px rgba(0,0,0,0.1); z-index:30; transform:translateY(100%); transition:transform 0.3s ease; }
+      .bundle-progress-footer.active{ transform:translateY(0);}  
+    
+      .bundle-progress__top{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+      .bundle-progress__count{ font-weight:600; font-size:14px; white-space:nowrap; }
+      .bundle-summary__price{ font-size:14px; word-break:break-word; white-space:normal; }
+      .original-price,.bundle-price,.savings{ font-weight:600; }
+      .savings{ color:green; }
+    
+      /* --- REDESIGNED THIN PROGRESS BAR WITH DOTS ------------------------ */
+      .tiered-progress-container{ flex-grow:1; margin:0 20px; }
+      .tiered-progress{ position:relative; display:flex; height:4px; background:#f0f0f0; border-radius:2px; }
+      .tier{ flex:1; position:relative; }
+      .tier-progress{ position:absolute; inset:0; width:0%; background:var(--progress-color); transition:width 0.3s ease; }
+      /* dot on left edge of each tier except the first is placed via pseudo */
+      .tier::before{ content:""; position:absolute; top:50%; left:0; transform:translate(-50%, -50%); width:10px; height:10px; border-radius:50%; background:#f0f0f0; transition:background 0.3s ease; }
+      .tier:first-child::before{ display:none; } /* skip first dot: we'll add separate */
+      /* starting dot */
+      .tiered-progress::before{ content:""; position:absolute; top:50%; left:0; transform:translate(-50%, -50%); width:10px; height:10px; border-radius:50%; background:#f0f0f0; transition:background 0.3s ease; }
+      /* ending dot */
+      .tiered-progress::after{ content:""; position:absolute; top:50%; right:0; transform:translate(50%, -50%); width:10px; height:10px; border-radius:50%; background:#f0f0f0; transition:background 0.3s ease; }
+      .tier.active::before, .tiered-progress.active-start::before, .tiered-progress.active-end::after{ background:var(--progress-color); }
+    
+      /* THUMB STRIP AS CAROUSEL */
+      .bundle-selected-products{ display:flex; flex-wrap:nowrap; overflow-x:auto; gap:10px; padding:10px 0; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; }
+      .bundle-selected-products::-webkit-scrollbar{ display:none; }
+      .selected-product-item{ flex:0 0 60px; height:60px; border-radius:4px; overflow:hidden; position:relative; box-shadow:0 2px 6px rgba(0,0,0,0.1); scroll-snap-align:start; }
+      .selected-product-item img{ width:100%; height:100%; object-fit:cover; }
+      .remove-product{ position:absolute; top:0; right:0; width:18px; height:18px; background:rgba(255,255,255,0.8); border-radius:0 0 0 4px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; color:#333; }
+      .remove-product:hover{ background:rgba(255,255,255,0.95); color:#e53935; }
+    
+      .bundle-summary{ display:flex; justify-content:flex-end; }
+      .add-bundle-to-cart{ padding:12px 25px; border:none; border-radius:4px; background:#000; color:#fff; font-weight:600; cursor:pointer; transition:opacity 0.3s ease; width:100%;}
+      .add-bundle-to-cart:disabled{ opacity:0.6; cursor:not-allowed; }
+      @media (max-width:992px){
+        .bundle-progress__top{ flex-direction:column; align-items:flex-start; }
+        .tiered-progress-container{ width:100%; margin:10px 0; }
+        .bundle-summary__price{ width:100%; }
+      }
+    </style>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const bundleSection = document.querySelector('.custom-bundle-section');
+        if (!bundleSection) return;
+        
+        const minProducts = parseInt(bundleSection.dataset.minProducts);
+        const tier1Price = parseFloat(bundleSection.dataset.tier1Price);
+        const tier2Price = parseFloat(bundleSection.dataset.tier2Price);
+        const tier3Price = parseFloat(bundleSection.dataset.tier3Price);
+        
+        const progressFooter = bundleSection.querySelector('.bundle-progress-footer');
+        const selectedProductsContainer = bundleSection.querySelector('.bundle-selected-products');
+        const progressCount = bundleSection.querySelector('.selected-count');
+        const addBundleBtn = bundleSection.querySelector('.add-bundle-to-cart');
+        const originalPriceElem = bundleSection.querySelector('.original-price');
+        const bundlePriceElem = bundleSection.querySelector('.bundle-price');
+        const savingsElem = bundleSection.querySelector('.savings');
+        
+        // Tier progress elements
+        const tierElems = bundleSection.querySelectorAll('.tier');
+        
+        let selectedProducts = [];
+        
+        // Activate footer instantly so users see progress
+        progressFooter.classList.add('active');
+        
+        // Product grid interactions (add / remove)
+        bundleSection.addEventListener('click', function(e){
+          const addBtn = e.target.closest('.add-to-bundle-btn');
+          const removeBtn = e.target.closest('.remove-product');
+          
+          if(addBtn){
+            const card = addBtn.closest('.bundle-product-card');
+            const productId = addBtn.dataset.productId;
+            const variantId = addBtn.dataset.variantId;
+            const price = parseFloat(card.dataset.productPrice);
+            const title = card.dataset.productTitle;
+            const image = card.dataset.productImage;
+            
+            if(addBtn.classList.contains('selected')){
+              addBtn.classList.remove('selected');
+              addBtn.textContent = 'Add to Bundle';
+              selectedProducts = selectedProducts.filter(p => p.id !== productId);
+            }else{
+              addBtn.classList.add('selected');
+              addBtn.textContent = 'Remove from Bundle';
+              selectedProducts.push({ id:productId, variantId, price, title, image });
+            }
+            updateBundleUI();
+          }
+          
+          if(removeBtn){
+            const productId = removeBtn.dataset.productId;
+            const gridBtn = bundleSection.querySelector(`.add-to-bundle-btn[data-product-id="${productId}"]`);
+            if(gridBtn){ gridBtn.classList.remove('selected'); gridBtn.textContent = 'Add to Bundle'; }
+            selectedProducts = selectedProducts.filter(p => p.id !== productId);
+            updateBundleUI();
+          }
+        });
+        
+        // Add bundle to cart
+        addBundleBtn.addEventListener('click', function(){
+          if(selectedProducts.length < minProducts) return;
+          const items = selectedProducts.map(p => ({ id:p.variantId, quantity:1 }));
+          fetch('/cart/add.js',{
+            method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({ items })
+          }).then(res=>res.json()).then(()=>{ window.location.href='/cart'; }).catch(()=>{ window.location.href='/cart'; });
+        });
+        
+        /* ---------- UI UPDATE FUNCTION --------------------------------- */
+        function updateBundleUI(){
+          const count = selectedProducts.length;
+          progressCount.textContent = count;
+    
+          // thumbnails
+          selectedProductsContainer.innerHTML = '';
+          selectedProducts.forEach(p=>{
+            const div = document.createElement('div');
+            div.className = 'selected-product-item';
+            div.innerHTML = `<img src="${p.image}" alt="${p.title}"><div class="remove-product" data-product-id="${p.id}" title="Remove ${p.title}">×</div>`;
+            selectedProductsContainer.appendChild(div);
+          });
+    
+          // pricing ---------------------------
+          const originalTotal = selectedProducts.reduce((s,p)=>s+p.price,0);
+          let bundlePrice = 0;
+          
+          if(count >= 4){ bundlePrice = tier3Price; }
+          else if(count >= 3){ bundlePrice = tier2Price; }
+          else if(count >= 2){ bundlePrice = tier1Price; }
+          
+          const savings = originalTotal - bundlePrice;
+          originalPriceElem.textContent = formatRs(originalTotal);
+          bundlePriceElem.textContent = formatRs(bundlePrice);
+          savingsElem.textContent = formatRs(savings);
+    
+          addBundleBtn.disabled = count < minProducts;
+    
+          // progress line fill for each tier --------------------------------
+          const widths = [
+            Math.min((count / 2)*100, 100),
+            count > 2 ? Math.min(((count - 2) / 1)*100, 100) : 0,
+            count > 3 ? Math.min(((count - 3) / 1)*100, 100) : 0
+          ];
+          widths.forEach((w,idx)=>{
+            const tier = bundleSection.querySelector(`.tier-${idx+1}`);
+            const bar = tier.querySelector('.tier-progress');
+            bar.style.width = `${w}%`;
+            
+            // Update circle highlighting based on count
+            if(count >= 2 && idx === 0) tier.classList.add('active');
+            if(count >= 3 && idx === 1) tier.classList.add('active');
+            if(count >= 4 && idx === 2) tier.classList.add('active');
+            
+            // Remove active class if count is below threshold
+            if(count < 2 && idx === 0) tier.classList.remove('active');
+            if(count < 3 && idx === 1) tier.classList.remove('active');
+            if(count < 4 && idx === 2) tier.classList.remove('active');
+          });
+          
+          // Update start and end dots
+          const prog = bundleSection.querySelector('.tiered-progress');
+          prog.classList.toggle('active-start', count>0);
+          prog.classList.toggle('active-end', count>=4);
+        }
+    
+        /* ---------- HELPERS ------------------------------------------- */
+        function formatRs(num){
+          return new Intl.NumberFormat('en-IN',{ style:'currency', currency:'INR', minimumFractionDigits:2 }).format(num);
+        }
       });
-    }
-
-    checkoutBtn.addEventListener('click', async () => {
-      checkoutBtn.disabled = true;
-      await Promise.all([...selected.keys()].map(id => addVariant(id)));
-
-      /* ---- Open Cart Drawer (Alpine.js theme) ---- */
-      // Many Alpine‑driven themes dispatch a global event the drawer listens to.
-      window.dispatchEvent(new CustomEvent('cart:open'));
-
-      // If your theme uses a store or method, you can call it here. Example:
-      // if (window.$store && $store.cart) { $store.cart.open() }
-    });
-
-    updateUI();
-  });
-</script>
-
-{% schema %}
-{
-  "name": "Build Your Own Bundle v2",
-  "tag": "section",
-  "class": "section bundle-builder",
-  "settings": [
-    { "type": "collection", "id": "collection", "label": "Product collection" },
-    { "type": "range", "id": "cards_mobile", "label": "Cards per row on mobile", "min": 1, "max": 3, "step": 1, "default": 2 },
-    { "type": "range", "id": "cards_desktop", "label": "Cards per row on desktop", "min": 2, "max": 5, "step": 1, "default": 4 },
-    { "type": "range", "id": "products_limit", "label": "Maximum products to display", "min": 4, "max": 50, "step": 1, "default": 12 },
-    { "type": "number", "id": "min_products", "label": "Minimum products required for bundle discount", "default": 3 }
-  ],
-  "presets": [ { "name": "Build Your Own Bundle" } ]
-}
-{% endschema %}
+    </script>
+    
