@@ -1,6 +1,488 @@
 {% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
+{
+  "name": "Build Your Own Bundle",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "bundle_collection",
+      "label": "Collection for Bundle Products"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Products per row (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "min_products_for_bundle",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "label": "Minimum products required for bundle"
+    },
+    {
+      "type": "range",
+      "id": "discount_percentage",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "default": 15,
+      "label": "Discount percentage"
+    },
+    {
+      "type": "text",
+      "id": "bundle_heading",
+      "default": "Build Your Own Bundle",
+      "label": "Section Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "bundle_description",
+      "default": "Select items to create your custom bundle and save!",
+      "label": "Section Description"
+    },
+    {
+      "type": "color",
+      "id": "progress_bar_color",
+      "default": "#1a73e8",
+      "label": "Progress Bar Color"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "default": "#1a73e8",
+      "label": "Button Color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Build Your Own Bundle",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}
+
+<div class="custom-bundle-section" data-min-products="{{ section.settings.min_products_for_bundle }}" data-discount="{{ section.settings.discount_percentage }}">
+  <div class="container">
+    <div class="section-header text-center">
+      <h2>{{ section.settings.bundle_heading }}</h2>
+      <div class="bundle-description">{{ section.settings.bundle_description }}</div>
+      <div class="bundle-instructions">
+        Add {{ section.settings.min_products_for_bundle }} or more items to get {{ section.settings.discount_percentage }}% off
+      </div>
+    </div>
+    
+    <div class="bundle-products-grid">
+      {% if section.settings.bundle_collection != blank %}
+        {% paginate section.settings.bundle_collection.products by 24 %}
+          <div class="products-grid" data-products-per-row="{{ section.settings.products_per_row_desktop }}">
+            {% for product in section.settings.bundle_collection.products %}
+              <div class="bundle-product-card" data-product-id="{{ product.id }}" data-product-price="{{ product.price | money_without_currency }}">
+                <div class="bundle-product-card__inner">
+                  <div class="bundle-product-card__image">
+                    <a href="{{ product.url }}">
+                      {% if product.featured_image != blank %}
+                        <img src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}">
+                      {% else %}
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {% endif %}
+                    </a>
+                  </div>
+                  <div class="bundle-product-card__info">
+                    <h3 class="bundle-product-card__title">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h3>
+                    <div class="bundle-product-card__price">
+                      {{ product.price | money }}
+                    </div>
+                    <button type="button" class="add-to-bundle-btn" data-product-id="{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                      Add to Bundle
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endpaginate %}
+      {% else %}
+        <div class="empty-collection-message">
+          Please select a collection in the section settings.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="bundle-progress-footer">
+    <div class="container">
+      <div class="bundle-progress">
+        <div class="bundle-progress__info">
+          <span class="bundle-progress__count">0</span> of {{ section.settings.min_products_for_bundle }} items selected
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="background-color: {{ section.settings.progress_bar_color }}"></div>
+        </div>
+      </div>
+      <div class="bundle-summary">
+        <div class="bundle-summary__price">
+          <div class="original-price">Bundle Total: <span>{{ 0 | money }}</span></div>
+          <div class="discount-price">Discounted Price: <span>{{ 0 | money }}</span></div>
+          <div class="savings">You Save: <span>{{ 0 | money }}</span></div>
+        </div>
+        <button type="button" class="add-bundle-to-cart" disabled style="background-color: {{ section.settings.button_color }}">
+          Add Bundle to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .custom-bundle-section {
+    padding: 60px 0 120px;
+    position: relative;
+  }
+  
+  .section-header {
+    margin-bottom: 30px;
+  }
+  
+  .bundle-description {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .bundle-instructions {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+  .bundle-product-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+  }
+  
+  .bundle-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .bundle-product-card__inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .bundle-product-card__image {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 100%;
+  }
+  
+  .bundle-product-card__image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .bundle-product-card:hover .bundle-product-card__image img {
+    transform: scale(1.05);
+  }
+  
+  .bundle-product-card__info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .bundle-product-card__title {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  
+  .bundle-product-card__title a {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .bundle-product-card__price {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  .add-to-bundle-btn {
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: auto;
+  }
+  
+  .add-to-bundle-btn:hover {
+    background: #f3f3f3;
+  }
+  
+  .add-to-bundle-btn.selected {
+    background-color: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+  }
+  
+  .bundle-progress-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .bundle-progress-footer.active {
+    transform: translateY(0);
+  }
+  
+  .bundle-progress {
+    margin-bottom: 15px;
+  }
+  
+  .bundle-progress__info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  
+  .bundle-progress__count {
+    font-weight: 600;
+  }
+  
+  .progress-bar-container {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  .bundle-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .bundle-summary__price {
+    font-size: 14px;
+  }
+  
+  .original-price {
+    margin-bottom: 5px;
+  }
+  
+  .discount-price {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .savings {
+    color: #e53935;
+    font-weight: 500;
+  }
+  
+  .add-bundle-to-cart {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .add-bundle-to-cart:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  @media screen and (max-width: 1200px) {
+    .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .bundle-summary {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .bundle-summary__price {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    .add-bundle-to-cart {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const bundleSection = document.querySelector('.custom-bundle-section');
+    if (!bundleSection) return;
+    
+    const minProducts = parseInt(bundleSection.dataset.minProducts);
+    const discountPercentage = parseInt(bundleSection.dataset.discount);
+    
+    const progressFooter = bundleSection.querySelector('.bundle-progress-footer');
+    const progressBar = bundleSection.querySelector('.progress-bar');
+    const progressCount = bundleSection.querySelector('.bundle-progress__count');
+    const addBundleBtn = bundleSection.querySelector('.add-bundle-to-cart');
+    const originalPriceElem = bundleSection.querySelector('.original-price span');
+    const discountPriceElem = bundleSection.querySelector('.discount-price span');
+    const savingsElem = bundleSection.querySelector('.savings span');
+    
+    let selectedProducts = [];
+    
+    // Initialize the footer visibility
+    progressFooter.classList.add('active');
+    
+    // Add to Bundle button click handler
+    bundleSection.addEventListener('click', function(e) {
+      if (e.target.classList.contains('add-to-bundle-btn')) {
+        const productId = e.target.dataset.productId;
+        const variantId = e.target.dataset.variantId;
+        const productCard = e.target.closest('.bundle-product-card');
+        const productPrice = parseFloat(productCard.dataset.productPrice);
+        
+        if (e.target.classList.contains('selected')) {
+          // Remove from bundle
+          e.target.classList.remove('selected');
+          e.target.textContent = 'Add to Bundle';
+          
+          selectedProducts = selectedProducts.filter(p => p.id !== productId);
+        } else {
+          // Add to bundle
+          e.target.classList.add('selected');
+          e.target.textContent = 'Remove from Bundle';
+          
+          selectedProducts.push({
+            id: productId,
+            variantId: variantId,
+            price: productPrice
+          });
+        }
+        
+        updateBundleUI();
+      }
+    });
+    
+    // Add bundle to cart button click handler
+    addBundleBtn.addEventListener('click', function() {
+      if (selectedProducts.length < minProducts) return;
+      
+      // Prepare items for cart
+      let items = selectedProducts.map(product => {
+        return {
+          id: product.variantId,
+          quantity: 1
+        };
+      });
+      
+      // Add all items to cart via AJAX
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: items
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Open cart drawer (this depends on your theme's implementation)
+        if (typeof window.openCartDrawer === 'function') {
+          window.openCartDrawer();
+        } else {
+          // Fallback for themes without a cart drawer function
+          window.location.href = '/cart';
+        }
+      })
+      .catch(error => {
+        console.error('Error adding bundle to cart:', error);
+      });
+    });
+    
+    function updateBundleUI() {
+      const selectedCount = selectedProducts.length;
+      
+      // Update progress count
+      progressCount.textContent = selectedCount;
+      
+      // Update progress bar
+      const progressPercentage = Math.min((selectedCount / minProducts) * 100, 100);
+      progressBar.style.width = progressPercentage + '%';
+      
+      // Calculate prices
+      const originalTotal = selectedProducts.reduce((sum, product) => sum + product.price, 0);
+      let discountedTotal = originalTotal;
+      let savings = 0;
+      
+      if (selectedCount >= minProducts) {
+        discountedTotal = originalTotal * (1 - discountPercentage / 100);
+        savings = originalTotal - discountedTotal;
+        addBundleBtn.disabled = false;
+      } else {
+        addBundleBtn.disabled = true;
+      }
+      
+      // Format currency (simple approach, consider using a library for production)
+      originalPriceElem.textContent = '$' + originalTotal.toFixed(2);
+      discountPriceElem.textContent = '$' + discountedTotal.toFixed(2);
+      savingsElem.textContent = '$' + savings.toFixed(2);
+    }
+  });
+</script>
