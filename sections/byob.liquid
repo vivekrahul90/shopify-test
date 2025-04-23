@@ -83,7 +83,11 @@
         {% paginate section.settings.bundle_collection.products by 24 %}
           <div class="products-grid" data-products-per-row="{{ section.settings.products_per_row_desktop }}">
             {% for product in section.settings.bundle_collection.products %}
-              <div class="bundle-product-card" data-product-id="{{ product.id }}" data-product-price="{{ product.price | money_without_currency }}">
+              <div class="bundle-product-card" 
+                   data-product-id="{{ product.id }}" 
+                   data-product-price="{{ product.price | money_without_currency }}"
+                   data-product-title="{{ product.title }}"
+                   data-product-image="{{ product.featured_image | img_url: '100x100', crop: 'center' }}">
                 <div class="bundle-product-card__inner">
                   <div class="bundle-product-card__image">
                     <a href="{{ product.url }}">
@@ -120,12 +124,12 @@
   
   <div class="bundle-progress-footer">
     <div class="container">
-      <div class="bundle-progress">
+      <div class="bundle-progress" x-data="{}">
         <div class="bundle-progress__info">
           <span class="bundle-progress__count">0</span> of {{ section.settings.min_products_for_bundle }} items selected
         </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" style="background-color: {{ section.settings.progress_bar_color }}"></div>
+        <div class="bundle-selected-products">
+          <!-- Selected products will be displayed here -->
         </div>
       </div>
       <div class="bundle-summary">
@@ -233,9 +237,9 @@
     margin-bottom: 15px;
   }
   
+  /* UPDATED: Changed add to bundle button styling to use border instead of background */
   .add-to-bundle-btn {
     padding: 10px 15px;
-    border: none;
     background: transparent;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -246,13 +250,12 @@
   }
   
   .add-to-bundle-btn:hover {
-    background: #f3f3f3;
+    border-color: #aaa;
   }
   
   .add-to-bundle-btn.selected {
-    background-color: #1a73e8;
-    color: white;
     border-color: #1a73e8;
+    color: #1a73e8;
   }
   
   .bundle-progress-footer {
@@ -279,7 +282,7 @@
   .bundle-progress__info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     font-size: 14px;
   }
   
@@ -287,18 +290,48 @@
     font-weight: 600;
   }
   
-  .progress-bar-container {
-    height: 8px;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
+  /* NEW: Selected products display in footer */
+  .bundle-selected-products {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
   }
   
-  .progress-bar {
-    height: 100%;
-    width: 0;
+  .selected-product-item {
+    position: relative;
+    width: 60px;
+    height: 60px;
     border-radius: 4px;
-    transition: width 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .selected-product-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .remove-product {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 0 0 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .remove-product:hover {
+    background: rgba(255,255,255,0.95);
+    color: #e53935;
   }
   
   .bundle-summary {
@@ -377,7 +410,7 @@
     const discountPercentage = parseInt(bundleSection.dataset.discount);
     
     const progressFooter = bundleSection.querySelector('.bundle-progress-footer');
-    const progressBar = bundleSection.querySelector('.progress-bar');
+    const selectedProductsContainer = bundleSection.querySelector('.bundle-selected-products');
     const progressCount = bundleSection.querySelector('.bundle-progress__count');
     const addBundleBtn = bundleSection.querySelector('.add-bundle-to-cart');
     const originalPriceElem = bundleSection.querySelector('.original-price span');
@@ -396,6 +429,8 @@
         const variantId = e.target.dataset.variantId;
         const productCard = e.target.closest('.bundle-product-card');
         const productPrice = parseFloat(productCard.dataset.productPrice);
+        const productTitle = productCard.dataset.productTitle;
+        const productImage = productCard.dataset.productImage;
         
         if (e.target.classList.contains('selected')) {
           // Remove from bundle
@@ -411,15 +446,35 @@
           selectedProducts.push({
             id: productId,
             variantId: variantId,
-            price: productPrice
+            price: productPrice,
+            title: productTitle,
+            image: productImage
           });
         }
         
         updateBundleUI();
       }
+      
+      // Handle remove product button click
+      if (e.target.classList.contains('remove-product') || e.target.closest('.remove-product')) {
+        const clickedElement = e.target.classList.contains('remove-product') ? e.target : e.target.closest('.remove-product');
+        const productId = clickedElement.dataset.productId;
+        
+        // Update the add button in the product grid
+        const addButton = bundleSection.querySelector(`.add-to-bundle-btn[data-product-id="${productId}"]`);
+        if (addButton) {
+          addButton.classList.remove('selected');
+          addButton.textContent = 'Add to Bundle';
+        }
+        
+        // Remove from selected products array
+        selectedProducts = selectedProducts.filter(p => p.id !== productId);
+        
+        updateBundleUI();
+      }
     });
     
-    // Add bundle to cart button click handler
+    // Add bundle to cart button click handler with Alpine.js integration
     addBundleBtn.addEventListener('click', function() {
       if (selectedProducts.length < minProducts) return;
       
@@ -431,29 +486,103 @@
         };
       });
       
-      // Add all items to cart via AJAX
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          items: items
+      // Using Alpine.js for cart functionality
+      if (typeof Alpine !== 'undefined') {
+        // Try to find cart drawer Alpine component
+        const cartComponents = document.querySelectorAll('[x-data]');
+        let cartDrawer = null;
+        
+        cartComponents.forEach(component => {
+          // Look for typical cart drawer component names
+          const componentData = component.getAttribute('x-data');
+          if (componentData && (
+              componentData.includes('cart') || 
+              componentData.includes('drawer') || 
+              componentData.includes('miniCart')
+          )) {
+            cartDrawer = component;
+          }
+        });
+        
+        // Add items to cart via fetch
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            items: items
+          })
         })
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Open cart drawer (this depends on your theme's implementation)
-        if (typeof window.openCartDrawer === 'function') {
-          window.openCartDrawer();
-        } else {
-          // Fallback for themes without a cart drawer function
+        .then(response => response.json())
+        .then(data => {
+          // Try to open cart drawer using Alpine
+          if (cartDrawer) {
+            // Dispatch custom event that Alpine might be listening for
+            const cartEvent = new CustomEvent('cart:refresh', { bubbles: true });
+            document.dispatchEvent(cartEvent);
+            
+            // Try to trigger cart open method if available
+            // This depends on how the Alpine cart was implemented
+            if (typeof Alpine.store === 'function') {
+              // Try common store patterns
+              if (Alpine.store('cart')) {
+                Alpine.store('cart').open();
+              } else if (Alpine.store('app') && Alpine.store('app').cart) {
+                Alpine.store('app').cart.open();
+              }
+            }
+            
+            // If we have a cart drawer component, try to set its open state
+            try {
+              const componentScope = Alpine.$data(cartDrawer);
+              if (componentScope) {
+                // Try common property names for cart open state
+                if (typeof componentScope.open !== 'undefined') {
+                  componentScope.open = true;
+                } else if (typeof componentScope.isOpen !== 'undefined') {
+                  componentScope.isOpen = true;
+                } else if (typeof componentScope.visible !== 'undefined') {
+                  componentScope.visible = true;
+                } else if (typeof componentScope.show !== 'undefined') {
+                  componentScope.show = true;
+                }
+              }
+            } catch (e) {
+              console.log('Could not access Alpine component data', e);
+            }
+          } else {
+            // Fallback to cart page if we can't find cart drawer
+            window.location.href = '/cart';
+          }
+        })
+        .catch(error => {
+          console.error('Error adding bundle to cart:', error);
+          // Fallback
           window.location.href = '/cart';
-        }
-      })
-      .catch(error => {
-        console.error('Error adding bundle to cart:', error);
-      });
+        });
+      } else {
+        // Alpine is not available, use standard cart add
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            items: items
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Go to cart page as fallback
+          window.location.href = '/cart';
+        })
+        .catch(error => {
+          console.error('Error adding bundle to cart:', error);
+          window.location.href = '/cart';
+        });
+      }
     });
     
     function updateBundleUI() {
@@ -462,9 +591,17 @@
       // Update progress count
       progressCount.textContent = selectedCount;
       
-      // Update progress bar
-      const progressPercentage = Math.min((selectedCount / minProducts) * 100, 100);
-      progressBar.style.width = progressPercentage + '%';
+      // Update selected products thumbnails
+      selectedProductsContainer.innerHTML = '';
+      selectedProducts.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.className = 'selected-product-item';
+        productElement.innerHTML = `
+          <img src="${product.image}" alt="${product.title}">
+          <div class="remove-product" data-product-id="${product.id}" title="Remove ${product.title}">×</div>
+        `;
+        selectedProductsContainer.appendChild(productElement);
+      });
       
       // Calculate prices
       const originalTotal = selectedProducts.reduce((sum, product) => sum + product.price, 0);
