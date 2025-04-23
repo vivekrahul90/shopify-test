@@ -32,22 +32,19 @@
         "padding_bottom_mobile": 20
       }
     },
-    "byob_k4TtH9": {
-      "type": "byob",
+    "byob_2_ff93eG": {
+      "type": "byob-2",
       "settings": {
-        "bundle_collection": "test-bundle",
-        "products_per_row_desktop": 4,
-        "min_products_for_bundle": 3,
-        "discount_percentage": 15,
-        "bundle_heading": "Build Your Own Bundle",
-        "bundle_description": "Select items to create your custom bundle and save!",
-        "progress_bar_color": "#1a73e8",
-        "button_color": "#1a73e8"
+        "collection": "test-bundle",
+        "cards_mobile": 2,
+        "cards_desktop": 4,
+        "products_limit": 12,
+        "min_products": 3
       }
     }
   },
   "order": [
     "main",
-    "byob_k4TtH9"
+    "byob_2_ff93eG"
   ]
 }
