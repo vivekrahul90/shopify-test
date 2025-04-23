@@ -1,6 +1,242 @@
-{% schema %}
-  {
-    "name": "Section name",
-    "settings": []
+{% comment %}
+  Build Your Own Bundle Section
+  ----------------------------------------------------------------------
+  * Mobile: 2 cards per row (customizable)
+  * Product cards include an "Add to Bundle" toggle button
+  * Sticky progress bar at the bottom tracks the number of selected items
+  * "Add Bundle to Cart" AJAX button adds the selected products then opens the cart drawer
+  * All key values (collection, cards per row, minimum products, etc.) are exposed as Theme Customizer settings
+{% endcomment %}
+
+<section class="bundle-builder" data-min="{{ section.settings.min_products }}">
+  {% assign bundle_collection = section.settings.collection %}
+  {% if bundle_collection != nil %}
+    <div class="bundle-builder-grid">
+      {% for product in bundle_collection.products limit: section.settings.products_limit %}
+        {% assign first_variant = product.variants.first %}
+        <div class="product-card" data-variant-id="{{ first_variant.id }}">
+          <img
+            src="{{ product | img_url: '400x' }}"
+            alt="{{ product.title }}"
+            loading="lazy"
+          >
+          <div class="info">
+            <p class="title">{{ product.title }}</p>
+            <p class="price">{{ product.price | money }}</p>
+            <button class="bundle-btn" type="button">Add to Bundle</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center">No collection selected.</p>
+  {% endif %}
+
+  <div id="bundle-progress-bar" aria-live="polite">
+    <div class="progress"><div class="progress-inner"></div></div>
+    <div class="summary">
+      <span class="progress-text">0/{{ section.settings.min_products }} selected</span>
+      <button id="bundle-checkout" disabled>Add Bundle to Cart</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  :root {
+    --cards-mobile: {{ section.settings.cards_mobile }};
+    --cards-desktop: {{ section.settings.cards_desktop }};
   }
+
+  .bundle-builder-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cards-mobile), 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .bundle-builder-grid {
+      grid-template-columns: repeat(var(--cards-desktop), 1fr);
+    }
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0 0 0 / 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-3px); }
+
+  .product-card img { width: 100%; height: auto; object-fit: cover; }
+  .product-card .info { padding: 0.75rem; display: flex; flex-direction: column; flex: 1; }
+  .product-card .title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .product-card .price { font-size: 0.9rem; color: #3c3c3c; margin-bottom: 0.5rem; }
+  .bundle-btn {
+    background: #000;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.25s;
+  }
+  .bundle-btn.selected { background: #1e90ff; }
+
+  #bundle-progress-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    box-shadow: 0 -1px 10px rgba(0 0 0 / 0.1);
+    z-index: 30;
+  }
+  #bundle-progress-bar .progress {
+    height: 6px;
+    background: #f2f2f2;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  #bundle-progress-bar .progress-inner {
+    height: 100%;
+    background: #1e90ff;
+    width: 0%;
+    transition: width 0.25s;
+  }
+  #bundle-progress-bar .summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+  #bundle-checkout {
+    background: #1e90ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: opacity 0.25s;
+  }
+  #bundle-checkout:disabled { opacity: 0.45; cursor: not-allowed; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const minRequired = {{ section.settings.min_products | json }};
+    const selected = new Set();
+
+    const progressBarInner = document.querySelector('#bundle-progress-bar .progress-inner');
+    const progressText     = document.querySelector('#bundle-progress-bar .progress-text');
+    const checkoutBtn      = document.getElementById('bundle-checkout');
+
+    function updateProgress() {
+      const count = selected.size;
+      progressText.textContent = `${count}/${minRequired} selected`;
+      progressBarInner.style.width = `${Math.min((count / minRequired) * 100, 100)}%`;
+      checkoutBtn.disabled = count < minRequired;
+    }
+
+    document.querySelectorAll('.bundle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card      = btn.closest('.product-card');
+        const variantId = card.dataset.variantId;
+
+        if (selected.has(variantId)) {
+          selected.delete(variantId);
+          btn.classList.remove('selected');
+          btn.textContent = 'Add to Bundle';
+        } else {
+          selected.add(variantId);
+          btn.classList.add('selected');
+          btn.textContent = 'Added';
+        }
+        updateProgress();
+      });
+    });
+
+    async function addVariant(variantId) {
+      return fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: 1 })
+      });
+    }
+
+    checkoutBtn.addEventListener('click', async () => {
+      checkoutBtn.disabled = true;
+
+      await Promise.all([...selected].map(id => addVariant(id)));
+
+      // Attempt to open the cart drawer (works with most modern Shopify themes)
+      if (window.Shopify && Shopify.theme && Shopify.theme.cart && typeof Shopify.theme.cart.open === 'function') {
+        Shopify.theme.cart.open();
+      } else {
+        document.dispatchEvent(new CustomEvent('theme:cart:open'));
+        // Fallback: redirect to cart page if drawer not available
+        setTimeout(() => { location.href = '/cart'; }, 300);
+      }
+    });
+
+    updateProgress();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Build Your Own Bundle -2",
+  "tag": "section",
+  "class": "section bundle-builder",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Product collection"
+    },
+    {
+      "type": "range",
+      "id": "cards_mobile",
+      "label": "Cards per row on mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "cards_desktop",
+      "label": "Cards per row on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Maximum number of products to display",
+      "min": 4,
+      "max": 50,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "number",
+      "id": "min_products",
+      "label": "Minimum products required for bundle discount",
+      "default": 3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Build Your Own Bundle"
+    }
+  ]
+}
 {% endschema %}
