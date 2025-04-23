@@ -1,25 +1,19 @@
 {% comment %}
-  Build Your Own Bundle Section
-  ----------------------------------------------------------------------
-  * Mobile: 2 cards per row (customizable)
-  * Product cards include an "Add to Bundle" toggle button
-  * Sticky progress bar at the bottom tracks the number of selected items
-  * "Add Bundle to Cart" AJAX button adds the selected products then opens the cart drawer
-  * All key values (collection, cards per row, minimum products, etc.) are exposed as Theme Customizer settings
+  Build Your Own Bundle Section — v2 (with thumbnail strip + Alpine‑friendly cart drawer)
 {% endcomment %}
 
 <section class="bundle-builder" data-min="{{ section.settings.min_products }}">
   {% assign bundle_collection = section.settings.collection %}
+
   {% if bundle_collection != nil %}
     <div class="bundle-builder-grid">
       {% for product in bundle_collection.products limit: section.settings.products_limit %}
         {% assign first_variant = product.variants.first %}
-        <div class="product-card" data-variant-id="{{ first_variant.id }}">
-          <img
-            src="{{ product | img_url: '400x' }}"
-            alt="{{ product.title }}"
-            loading="lazy"
-          >
+        <div class="product-card"
+             data-variant-id="{{ first_variant.id }}"
+             data-image-url="{{ product.featured_image | img_url: '100x' }}">
+          <img src="{{ product | img_url: '400x' }}" alt="{{ product.title }}" loading="lazy">
+
           <div class="info">
             <p class="title">{{ product.title }}</p>
             <p class="price">{{ product.price | money }}</p>
@@ -32,8 +26,10 @@
     <p class="text-center">No collection selected.</p>
   {% endif %}
 
+  <!-- Sticky thumbnail strip & CTA -->
   <div id="bundle-progress-bar" aria-live="polite">
-    <div class="progress"><div class="progress-inner"></div></div>
+    <div class="items" id="bundle-items"></div>
+
     <div class="summary">
       <span class="progress-text">0/{{ section.settings.min_products }} selected</span>
       <button id="bundle-checkout" disabled>Add Bundle to Cart</button>
@@ -47,6 +43,7 @@
     --cards-desktop: {{ section.settings.cards_desktop }};
   }
 
+  /* --- Grid --- */
   .bundle-builder-grid {
     display: grid;
     grid-template-columns: repeat(var(--cards-mobile), 1fr);
@@ -58,185 +55,159 @@
     }
   }
 
+  /* --- Product card --- */
   .product-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 1px 6px rgba(0 0 0 / 0.05);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform 0.2s;
+    background:#fff;border-radius:12px;box-shadow:0 1px 6px rgb(0 0 0 / 5%);
+    display:flex;flex-direction:column;overflow:hidden;transition:transform .2s;
   }
-  .product-card:hover { transform: translateY(-3px); }
+  .product-card:hover { transform:translateY(-3px); }
+  .product-card img { width:100%; height:auto; object-fit:cover; }
+  .product-card .info { padding:0.75rem; display:flex; flex-direction:column; flex:1; }
+  .product-card .title { font-weight:600; font-size:0.95rem; margin-bottom:0.25rem; }
+  .product-card .price { font-size:0.9rem; color:#3c3c3c; margin-bottom:0.5rem; }
 
-  .product-card img { width: 100%; height: auto; object-fit: cover; }
-  .product-card .info { padding: 0.75rem; display: flex; flex-direction: column; flex: 1; }
-  .product-card .title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
-  .product-card .price { font-size: 0.9rem; color: #3c3c3c; margin-bottom: 0.5rem; }
+  /* --- CTA button tweaks --- */
   .bundle-btn {
-    background: #000;
-    color: #fff;
-    font-size: 0.85rem;
-    padding: 0.5rem 0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.25s;
+    background:transparent;
+    color:#000;
+    font-size:0.85rem;
+    padding:0.5rem 0;
+    border:1px solid #000; /* thin border */
+    border-radius:8px;
+    cursor:pointer;
+    width:100%;
+    transition:background 0.25s, color 0.25s;
   }
-  .bundle-btn.selected { background: #1e90ff; }
+  .bundle-btn.selected {
+    background:#1e90ff;
+    color:#fff;
+    border-color:#1e90ff;
+  }
 
+  /* --- Sticky footer --- */
   #bundle-progress-bar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0.75rem 1rem;
-    background: #fff;
-    box-shadow: 0 -1px 10px rgba(0 0 0 / 0.1);
-    z-index: 30;
+    position:fixed;left:0;right:0;bottom:0;
+    padding:0.75rem 1rem;background:#fff;box-shadow:0 -1px 10px rgb(0 0 0 / 10%);z-index:30;
   }
-  #bundle-progress-bar .progress {
-    height: 6px;
-    background: #f2f2f2;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
+  #bundle-progress-bar .items {
+    display:flex;align-items:center;gap:0.5rem;overflow-x:auto;margin-bottom:0.5rem;
   }
-  #bundle-progress-bar .progress-inner {
-    height: 100%;
-    background: #1e90ff;
-    width: 0%;
-    transition: width 0.25s;
+  .thumbnail {
+    position:relative;width:40px;height:40px;flex:0 0 auto;
   }
-  #bundle-progress-bar .summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
+  .thumbnail img { width:100%;height:100%;object-fit:cover;border-radius:4px; }
+  .thumbnail button {
+    position:absolute;top:-6px;right:-6px;width:16px;height:16px;
+    border-radius:50%;border:1px solid #aaa;background:#fff;font-size:12px;line-height:14px;padding:0;cursor:pointer;
   }
+
+  #bundle-progress-bar .summary { display:flex;justify-content:space-between;align-items:center;font-size:0.9rem; }
   #bundle-checkout {
-    background: #1e90ff;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: opacity 0.25s;
+    background:#1e90ff;color:#fff;border:none;border-radius:8px;padding:0.5rem 1rem;cursor:pointer;transition:opacity 0.25s;
   }
-  #bundle-checkout:disabled { opacity: 0.45; cursor: not-allowed; }
+  #bundle-checkout:disabled { opacity:0.45;cursor:not-allowed; }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const minRequired = {{ section.settings.min_products | json }};
-    const selected = new Set();
+    const selected    = new Map(); // variantId -> { img }
 
-    const progressBarInner = document.querySelector('#bundle-progress-bar .progress-inner');
-    const progressText     = document.querySelector('#bundle-progress-bar .progress-text');
-    const checkoutBtn      = document.getElementById('bundle-checkout');
+    const itemsContainer = document.getElementById('bundle-items');
+    const progressText   = document.querySelector('#bundle-progress-bar .progress-text');
+    const checkoutBtn    = document.getElementById('bundle-checkout');
 
-    function updateProgress() {
-      const count = selected.size;
-      progressText.textContent = `${count}/${minRequired} selected`;
-      progressBarInner.style.width = `${Math.min((count / minRequired) * 100, 100)}%`;
-      checkoutBtn.disabled = count < minRequired;
+    function renderItems() {
+      itemsContainer.innerHTML = '';
+      selected.forEach(({ img }, variantId) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumbnail';
+        thumb.dataset.variantId = variantId;
+        thumb.innerHTML = `<img src="${img}" alt="">\n           <button aria-label="Remove" class="remove">×</button>`;
+        itemsContainer.appendChild(thumb);
+      });
     }
 
+    function updateUI() {
+      const count = selected.size;
+      progressText.textContent = `${count}/${minRequired} selected`;
+      checkoutBtn.disabled = count < minRequired;
+      renderItems();
+    }
+
+    // Toggle selection on card button
     document.querySelectorAll('.bundle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const card      = btn.closest('.product-card');
-        const variantId = card.dataset.variantId;
+        const card       = btn.closest('.product-card');
+        const variantId  = card.dataset.variantId;
+        const imageUrl   = card.dataset.imageUrl;
 
         if (selected.has(variantId)) {
           selected.delete(variantId);
           btn.classList.remove('selected');
           btn.textContent = 'Add to Bundle';
         } else {
-          selected.add(variantId);
+          selected.set(variantId, { img: imageUrl });
           btn.classList.add('selected');
           btn.textContent = 'Added';
         }
-        updateProgress();
+        updateUI();
       });
+    });
+
+    // Remove thumbnail via event delegation
+    itemsContainer.addEventListener('click', e => {
+      if (e.target.matches('.remove')) {
+        const thumb = e.target.closest('.thumbnail');
+        const variantId = thumb.dataset.variantId;
+        selected.delete(variantId);
+
+        // unselect corresponding card button
+        const cardBtn = document.querySelector(`.product-card[data-variant-id="${variantId}"] .bundle-btn`);
+        if (cardBtn) {
+          cardBtn.classList.remove('selected');
+          cardBtn.textContent = 'Add to Bundle';
+        }
+        updateUI();
+      }
     });
 
     async function addVariant(variantId) {
       return fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: 1 })
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({ id:variantId, quantity:1 })
       });
     }
 
     checkoutBtn.addEventListener('click', async () => {
       checkoutBtn.disabled = true;
+      await Promise.all([...selected.keys()].map(id => addVariant(id)));
 
-      await Promise.all([...selected].map(id => addVariant(id)));
+      /* ---- Open Cart Drawer (Alpine.js theme) ---- */
+      // Many Alpine‑driven themes dispatch a global event the drawer listens to.
+      window.dispatchEvent(new CustomEvent('cart:open'));
 
-      // Attempt to open the cart drawer (works with most modern Shopify themes)
-      if (window.Shopify && Shopify.theme && Shopify.theme.cart && typeof Shopify.theme.cart.open === 'function') {
-        Shopify.theme.cart.open();
-      } else {
-        document.dispatchEvent(new CustomEvent('theme:cart:open'));
-        // Fallback: redirect to cart page if drawer not available
-        setTimeout(() => { location.href = '/cart'; }, 300);
-      }
+      // If your theme uses a store or method, you can call it here. Example:
+      // if (window.$store && $store.cart) { $store.cart.open() }
     });
 
-    updateProgress();
+    updateUI();
   });
 </script>
 
 {% schema %}
 {
-  "name": "Build Your Own Bundle -2",
+  "name": "Build Your Own Bundle v2",
   "tag": "section",
   "class": "section bundle-builder",
   "settings": [
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Product collection"
-    },
-    {
-      "type": "range",
-      "id": "cards_mobile",
-      "label": "Cards per row on mobile",
-      "min": 1,
-      "max": 3,
-      "step": 1,
-      "default": 2
-    },
-    {
-      "type": "range",
-      "id": "cards_desktop",
-      "label": "Cards per row on desktop",
-      "min": 2,
-      "max": 5,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "products_limit",
-      "label": "Maximum number of products to display",
-      "min": 4,
-      "max": 50,
-      "step": 1,
-      "default": 12
-    },
-    {
-      "type": "number",
-      "id": "min_products",
-      "label": "Minimum products required for bundle discount",
-      "default": 3
-    }
+    { "type": "collection", "id": "collection", "label": "Product collection" },
+    { "type": "range", "id": "cards_mobile", "label": "Cards per row on mobile", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "cards_desktop", "label": "Cards per row on desktop", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "range", "id": "products_limit", "label": "Maximum products to display", "min": 4, "max": 50, "step": 1, "default": 12 },
+    { "type": "number", "id": "min_products", "label": "Minimum products required for bundle discount", "default": 3 }
   ],
-  "presets": [
-    {
-      "name": "Build Your Own Bundle"
-    }
-  ]
+  "presets": [ { "name": "Build Your Own Bundle" } ]
 }
 {% endschema %}
