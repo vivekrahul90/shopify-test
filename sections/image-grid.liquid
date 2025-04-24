@@ -1,6 +1,88 @@
 {% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
+{
+  "name": "Custom Image Grid",
+  "settings": [
+    {
+      "type": "image_picker",
+      "label": "Image 1",
+      "id": "image_1"
+    },
+    {
+      "type": "url",
+      "label": "Link 1",
+      "id": "link_1"
+    },
+    {
+      "type": "image_picker",
+      "label": "Image 2",
+      "id": "image_2"
+    },
+    {
+      "type": "url",
+      "label": "Link 2",
+      "id": "link_2"
+    },
+    {
+      "type": "image_picker",
+      "label": "Image 3",
+      "id": "image_3"
+    },
+    {
+      "type": "url",
+      "label": "Link 3",
+      "id": "link_3"
+    },
+    {
+      "type": "image_picker",
+      "label": "Image 4",
+      "id": "image_4"
+    },
+    {
+      "type": "url",
+      "label": "Link 4",
+      "id": "link_4"
+    }
+  ]
+}
 {% endschema %}
+
+<div class="custom-image-grid">
+  <div class="grid-item">
+    <a href="{{ settings.link_1 }}">
+      <img src="{{ settings.image_1 | img_url: 'medium' }}" alt="Image 1">
+    </a>
+  </div>
+  <div class="grid-item">
+    <a href="{{ settings.link_2 }}">
+      <img src="{{ settings.image_2 | img_url: 'medium' }}" alt="Image 2">
+    </a>
+  </div>
+  <div class="grid-item">
+    <a href="{{ settings.link_3 }}">
+      <img src="{{ settings.image_3 | img_url: 'medium' }}" alt="Image 3">
+    </a>
+  </div>
+  <div class="grid-item">
+    <a href="{{ settings.link_4 }}">
+      <img src="{{ settings.image_4 | img_url: 'medium' }}" alt="Image 4">
+    </a>
+  </div>
+</div>
+
+<style>
+  .custom-image-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+  }
+  .grid-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  .grid-item a {
+    display: block;
+    text-decoration: none;
+  }
+</style>
