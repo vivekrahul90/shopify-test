@@ -137,7 +137,8 @@
 
      
     
-  </head>
+  {% include 'store-credit-launcher' %}
+</head>
   <body
     class="gradient  temp-{{ template.suffix }} temp--{{ template.name }} {% if template.suffix =='khazani-file-upload' %} temp-custom-product {% endif %} pro-{{ product.id }} {% for tag in product.tags %} {% if tag contains "apd" %} apd {% endif %} {% if tag contains "freecm" %} freecm{% endif %} {% if tag contains "offer-ad" %} offer-ad {% endif %} {% if tag contains "dyb-499" %} dyb-499 {% endif %} {% if tag contains "ppd-249" %} ppd-249 {% endif %} {% endfor %}{% if request.path contains 'cart' %}cart-page{% endif %} scrollbar-body overflow-x-hidden text-[{{ settings.text_base_size | times: 0.007875 }}rem] md:text-[{{ settings.text_base_size | times: 0.00875 }}rem]{% if settings.lang_direction contains request.locale.iso_code %} rtl{% endif %}"
     x-data
@@ -281,5 +282,6 @@
           }
       });
     </script>
-  </body>
+  {% include 'store-credit-launcher' %}
+</body>
 </html>
